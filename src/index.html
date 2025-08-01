@@ -7,47 +7,25 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script defer src="scripts/sidebarToggle.js"></script>
   <style>
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      text-align: left;
-    }
-    header img.me {
-      width: 40%;
-      border-radius: 15px;
-      object-fit: cover;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-    header > div {
-      width: 50%;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
+    /* Removed inline styles moved to styles.css */
   </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <img src="./assets/university_me.jpeg" class="me" alt="Profile Photo">
-      <div>
-        <h1>Mathewrean Otieno</h1>
-        <p class="tagline">A Cybersecurity and Digital Forensics Devotee</p>
-      </div>
-    </header>
-    <nav>
-      <a href="components/Home.html">Home</a>
-      <a href="components/Resume.html">Resume</a>
-      <a href="components/Projects.html">Projects</a>
-      <a href="components/LabChallenges.html">Lab Challenges</a>
-      <a href="components/Contacts.html">Contact</a>
-    </nav>
-  </div>
-</body>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <img src="./assets/university_me.jpeg" class="me" alt="Profile Photo">
+        <div>
+          <h1>Mathewrean Otieno</h1>
+          <p class="tagline">A Cybersecurity and Digital Forensics Devotee</p>
+        </div>
+      </header>
+      <nav>
+        <a href="components/Home.html"><i class="fas fa-home"></i>Home</a>
+        <a href="components/Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
+        <a href="components/Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
+        <a href="components/LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
+        <a href="components/Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
+      </nav>
+    </div>
+  </body>
 </html>
