@@ -34,27 +34,6 @@ portfolio-website
 - **Challenge Pages**: Separate pages for CTF Challenges, TryHackMe Rooms, and Hack The Box Rooms linked from Lab Challenges.
 - **Contacts Section**: Provides links to my professional profiles (LinkedIn, GitHub, Twitter, Facebook, Reddit, Instagram) and email for potential employers and collaborators.
 
-## Setup Instructions
-1. Clone the repository to your local machine.
-2. Navigate to the project directory.
-3. Install the necessary dependencies using npm:
-   ```
-   npm install
-   ```
-4. Open `src/index.html` in your web browser to view the portfolio website during development.
-
-## GitHub Pages Deployment
-To deploy the site on GitHub Pages:
-
-1. Ensure the build files are in the `/docs` folder at the root of the repository.
-2. In your GitHub repository, go to **Settings > Pages**.
-3. Set the source branch to `main` and the folder to `/docs`.
-4. Save the settings and visit:
-   ```
-   https://<your-username>.github.io/portfolio-website/
-   ```
-   or your custom domain if configured.
-
 ## Technologies Used
 - HTML
 - CSS
