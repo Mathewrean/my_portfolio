@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security Playbook | Mathewrean Otieno</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+    <nav id="sidebar" class="sidebar">
+      <a href="Home.html"><i class="fas fa-home"></i>Home</a>
+      <a href="Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
+      <a href="Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
+      <a href="LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
+      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
+      <a href="SecurityPlaybook.html" class="active"><i class="fas fa-book"></i>Security Playbook</a>
+    </nav>
+    <div class="container">
+        <h1>Security Playbook</h1>
+        <div class="notes-list">
+            <ul id="notesHeadings">
+                <li><button data-note="note1">Note 1: Introduction to Security</button></li>
+                <li><button data-note="note2">Note 2: Network Security Basics</button></li>
+                <li><button data-note="note3">Note 3: Incident Response</button></li>
+                <li><button data-note="note4">Note 4: Special Websites</button></li>
+            </ul>
+        </div>
+        <div class="note-content" id="noteContent">
+            <p>Select a note heading to view the content here.</p>
+        </div>
+    </div>
+    <script>
+        async function loadNotes() {
+            try {
+                const response = await fetch('notes.json');
+                const data = await response.json();
+                const notes = data.notes;
+                const notesHeadings = document.getElementById('notesHeadings');
+                const noteContent = document.getElementById('noteContent');
+
+                // Clear existing list
+                notesHeadings.innerHTML = '';
+
+                // Populate notes list
+                notes.forEach(note => {
+                    const li = document.createElement('li');
+                    const button = document.createElement('button');
+                    button.textContent = note.title;
+                    button.setAttribute('data-note', note.id);
+                    li.appendChild(button);
+                    notesHeadings.appendChild(li);
+                });
+
+                // Handle note selection
+                notesHeadings.addEventListener('click', (event) => {
+                    if(event.target.tagName === 'BUTTON') {
+                        const noteId = event.target.getAttribute('data-note');
+                        const selectedNote = notes.find(n => n.id === noteId);
+                        noteContent.innerHTML = selectedNote ? selectedNote.content : "<p>Note content not found.</p>";
+                    }
+                });
+
+                // Optionally display first note by default
+                if (notes.length > 0) {
+                    noteContent.innerHTML = notes[0].content;
+                }
+            } catch (error) {
+                console.error('Error loading notes:', error);
+                document.getElementById('noteContent').innerHTML = "<p>Failed to load notes.</p>";
+            }
+        }
+
+        loadNotes();
+    </script>
+</body>
+</html>
