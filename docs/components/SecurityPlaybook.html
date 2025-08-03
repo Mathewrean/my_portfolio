@@ -12,21 +12,28 @@
       <a href="Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
       <a href="Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
       <a href="LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
-      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
       <a href="SecurityPlaybook.html" class="active"><i class="fas fa-book"></i>Security Playbook</a>
+      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
     </nav>
     <div class="container">
         <h1>Security Playbook</h1>
-        <div class="notes-list">
-            <ul id="notesHeadings">
-                <li><button data-note="note1">Note 1: Introduction to Security</button></li>
-                <li><button data-note="note2">Note 2: Network Security Basics</button></li>
-                <li><button data-note="note3">Note 3: Incident Response</button></li>
-                <li><button data-note="note4">Note 4: Special Websites</button></li>
-            </ul>
+        
+        <!-- Search Box -->
+        <div class="search-container">
+            <input type="text" id="searchBox" class="search-box" placeholder="Search notes...">
         </div>
+        
+        <!-- Categories Grid -->
+        <div class="responsive-grid-container">
+            <h2 class="category-header">Categories</h2>
+            <div class="responsive-grid" id="categoriesGrid">
+                <!-- Categories will be populated here by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Notes Content -->
         <div class="note-content" id="noteContent">
-            <p>Select a note heading to view the content here.</p>
+            <p>Select a category to view its notes.</p>
         </div>
     </div>
     <script>
@@ -35,41 +42,132 @@
                 const response = await fetch('notes.json');
                 const data = await response.json();
                 const notes = data.notes;
-                const notesHeadings = document.getElementById('notesHeadings');
+                
+                // Get unique categories
+                const categories = [...new Set(notes.map(note => note.category))];
+                
+                const categoriesGrid = document.getElementById('categoriesGrid');
                 const noteContent = document.getElementById('noteContent');
-
-                // Clear existing list
-                notesHeadings.innerHTML = '';
-
-                // Populate notes list
-                notes.forEach(note => {
-                    const li = document.createElement('li');
-                    const button = document.createElement('button');
-                    button.textContent = note.title;
-                    button.setAttribute('data-note', note.id);
-                    li.appendChild(button);
-                    notesHeadings.appendChild(li);
+                const searchBox = document.getElementById('searchBox');
+                
+                // Populate categories grid
+                categoriesGrid.innerHTML = '';
+                categories.forEach(category => {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'grid-item notes-category';
+                    categoryElement.textContent = category;
+                    categoryElement.setAttribute('data-category', category);
+                    categoriesGrid.appendChild(categoryElement);
                 });
-
-                // Handle note selection
-                notesHeadings.addEventListener('click', (event) => {
-                    if(event.target.tagName === 'BUTTON') {
-                        const noteId = event.target.getAttribute('data-note');
-                        const selectedNote = notes.find(n => n.id === noteId);
-                        noteContent.innerHTML = selectedNote ? selectedNote.content : "<p>Note content not found.</p>";
+                
+                // Handle category selection
+                categoriesGrid.addEventListener('click', (event) => {
+                    if(event.target.classList.contains('notes-category')) {
+                        const category = event.target.getAttribute('data-category');
+                        displayNotesForCategory(category, notes);
                     }
                 });
-
-                // Optionally display first note by default
-                if (notes.length > 0) {
-                    noteContent.innerHTML = notes[0].content;
+                
+                // Handle search
+                searchBox.addEventListener('input', (event) => {
+                    const searchTerm = event.target.value.toLowerCase();
+                    if (searchTerm.length > 0) {
+                        const filteredNotes = notes.filter(note => 
+                            note.title.toLowerCase().includes(searchTerm) || 
+                            note.content.toLowerCase().includes(searchTerm)
+                        );
+                        displaySearchResults(filteredNotes);
+                    } else {
+                        // Reset to category view
+                        categoriesGrid.style.display = 'grid';
+                        noteContent.innerHTML = '<p>Select a category to view its notes.</p>';
+                    }
+                });
+                
+                // Display notes for a specific category
+                function displayNotesForCategory(category, notes) {
+                    const categoryNotes = notes.filter(note => note.category === category);
+                    
+                    // Create a grid for notes in this category
+                    let notesHTML = `<h2 class="category-header">${category}</h2>`;
+                    notesHTML += '<div class="responsive-grid">';
+                    
+                    categoryNotes.forEach(note => {
+                        notesHTML += `
+                            <div class="grid-item note-item" data-note="${note.id}">
+                                <div>${note.title}</div>
+                            </div>
+                        `;
+                    });
+                    
+                    notesHTML += '</div>';
+                    noteContent.innerHTML = notesHTML;
+                    
+                    // Add click handlers for notes
+                    noteContent.querySelectorAll('.note-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const noteId = item.getAttribute('data-note');
+                            const selectedNote = notes.find(n => n.id === noteId);
+                            if (selectedNote) {
+                                // Display the note content
+                                noteContent.innerHTML = `
+                                    <h2 class="category-header">${selectedNote.title}</h2>
+                                    <div class="note-content">${selectedNote.content}</div>
+                                `;
+                            }
+                        });
+                    });
                 }
+                
+                // Display search results
+                function displaySearchResults(filteredNotes) {
+                    categoriesGrid.style.display = 'none';
+                    
+                    if (filteredNotes.length === 0) {
+                        noteContent.innerHTML = '<p>No notes found matching your search.</p>';
+                        return;
+                    }
+                    
+                    let searchResultsHTML = '<h2 class="category-header">Search Results</h2>';
+                    searchResultsHTML += '<div class="responsive-grid">';
+                    
+                    filteredNotes.forEach(note => {
+                        searchResultsHTML += `
+                            <div class="grid-item note-item" data-note="${note.id}">
+                                <div>${note.title} (${note.category})</div>
+                            </div>
+                        `;
+                    });
+                    
+                    searchResultsHTML += '</div>';
+                    noteContent.innerHTML = searchResultsHTML;
+                    
+                    // Add click handlers for notes
+                    noteContent.querySelectorAll('.note-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const noteId = item.getAttribute('data-note');
+                            const selectedNote = notes.find(n => n.id === noteId);
+                            if (selectedNote) {
+                                // Display the note content
+                                noteContent.innerHTML = `
+                                    <h2 class="category-header">${selectedNote.title}</h2>
+                                    <div class="note-content">${selectedNote.content}</div>
+                                `;
+                            }
+                        });
+                    });
+                }
+                
+                // Initially display categories
+                categoriesGrid.style.display = 'grid';
+                
             } catch (error) {
                 console.error('Error loading notes:', error);
                 document.getElementById('noteContent').innerHTML = "<p>Failed to load notes.</p>";
             }
         }
 
+        // Load notes when page loads
         loadNotes();
     </script>
 </body>

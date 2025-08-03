@@ -257,13 +257,13 @@ ul li, ol li {
   min-height: 300px;
 }
 
-.project-slide {
+.project-slide, .challenge-slide {
   display: none;
   animation: fadeIn 0.5s ease-in-out;
   padding: 0 40px; /* add padding to avoid overlap with buttons */
 }
 
-.project-slide h2 {
+.project-slide h2, .challenge-slide h2 {
   margin-top: 0;
 }
 
@@ -295,4 +295,297 @@ ul li, ol li {
 
 #nextSlide {
   right: 0;
+}
+
+/* Lab Challenges Tabs */
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.tab-button {
+  background-color: var(--dark-bg-alt);
+  color: var(--text-color);
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  margin-right: 5px;
+}
+
+.tab-button:hover {
+  background-color: var(--accent-color);
+  color: var(--dark-bg);
+}
+
+.tab-button.active {
+  background-color: var(--accent-color);
+  color: var(--dark-bg);
+  font-weight: bold;
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Vertical Slider */
+.vertical-slider {
+  position: relative;
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: var(--dark-bg-alt);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+  padding: 20px;
+  min-height: 300px;
+}
+
+.vertical-slider .slides-wrapper {
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+  margin: 10px 0;
+}
+
+.vertical-slider .challenge-slide {
+  display: none;
+  animation: fadeIn 0.5s ease-in-out;
+  padding: 15px;
+}
+
+.vertical-slider .challenge-slide h3 {
+  margin-top: 0;
+  color: var(--accent-color-light);
+}
+
+.vertical-slider .prev-slide,
+.vertical-slider .next-slide {
+  position: absolute;
+  background-color: var(--accent-color);
+  border: none;
+  color: var(--dark-bg);
+  font-size: 1.5rem;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  user-select: none;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vertical-slider .prev-slide:hover,
+.vertical-slider .next-slide:hover {
+  background-color: var(--hover-color);
+}
+
+.vertical-slider .prev-slide {
+  top: 0;
+}
+
+.vertical-slider .next-slide {
+  bottom: 0;
+}
+
+/* Added styles for notes page */
+
+/* Responsive Grid Layout */
+.responsive-grid-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.grid-item {
+    background: linear-gradient(135deg, #42e695, #3bb2b8);
+    color: white;
+    border-radius: 10px;
+    padding: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item.notes-category {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    min-height: 100px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.grid-item.notes-category:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item.note-item {
+    background: linear-gradient(135deg, #1e293b, #475569);
+    font-size: 16px;
+    text-align: left;
+    padding: 20px;
+    min-height: 80px;
+}
+
+.grid-item.note-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Search Box */
+.search-container {
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.search-box {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #3b82f6;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    box-sizing: border-box;
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* Code Block Styling (ChatGPT-like) */
+pre {
+    background-color: #2d3748;
+    border-radius: 8px;
+    padding: 15px;
+    overflow-x: auto;
+    margin: 15px 0;
+    border: 1px solid #4a5568;
+}
+
+code {
+    font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #e2e8f0;
+}
+
+.terminal-block {
+    background-color: #000;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #4a5568;
+    position: relative;
+}
+
+.terminal-block::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ff5f56;
+    box-shadow: 
+        20px 0 0 #ffbd2e,
+        40px 0 0 #27c93f;
+}
+
+.terminal-block pre {
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+}
+
+.terminal-block code {
+    color: #00ff00;
+}
+
+/* Category Header */
+.category-header {
+    color: #3b82f6;
+    font-size: 24px;
+    margin: 30px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3b82f6;
+}
+
+/* Note Content */
+.note-content {
+    background-color: #1e293b;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .responsive-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .responsive-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .grid-item {
+        padding: 20px;
+        font-size: 16px;
+    }
+    
+    .grid-item.notes-category {
+        font-size: 16px;
+    }
+    
+    .grid-item.note-item {
+        font-size: 14px;
+    }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    .grid-item {
+        background: linear-gradient(135deg, #1e9277, #2e7b85);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
 }
