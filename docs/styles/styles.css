@@ -400,6 +400,63 @@ ul li, ol li {
   bottom: 0;
 }
 
+/* Responsive Design for Lab Challenges */
+@media (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 2px solid var(--accent-color);
+    width: fit-content;
+  }
+
+  .tab-button {
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    margin-right: 0;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  .vertical-slider {
+    padding: 10px;
+    margin: 10px 0;
+  }
+
+  .vertical-slider .challenge-slide {
+    padding: 10px;
+  }
+
+  .vertical-slider .prev-slide,
+  .vertical-slider .next-slide {
+    font-size: 1rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tab-button {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+
+  .vertical-slider {
+    padding: 8px;
+    min-height: 250px;
+  }
+
+  .vertical-slider .challenge-slide {
+    padding: 8px;
+  }
+
+  .vertical-slider .challenge-slide h3 {
+    font-size: 1.2rem;
+  }
+}
+
 /* Added styles for notes page */
 
 /* Responsive Grid Layout */
