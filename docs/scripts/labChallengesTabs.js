@@ -19,32 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Vertical slider functionality for each tab
+  // Vertical slider functionality for each tab - now scrollable
   const sliders = document.querySelectorAll('.vertical-slider');
   
   sliders.forEach(slider => {
     const slides = slider.querySelectorAll('.challenge-slide');
+    
+    // Show all slides for vertical scrolling
+    slides.forEach(slide => {
+      slide.style.display = 'block';
+    });
+    
+    // Hide navigation buttons since scrolling is manual
     const prevBtn = slider.querySelector('.prev-slide');
     const nextBtn = slider.querySelector('.next-slide');
-    let currentIndex = 0;
-
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.style.display = i === index ? 'block' : 'none';
-      });
-    }
-
-    prevBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-      showSlide(currentIndex);
-    });
-
-    nextBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % slides.length;
-      showSlide(currentIndex);
-    });
-
-    // Initialize slider
-    showSlide(currentIndex);
+    if (prevBtn) prevBtn.style.display = 'none';
+    if (nextBtn) nextBtn.style.display = 'none';
   });
 });

@@ -340,7 +340,7 @@ ul li, ol li {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Vertical Slider */
+/* Vertical Slider - Scrollable Vertical Slides */
 .vertical-slider {
   position: relative;
   max-width: 800px;
@@ -348,21 +348,28 @@ ul li, ol li {
   background-color: var(--dark-bg-alt);
   border-radius: var(--border-radius);
   box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
-  padding: 20px;
-  min-height: 300px;
+  padding: 0;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .vertical-slider .slides-wrapper {
   position: relative;
-  overflow: hidden;
-  min-height: 250px;
-  margin: 10px 0;
+  overflow: visible;
+  min-height: auto;
+  margin: 0;
 }
 
 .vertical-slider .challenge-slide {
-  display: none;
-  animation: fadeIn 0.5s ease-in-out;
-  padding: 15px;
+  display: block;
+  padding: 30px;
+  border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+  min-height: 300px;
+  box-sizing: border-box;
+}
+
+.vertical-slider .challenge-slide:last-child {
+  border-bottom: none;
 }
 
 .vertical-slider .challenge-slide h3 {
@@ -372,32 +379,7 @@ ul li, ol li {
 
 .vertical-slider .prev-slide,
 .vertical-slider .next-slide {
-  position: absolute;
-  background-color: var(--accent-color);
-  border: none;
-  color: var(--dark-bg);
-  font-size: 1.5rem;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: var(--border-radius);
-  user-select: none;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.vertical-slider .prev-slide:hover,
-.vertical-slider .next-slide:hover {
-  background-color: var(--hover-color);
-}
-
-.vertical-slider .prev-slide {
-  top: 0;
-}
-
-.vertical-slider .next-slide {
-  bottom: 0;
+  display: none;
 }
 
 /* Responsive Design for Lab Challenges */
