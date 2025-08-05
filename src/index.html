@@ -2,27 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mathewrean Otieno | Cybersecurity Enthusiast</title>
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script defer src="scripts/sidebarToggle.js"></script>
 </head>
 <body>
-  <div class="container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
-    <header>
-      <img src="./assets/university_me.jpeg" class="me" alt="Profile Photo">
-      <div>
-        <h1>Mathewrean Otieno</h1>
-        <p class="tagline">A Cybersecurity and Digital Forensics Devotee</p>
+  <div id="nav-placeholder"></div>
+
+  <main class="container">
+    <section class="hero-section">
+      <header>
+        <img src="./assets/university_me.jpeg" class="me profile-photo" alt="Mathewrean Otieno - Profile Photo">
+        <div class="hero-content">
+          <h1>Mathewrean Otieno</h1>
+          <p class="tagline">Cybersecurity & Digital Forensics Devotee</p>
+          <p class="hero-description">
+            Passionate cybersecurity professional specializing in digital forensics, 
+            penetration testing, and secure system design. Committed to protecting 
+            digital assets and advancing the field of cybersecurity.
+          </p>
+        </div>
+      </header>
+    </section>
+
+    <section class="quick-nav">
+      <h2>Quick Navigation</h2>
+      <div class="nav-grid">
+        <a href="components/Resume.html" class="nav-card">
+          <i class="fas fa-file-alt"></i>
+          <h3>Resume</h3>
+          <p>View my professional experience and skills</p>
+        </a>
+        <a href="components/Projects.html" class="nav-card">
+          <i class="fas fa-laptop-code"></i>
+          <h3>Projects</h3>
+          <p>Explore my cybersecurity projects</p>
+        </a>
+        <a href="components/LabChallenges.html" class="nav-card">
+          <i class="fas fa-flask"></i>
+          <h3>Lab Challenges</h3>
+          <p>Hands-on security challenges</p>
+        </a>
+        <a href="components/Contacts.html" class="nav-card">
+          <i class="fas fa-envelope"></i>
+          <h3>Contact</h3>
+          <p>Get in touch for opportunities</p>
+        </a>
       </div>
-    </header>
-    <nav>
-      <a href="components/Home.html"><i class="fas fa-home"></i>Home</a>
-      <a href="components/Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
-      <a href="components/Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
-      <a href="components/LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
-      <a href="components/Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
-    </nav>
-  </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to Collaborate?</h2>
+      <p>Let's work together to strengthen cybersecurity defenses and solve complex security challenges.</p>
+      <a href="components/Contacts.html" class="option-button">Get In Touch</a>
+    </section>
+  </main>
 </body>
 </html>
