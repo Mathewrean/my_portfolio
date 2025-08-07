@@ -1,29 +1,197 @@
-<nav class="sidebar">
-  <button id="toggleSidebar" aria-label="Toggle navigation">
-    <i class="fas fa-bars"></i>
-  </button>
-  <a href="../../index.html" class="nav-link" data-page="index.html">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
-  <a href="About.html" class="nav-link" data-page="About.html">
-    <i class="fas fa-user"></i>
-    <span>About Me</span>
-  </a>
-  <a href="Resume.html" class="nav-link" data-page="Resume.html">
-    <i class="fas fa-file-alt"></i>
-    <span>Resume</span>
-  </a>
-  <a href="Projects.html" class="nav-link" data-page="Projects.html">
-    <i class="fas fa-laptop-code"></i>
-    <span>Projects</span>
-  </a>
-  <a href="LabChallenges.html" class="nav-link" data-page="LabChallenges.html">
-    <i class="fas fa-flask"></i>
-    <span>Lab Challenges</span>
-  </a>
-  <a href="Contacts.html" class="nav-link" data-page="Contacts.html">
-    <i class="fas fa-envelope"></i>
-    <span>Contact</span>
-  </a>
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="../index.html" class="brand-link">
+        <i class="fas fa-shield-alt"></i>
+        <span>Mathewrean Otieno</span>
+      </a>
+    </div>
+    
+    <button class="nav-toggle" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="../index.html" class="nav-link" data-page="index.html">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="components/About.html" class="nav-link" data-page="About.html">
+          <i class="fas fa-user"></i>
+          <span>About</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="components/Resume.html" class="nav-link" data-page="Resume.html">
+          <i class="fas fa-file-alt"></i>
+          <span>Resume</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="components/Projects.html" class="nav-link" data-page="Projects.html">
+          <i class="fas fa-laptop-code"></i>
+          <span>Projects</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="components/LabChallenges.html" class="nav-link" data-page="LabChallenges.html">
+          <i class="fas fa-flask"></i>
+          <span>Lab Challenges</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="components/Contacts.html" class="nav-link" data-page="Contacts.html">
+          <i class="fas fa-envelope"></i>
+          <span>Contact</span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>
+
+<style>
+/* Standardized Navigation Styles */
+.navbar {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand .brand-link {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  gap: 0.5rem;
+}
+
+.nav-brand i {
+  font-size: 1.8rem;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+}
+
+.nav-toggle span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 3px 0;
+  transition: 0.3s;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+.nav-link i {
+  font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+  
+  .nav-menu {
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background: #1e3c72;
+    flex-direction: column;
+    padding: 2rem;
+    transition: 0.3s;
+    gap: 1rem;
+  }
+  
+  .nav-menu.active {
+    left: 0;
+  }
+  
+  .nav-link {
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+}
+</style>
+
+<script>
+// Navigation functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  // Toggle mobile menu
+  if (navToggle) {
+    navToggle.addEventListener('click', function() {
+      navMenu.classList.toggle('active');
+    });
+  }
+  
+  // Set active page
+  const currentPage = window.location.pathname.split('/').pop();
+  navLinks.forEach(link => {
+    if (link.getAttribute('data-page') === currentPage) {
+      link.classList.add('active');
+    }
+  });
+  
+  // Close mobile menu on link click
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      navMenu.classList.remove('active');
+    });
+  });
+});
+</script>
