@@ -5,34 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Challenges</title>
     <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav id="sidebar" class="sidebar">
-<<<<<<< HEAD
-      <a href="Home.html">Home</a>
-      <a href="Resume.html">Resume</a>
-      <a href="Projects.html">Projects</a>
-      <a href="LabChallenges.html">Lab Challenges</a>
-      <a href="Contacts.html">Contact</a>
-=======
-      <a href="Home.html"><i class="fas fa-home"></i>Home</a>
-      <a href="Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
-      <a href="Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
-      <a href="LabChallenges.html" class="active"><i class="fas fa-flask"></i>Lab Challenges</a>
-      <a href="SecurityPlaybook.html"><i class="fas fa-book"></i>Security Playbook</a>
-      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
->>>>>>> f2fa57731bf02b1f4918ab5add8d2a34edd44cca
-    </nav>
+    <div id="nav-placeholder"></div>
     <div class="lab-challenges-container container">
         <h1>Lab Challenges</h1>
 
-<<<<<<< HEAD
         <section class="challenge-options">
           <h2>Explore Challenges</h2>
           <div class="options">
-            <a href="#" class="option-button">CTF Challenges</a>
-            <a href="#" class="option-button">TryHackMe Rooms</a>
-            <a href="#" class="option-button">Hack The Box Rooms</a>
+            <a href="CTFChallenges.html" class="option-button">CTF Challenges</a>
+            <a href="TryHackMeRooms.html" class="option-button">TryHackMe Rooms</a>
+            <a href="HackTheBoxRooms.html" class="option-button">Hack The Box Rooms</a>
           </div>
         </section>
 
@@ -42,7 +27,83 @@
             <p><strong>Tools Used:</strong> [List the tools and technologies used]</p>
             <img src="../assets/challenge1-screenshot.jpg" alt="Challenge 1 Screenshot">
             <p><strong>Key Lessons Learned:</strong> [Discuss what you learned from this challenge]</p>
+            <button class="like-button" onclick="incrementLike(this)">👍 Like <span class="like-count">0</span></button>
+            <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
+<script>
+  function incrementLike(button) {
+    const challengeDiv = button.closest('.challenge');
+    const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
+    const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
+    const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
+    const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
+
+    // Prevent multiple clicks
+    if (localStorage.getItem(likedKey) === 'true') {
+      alert('You have already liked this challenge.');
+      return;
+    }
+    if (localStorage.getItem(dislikedKey) === 'true') {
+      alert('You have already disliked this challenge.');
+      return;
+    }
+
+    const countSpan = button.querySelector('.like-count');
+    let count = parseInt(countSpan.textContent);
+    count++;
+    countSpan.textContent = count;
+
+    // Store count and user action in localStorage to persist
+    localStorage.setItem(likeKey, count);
+    localStorage.setItem(likedKey, 'true');
+  }
+
+  function incrementDislike(button) {
+    const challengeDiv = button.closest('.challenge');
+    const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
+    const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
+    const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
+    const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
+
+    // Prevent multiple clicks
+    if (localStorage.getItem(dislikedKey) === 'true') {
+      alert('You have already disliked this challenge.');
+      return;
+    }
+    if (localStorage.getItem(likedKey) === 'true') {
+      alert('You have already liked this challenge.');
+      return;
+    }
+
+    const countSpan = button.querySelector('.dislike-count');
+    let count = parseInt(countSpan.textContent);
+    count++;
+    countSpan.textContent = count;
+
+    // Store count and user action in localStorage to persist
+    localStorage.setItem(dislikeKey, count);
+    localStorage.setItem(dislikedKey, 'true');
+  }
+
+  // On page load, restore counts from localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.challenge').forEach(challenge => {
+      const title = challenge.querySelector('h2').textContent;
+      const likeKey = title + '-like';
+      const dislikeKey = title + '-dislike';
+      const likeCount = localStorage.getItem(likeKey);
+      const dislikeCount = localStorage.getItem(dislikeKey);
+      if (likeCount !== null) {
+        const likeSpan = challenge.querySelector('.like-count');
+        likeSpan.textContent = likeCount;
+      }
+      if (dislikeCount !== null) {
+        const dislikeSpan = challenge.querySelector('.dislike-count');
+        dislikeSpan.textContent = dislikeCount;
+      }
+    });
+  });
+</script>
 
         <div class="challenge">
             <h2>Challenge 2: [Problem Statement]</h2>
@@ -50,6 +111,8 @@
             <p><strong>Tools Used:</strong> [List the tools and technologies used]</p>
             <img src="../assets/challenge2-screenshot.jpg" alt="Challenge 2 Screenshot">
             <p><strong>Key Lessons Learned:</strong> [Discuss what you learned from this challenge]</p>
+            <button class="like-button" onclick="incrementLike(this)">👍 Like <span class="like-count">0</span></button>
+            <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
 
         <div class="challenge">
@@ -58,113 +121,9 @@
             <p><strong>Tools Used:</strong> [List the tools and technologies used]</p>
             <img src="../assets/challenge3-screenshot.jpg" alt="Challenge 3 Screenshot">
             <p><strong>Key Lessons Learned:</strong> [Discuss what you learned from this challenge]</p>
+            <button class="like-button" onclick="incrementLike(this)">👍 Like <span class="like-count">0</span></button>
+            <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
     </div>
-=======
-        <!-- Tabs for different challenge types -->
-        <div class="tabs">
-            <button class="tab-button active" data-tab="ctf">CTF Challenges</button>
-            <button class="tab-button" data-tab="tryhackme">TryHackMe Rooms</button>
-            <button class="tab-button" data-tab="hackthebox">Hack The Box Rooms</button>
-            <button class="tab-button" data-tab="ctfroom">CTFROOM Vaults</button>
-        </div>
-
-        <!-- Tab content -->
-        <div class="tab-content">
-            <!-- CTF Challenges -->
-            <div id="ctf" class="tab-pane active">
-                <h2>CTF Challenges</h2>
-                <div class="vertical-slider">
-                    <button class="prev-slide" aria-label="Previous CTF Challenge">&#9650;</button>
-                    <div class="slides-wrapper">
-                        <div class="challenge-slide">
-                            <h3>Challenge 1: [Problem Statement]</h3>
-                            <p><strong>Approach:</strong> [Describe your approach to solving the challenge]</p>
-                            <p><strong>Tools Used:</strong> [List the tools and technologies used]</p>
-                            <p><strong>Key Lessons Learned:</strong> [Discuss what you learned from this challenge]</p>
-                        </div>
-                        <div class="challenge-slide">
-                            <h3>Challenge 2: [Problem Statement]</h3>
-                            <p><strong>Approach:</strong> [Describe your approach to solving the challenge]</p>
-                            <p><strong>Tools Used:</strong> [List the tools and technologies used]</p>
-                            <p><strong>Key Lessons Learned:</strong> [Discuss what you learned from this challenge]</p>
-                        </div>
-                    </div>
-                    <button class="next-slide" aria-label="Next CTF Challenge">&#9660;</button>
-                </div>
-                <a href="CTFChallenges.html" class="option-button">View All CTF Challenges</a>
-            </div>
-
-            <!-- TryHackMe Rooms -->
-            <div id="tryhackme" class="tab-pane">
-                <h2>TryHackMe Rooms</h2>
-                <div class="vertical-slider">
-                    <button class="prev-slide" aria-label="Previous TryHackMe Room">&#9650;</button>
-                    <div class="slides-wrapper">
-                        <div class="challenge-slide">
-                            <h3>Room 1: [Room Name]</h3>
-                            <p><strong>Skills Learned:</strong> [List the skills and techniques learned]</p>
-                            <p><strong>Tasks Completed:</strong> [Brief description of tasks]</p>
-                        </div>
-                        <div class="challenge-slide">
-                            <h3>Room 2: [Room Name]</h3>
-                            <p><strong>Skills Learned:</strong> [List the skills and techniques learned]</p>
-                            <p><strong>Tasks Completed:</strong> [Brief description of tasks]</p>
-                        </div>
-                    </div>
-                    <button class="next-slide" aria-label="Next TryHackMe Room">&#9660;</button>
-                </div>
-                <a href="TryHackMeRooms.html" class="option-button">View All TryHackMe Rooms</a>
-            </div>
-
-            <!-- Hack The Box Rooms -->
-            <div id="hackthebox" class="tab-pane">
-                <h2>Hack The Box Rooms</h2>
-                <div class="vertical-slider">
-                    <button class="prev-slide" aria-label="Previous HTB Room">&#9650;</button>
-                    <div class="slides-wrapper">
-                        <div class="challenge-slide">
-                            <h3>Machine 1: [Machine Name]</h3>
-                            <p><strong>Exploitation Method:</strong> [Describe how you gained access]</p>
-                            <p><strong>Privilege Escalation:</strong> [Explain how you got root]</p>
-                        </div>
-                        <div class="challenge-slide">
-                            <h3>Machine 2: [Machine Name]</h3>
-                            <p><strong>Exploitation Method:</strong> [Describe how you gained access]</p>
-                            <p><strong>Privilege Escalation:</strong> [Explain how you got root]</p>
-                        </div>
-                    </div>
-                    <button class="next-slide" aria-label="Next HTB Room">&#9660;</button>
-                </div>
-                <a href="HackTheBoxRooms.html" class="option-button">View All Hack The Box Rooms</a>
-            </div>
-
-            <!-- CTFROOM Vaults -->
-            <div id="ctfroom" class="tab-pane">
-                <h2>CTFROOM Vaults</h2>
-                <div class="vertical-slider">
-                    <button class="prev-slide" aria-label="Previous CTFROOM Vault">&#9650;</button>
-                    <div class="slides-wrapper">
-                        <div class="challenge-slide">
-                            <h3>Stego Vault i</h3>
-                            <p><strong>Created:</strong> 2025-07-16 13:15:21Z</p>
-                            <h4>Steps Taken:</h4>
-                            <ol>
-                                <li>Received a ZIP file</li>
-                                <li>Checked for embedded files using basic bin/steg tools — nothing found</li>
-                                <li>Examined the hex view of the file and discovered Base32-encoded data</li>
-                                <li>Decoded it and got the text: Find tia carrere</li>
-                                <li>Googled the name and found the flag</li>
-                            </ol>
-                        </div>
-                    </div>
-                    <button class="next-slide" aria-label="Next CTFROOM Vault">&#9660;</button>
-                </div>
-                <a href="CTFROOMVaults.html" class="option-button">View All CTFROOM Vaults</a>
-            </div>
-        </div>
-    </div>
-    <script src="../scripts/labChallengesTabs.js"></script>
->>>>>>> f2fa57731bf02b1f4918ab5add8d2a34edd44cca
 </body>
 </html>
