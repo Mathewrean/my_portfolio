@@ -125,5 +125,22 @@
             <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
     </div>
+    <script src="../scripts/sidebarToggle.js"></script>
+    <script>
+        // Load navigation
+        fetch('../components/nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-placeholder').innerHTML = data;
+                // Set active page
+                const currentPage = 'About.html';
+                const links = document.querySelectorAll('.nav-link');
+                links.forEach(link => {
+                    if (link.getAttribute('data-page') === currentPage) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+    </script>
 </body>
 </html>
