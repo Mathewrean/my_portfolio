@@ -9,20 +9,11 @@
   <script defer src="scripts/sidebarToggle.js"></script>
 </head>
 <body>
-  <!-- Navbar placeholder -->
   <div id="nav-placeholder"></div>
-  <script>
-    fetch('components/nav.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-      });
-  </script>
-
   <main class="container">
     <section class="hero-section">
       <header>
-        <img src="./assets/university_me.jpeg" class="me profile-photo" alt="Mathewrean Otieno - Profile Photo">
+        <img src="assets/university_me.jpeg" class="me profile-photo" alt="Mathewrean Otieno - Profile Photo">
         <div class="hero-content">
           <h1>Mathewrean Otieno</h1>
           <p class="tagline">Cybersecurity & Digital Forensics Devotee</p>
@@ -34,7 +25,6 @@
         </div>
       </header>
     </section>
-
     <section class="quick-nav">
       <h2>Quick Navigation</h2>
       <div class="nav-grid">
@@ -60,12 +50,20 @@
         </a>
       </div>
     </section>
-
     <section class="cta-section">
       <h2>Ready to Collaborate?</h2>
       <p>Let's work together to strengthen cybersecurity defenses and solve complex security challenges.</p>
       <a href="components/Contacts.html" class="option-button">Get In Touch</a>
     </section>
   </main>
+  <script>
+    async function fetchNavigation() {
+      const response = await fetch('components/nav.html');
+      const navigationHtml = await response.text();
+      document.getElementById('nav-placeholder').innerHTML = navigationHtml;
+      document.querySelectorAll('.nav-link').forEach((link) => {
+      });
+    }
+  </script>
 </body>
 </html>

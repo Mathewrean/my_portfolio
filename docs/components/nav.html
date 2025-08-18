@@ -19,31 +19,31 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="About.html" class="nav-link" data-page="About.html">
+        <a href="../components/About.html" class="nav-link" data-page="About.html">
           <i class="fas fa-user"></i>
           <span>About</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="Resume.html" class="nav-link" data-page="Resume.html">
+        <a href="../components/Resume.html" class="nav-link" data-page="Resume.html">
           <i class="fas fa-file-alt"></i>
           <span>Resume</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="Projects.html" class="nav-link" data-page="Projects.html">
+        <a href="../components/Projects.html" class="nav-link" data-page="Projects.html">
           <i class="fas fa-laptop-code"></i>
           <span>Projects</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="LabChallenges.html" class="nav-link" data-page="LabChallenges.html">
+        <a href="../components/LabChallenges.html" class="nav-link" data-page="LabChallenges.html">
           <i class="fas fa-flask"></i>
           <span>Lab Challenges</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="Contacts.html" class="nav-link" data-page="Contacts.html">
+        <a href="../components/Contacts.html" class="nav-link" data-page="Contacts.html">
           <i class="fas fa-envelope"></i>
           <span>Contact</span>
         </a>
@@ -53,7 +53,6 @@
 </nav>
 
 <script>
-// Navigation functionality with robust path handling
 document.addEventListener('DOMContentLoaded', function() {
   const navToggle = document.querySelector('.nav-toggle');
   const navMenu = document.querySelector('.nav-menu');
@@ -66,13 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Get current file name for active link highlighting
+  // Get current file name
   let currentPage = window.location.pathname.split('/').pop();
-  // If index.html is loaded as default (empty string), treat as index.html
   if (!currentPage) currentPage = "index.html";
 
   navLinks.forEach(link => {
-    // Only highlight if the file name matches
     if (link.getAttribute('data-page') === currentPage) {
       link.classList.add('active');
     }
