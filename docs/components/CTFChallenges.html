@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CTF Challenges | Mathewrean Otieno</title>
     <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav id="sidebar" class="sidebar">
-      <a href="About.html"><i class="fas fa-home"></i>About</a>
-      <a href="Resume.html"><i class="fas fa-file-alt"></i>Resume</a>
-      <a href="Projects.html"><i class="fas fa-laptop-code"></i>Projects</a>
-      <a href="LabChallenges.html"><i class="fas fa-flask"></i>Lab Challenges</a>
-      <a href="Contacts.html"><i class="fas fa-envelope"></i>Contact</a>
-    </nav>
+    <!-- Navbar placeholder -->
+    <div id="nav-placeholder"></div>
+    <script>
+      fetch('nav.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('nav-placeholder').innerHTML = data;
+        });
+    </script>
+
     <div class="container">
         <h1>CTF Challenges</h1>
         <p>This page will contain details and write-ups of Capture The Flag challenges.</p>

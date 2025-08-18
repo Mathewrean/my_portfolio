@@ -9,7 +9,15 @@
   <script defer src="scripts/sidebarToggle.js"></script>
 </head>
 <body>
+  <!-- Navbar placeholder -->
   <div id="nav-placeholder"></div>
+  <script>
+    fetch('components/nav.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+      });
+  </script>
 
   <main class="container">
     <section class="hero-section">
@@ -30,22 +38,22 @@
     <section class="quick-nav">
       <h2>Quick Navigation</h2>
       <div class="nav-grid">
-        <a href="components/Resume.html" class="nav-card nav-link" data-page="components/Resume.html">
+        <a href="components/Resume.html" class="nav-card nav-link" data-page="Resume.html">
           <i class="fas fa-file-alt"></i>
           <h3>Resume</h3>
           <p>View my professional experience and skills</p>
         </a>
-        <a href="components/Projects.html" class="nav-card nav-link" data-page="components/Projects.html">
+        <a href="components/Projects.html" class="nav-card nav-link" data-page="Projects.html">
           <i class="fas fa-laptop-code"></i>
           <h3>Projects</h3>
           <p>Explore my cybersecurity projects</p>
         </a>
-        <a href="components/LabChallenges.html" class="nav-card nav-link" data-page="components/LabChallenges.html">
+        <a href="components/LabChallenges.html" class="nav-card nav-link" data-page="LabChallenges.html">
           <i class="fas fa-flask"></i>
           <h3>Lab Challenges</h3>
           <p>Hands-on security challenges</p>
         </a>
-        <a href="components/Contacts.html" class="nav-card nav-link" data-page="components/Contacts.html">
+        <a href="components/Contacts.html" class="nav-card nav-link" data-page="Contacts.html">
           <i class="fas fa-envelope"></i>
           <h3>Contact</h3>
           <p>Get in touch for opportunities</p>
@@ -59,19 +67,5 @@
       <a href="components/Contacts.html" class="option-button">Get In Touch</a>
     </section>
   </main>
-  <script>
-    fetch('components/nav.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-        // Highlight the active link in the nav bar
-        const currentPage = 'index.html';
-        document.querySelectorAll('.nav-link').forEach(link => {
-          if (link.getAttribute('data-page') === currentPage) {
-            link.classList.add('active');
-          }
-        });
-      });
-  </script>
 </body>
 </html>

@@ -8,7 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Navbar placeholder -->
     <div id="nav-placeholder"></div>
+    <script>
+      fetch('nav.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('nav-placeholder').innerHTML = data;
+        });
+    </script>
+
     <div class="lab-challenges-container container">
         <h1>Lab Challenges</h1>
 
@@ -30,80 +39,6 @@
             <button class="like-button" onclick="incrementLike(this)">👍 Like <span class="like-count">0</span></button>
             <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
-<script>
-  function incrementLike(button) {
-    const challengeDiv = button.closest('.challenge');
-    const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
-    const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
-    const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
-    const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
-
-    // Prevent multiple clicks
-    if (localStorage.getItem(likedKey) === 'true') {
-      alert('You have already liked this challenge.');
-      return;
-    }
-    if (localStorage.getItem(dislikedKey) === 'true') {
-      alert('You have already disliked this challenge.');
-      return;
-    }
-
-    const countSpan = button.querySelector('.like-count');
-    let count = parseInt(countSpan.textContent);
-    count++;
-    countSpan.textContent = count;
-
-    // Store count and user action in localStorage to persist
-    localStorage.setItem(likeKey, count);
-    localStorage.setItem(likedKey, 'true');
-  }
-
-  function incrementDislike(button) {
-    const challengeDiv = button.closest('.challenge');
-    const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
-    const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
-    const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
-    const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
-
-    // Prevent multiple clicks
-    if (localStorage.getItem(dislikedKey) === 'true') {
-      alert('You have already disliked this challenge.');
-      return;
-    }
-    if (localStorage.getItem(likedKey) === 'true') {
-      alert('You have already liked this challenge.');
-      return;
-    }
-
-    const countSpan = button.querySelector('.dislike-count');
-    let count = parseInt(countSpan.textContent);
-    count++;
-    countSpan.textContent = count;
-
-    // Store count and user action in localStorage to persist
-    localStorage.setItem(dislikeKey, count);
-    localStorage.setItem(dislikedKey, 'true');
-  }
-
-  // On page load, restore counts from localStorage
-  window.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.challenge').forEach(challenge => {
-      const title = challenge.querySelector('h2').textContent;
-      const likeKey = title + '-like';
-      const dislikeKey = title + '-dislike';
-      const likeCount = localStorage.getItem(likeKey);
-      const dislikeCount = localStorage.getItem(dislikeKey);
-      if (likeCount !== null) {
-        const likeSpan = challenge.querySelector('.like-count');
-        likeSpan.textContent = likeCount;
-      }
-      if (dislikeCount !== null) {
-        const dislikeSpan = challenge.querySelector('.dislike-count');
-        dislikeSpan.textContent = dislikeCount;
-      }
-    });
-  });
-</script>
 
         <div class="challenge">
             <h2>Challenge 2: [Problem Statement]</h2>
@@ -125,22 +60,81 @@
             <button class="dislike-button" onclick="incrementDislike(this)">👎 Dislike <span class="dislike-count">0</span></button>
         </div>
     </div>
+
     <script src="../scripts/sidebarToggle.js"></script>
     <script>
-        // Load navigation
-        fetch('../components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-placeholder').innerHTML = data;
-                // Set active page
-                const currentPage = 'About.html';
-                const links = document.querySelectorAll('.nav-link');
-                links.forEach(link => {
-                    if (link.getAttribute('data-page') === currentPage) {
-                        link.classList.add('active');
-                    }
-                });
-            });
+      function incrementLike(button) {
+        const challengeDiv = button.closest('.challenge');
+        const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
+        const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
+        const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
+        const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
+
+        // Prevent multiple clicks
+        if (localStorage.getItem(likedKey) === 'true') {
+          alert('You have already liked this challenge.');
+          return;
+        }
+        if (localStorage.getItem(dislikedKey) === 'true') {
+          alert('You have already disliked this challenge.');
+          return;
+        }
+
+        const countSpan = button.querySelector('.like-count');
+        let count = parseInt(countSpan.textContent);
+        count++;
+        countSpan.textContent = count;
+
+        // Store count and user action in localStorage to persist
+        localStorage.setItem(likeKey, count);
+        localStorage.setItem(likedKey, 'true');
+      }
+
+      function incrementDislike(button) {
+        const challengeDiv = button.closest('.challenge');
+        const likeKey = challengeDiv.querySelector('h2').textContent + '-like';
+        const dislikeKey = challengeDiv.querySelector('h2').textContent + '-dislike';
+        const likedKey = challengeDiv.querySelector('h2').textContent + '-liked';
+        const dislikedKey = challengeDiv.querySelector('h2').textContent + '-disliked';
+
+        // Prevent multiple clicks
+        if (localStorage.getItem(dislikedKey) === 'true') {
+          alert('You have already disliked this challenge.');
+          return;
+        }
+        if (localStorage.getItem(likedKey) === 'true') {
+          alert('You have already liked this challenge.');
+          return;
+        }
+
+        const countSpan = button.querySelector('.dislike-count');
+        let count = parseInt(countSpan.textContent);
+        count++;
+        countSpan.textContent = count;
+
+        // Store count and user action in localStorage to persist
+        localStorage.setItem(dislikeKey, count);
+        localStorage.setItem(dislikedKey, 'true');
+      }
+
+      // On page load, restore counts from localStorage
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.challenge').forEach(challenge => {
+          const title = challenge.querySelector('h2').textContent;
+          const likeKey = title + '-like';
+          const dislikeKey = title + '-dislike';
+          const likeCount = localStorage.getItem(likeKey);
+          const dislikeCount = localStorage.getItem(dislikeKey);
+          if (likeCount !== null) {
+            const likeSpan = challenge.querySelector('.like-count');
+            likeSpan.textContent = likeCount;
+          }
+          if (dislikeCount !== null) {
+            const dislikeSpan = challenge.querySelector('.dislike-count');
+            dislikeSpan.textContent = dislikeCount;
+          }
+        });
+      });
     </script>
 </body>
 </html>

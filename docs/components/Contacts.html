@@ -8,12 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Navbar placeholder -->
     <div id="nav-placeholder"></div>
+    <script>
+      fetch('nav.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('nav-placeholder').innerHTML = data;
+        });
+    </script>
+
     <div class="contacts container">
         <h2>Contacts</h2>
         <div class="typing-container">
-  <h3 class="typing-text">You can reach me out through the following platforms:</h3>
-</div>
+            <h3 class="typing-text">You can reach me out through the following platforms:</h3>
+        </div>
         <ul>
             <li>
                 <strong>Email:</strong> <a href="mailto:mathewrean@gmail.com">mathewrean@gmail.com</a>
@@ -31,7 +40,7 @@
                 <strong>Twitter:</strong> <a href="https://twitter.com/R_ICON_Megaddog" target="_blank">twitter.com/Mathewrean</a>
             </li>
             <li>
-                <strong>Facebook:</strong> <a href="https://facebook.com/Mathewrean M. Matotimag" target="_blank">facebook.com/Mathewrean</a>
+                <strong>Facebook:</strong> <a href="https://facebook.com/Mathewrean" target="_blank">facebook.com/Mathewrean</a>
             </li>
             <li>
                 <strong>Reddit:</strong> <a href="https://reddit.com/user/Mathewrean_R" target="_blank">reddit.com/user/Mathewrean</a>

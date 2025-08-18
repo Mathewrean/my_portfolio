@@ -8,7 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Navbar placeholder -->
     <div id="nav-placeholder"></div>
+    <script>
+        fetch('nav.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('nav-placeholder').innerHTML = data;
+            });
+    </script>
 
     <main class="container">
         <section class="about-hero">
@@ -72,21 +80,4 @@
     </main>
 
     <script src="../scripts/sidebarToggle.js"></script>
-    <script>
-        // Load navigation
-        fetch('../components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-placeholder').innerHTML = data;
-                // Set active page
-                const currentPage = 'About.html';
-                const links = document.querySelectorAll('.nav-link');
-                links.forEach(link => {
-                    if (link.getAttribute('data-page') === currentPage) {
-                        link.classList.add('active');
-                    }
-                });
-            });
-    </script>
 </body>
-</html>
