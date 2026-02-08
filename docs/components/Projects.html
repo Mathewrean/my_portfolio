@@ -8,20 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar placeholder -->
-    <div id="nav-placeholder"></div>
-    <script>
-      fetch('nav.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('nav-placeholder').innerHTML = data;
-          // Initialize navigation after nav.html is loaded
-          if (typeof initializeNavigation === 'function') {
-            initializeNavigation();
-          }
-        });
-    </script>
-
+    <div id="sidebar-placeholder"></div>
     <div class="projects-container container">
         <h1>Projects</h1>
         <div class="slider">
@@ -49,7 +36,20 @@
           </div>
         </div>
     </div>
-    <script src="../scripts/sidebarToggle.js"></script>
     <script src="../scripts/projectsSlider.js"></script>
+    <script>
+      fetch('sidebar-nav.html')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load sidebar');
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+          if (typeof initializeSidebar === 'function') {
+            initializeSidebar();
+          }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
 </body>
 </html>

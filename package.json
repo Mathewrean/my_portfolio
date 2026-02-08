@@ -2,10 +2,10 @@
   "name": "portfolio-website",
   "version": "1.0.0",
   "description": "A professional portfolio website showcasing my skills, projects, and experiences.",
-  "main": "src/index.html",
+  "main": "docs/index.html",
   "scripts": {
-    "start": "live-server src",
-    "build": "echo 'Build step not defined'",
+    "start": "live-server docs",
+    "build": "echo 'No build needed for static site - files are in docs folder for GitHub Pages deployment'",
     "test": "echo 'Test step not defined'"
   },
   "keywords": [

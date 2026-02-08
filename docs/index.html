@@ -6,10 +6,9 @@
   <title>Mathewrean Otieno | Cybersecurity Enthusiast</title>
   <link rel="stylesheet" href="styles/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script defer src="scripts/sidebarToggle.js"></script>
 </head>
 <body>
-  <div id="nav-placeholder"></div>
+  <div id="sidebar-placeholder"></div>
   <main class="container">
     <section class="hero-section">
       <header>
@@ -57,16 +56,18 @@
     </section>
   </main>
   <script>
-    async function fetchNavigation() {
-      const response = await fetch('components/nav.html');
-      const navigationHtml = await response.text();
-      document.getElementById('nav-placeholder').innerHTML = navigationHtml;
-      // Initialize navigation after nav.html is loaded
-      if (typeof initializeNavigation === 'function') {
-        initializeNavigation();
-      }
-    }
-    fetchNavigation();
+    fetch('components/sidebar-nav.html')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load sidebar');
+        return response.text();
+      })
+      .then(data => {
+        document.getElementById('sidebar-placeholder').innerHTML = data;
+        if (typeof initializeSidebar === 'function') {
+          initializeSidebar();
+        }
+      })
+      .catch(error => console.error('Error loading sidebar:', error));
   </script>
 </body>
 </html>

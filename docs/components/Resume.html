@@ -8,20 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar placeholder -->
-    <div id="nav-placeholder"></div>
-    <script>
-      fetch('nav.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('nav-placeholder').innerHTML = data;
-          // Initialize navigation after nav.html is loaded
-          if (typeof initializeNavigation === 'function') {
-            initializeNavigation();
-          }
-        });
-    </script>
-
+    <div id="sidebar-placeholder"></div>
     <div class="resume-container container">
         <h1>MATHEW OTIENO MAGUNDHO</h1>
         <p><strong>Phone:</strong> +254 780 248 328 | +254 701 618 286</p>
@@ -118,22 +105,19 @@
             </p>
         </section>
     </div>
-    <script src="../scripts/sidebarToggle.js"></script>
     <script>
-        // Load navigation
-        fetch('../components/nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-placeholder').innerHTML = data;
-                // Set active page
-                const currentPage = 'About.html';
-                const links = document.querySelectorAll('.nav-link');
-                links.forEach(link => {
-                    if (link.getAttribute('data-page') === currentPage) {
-                        link.classList.add('active');
-                    }
-                });
-            });
+      fetch('sidebar-nav.html')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load sidebar');
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+          if (typeof initializeSidebar === 'function') {
+            initializeSidebar();
+          }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
     </script>
 </body>
 </html>

@@ -6,16 +6,24 @@
     <title>TryHackMe Rooms | Mathewrean Otieno</title>
     <link rel="stylesheet" href="../styles/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
-    <!-- Navbar placeholder -->
-    <div id="nav-placeholder"></div>
+    <!-- Navigation placeholder -->
+    <div id="sidebar-placeholder"></div>
     <script>
-      fetch('nav.html')
-        .then(response => response.text())
+      fetch('sidebar-nav.html')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load sidebar');
+          return response.text();
+        })
         .then(data => {
-          document.getElementById('nav-placeholder').innerHTML = data;
-        });
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+          if (typeof initializeSidebar === 'function') {
+            initializeSidebar();
+          }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
     </script>
 
     <div class="container">

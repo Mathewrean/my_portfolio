@@ -6,21 +6,10 @@
   <title>Challenges - Mathewrean Otieno</title>
   <link rel="stylesheet" href="../styles/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
-  <div id="nav-placeholder"></div>
-  <script>
-    fetch('nav.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-        // Initialize navigation after nav.html is loaded
-        if (typeof initializeNavigation === 'function') {
-          initializeNavigation();
-        }
-      });
-  </script>
-
+  <div id="sidebar-placeholder"></div>
   <main class="container">
     <section class="challenges-hero">
       <h1>Challenges</h1>
@@ -86,5 +75,19 @@
   </div>
 
   <script src="../scripts/challenges.js"></script>
+  <script>
+    fetch('sidebar-nav.html')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load sidebar');
+        return response.text();
+      })
+      .then(data => {
+        document.getElementById('sidebar-placeholder').innerHTML = data;
+        if (typeof initializeSidebar === 'function') {
+          initializeSidebar();
+        }
+      })
+      .catch(error => console.error('Error loading sidebar:', error));
+  </script>
 </body>
 </html>

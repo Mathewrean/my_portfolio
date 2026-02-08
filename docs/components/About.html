@@ -8,20 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar placeholder -->
-    <div id="nav-placeholder"></div>
-    <script>
-        fetch('nav.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('nav-placeholder').innerHTML = data;
-          // Initialize navigation after nav.html is loaded
-          if (typeof initializeNavigation === 'function') {
-            initializeNavigation();
-          }
+    <div id="sidebar-placeholder"></div>
+    <main class="container">
+        <section class="hero-section">
+            <header>
                 <div class="hero-content">
                     <h1>About Mathewrean Otieno</h1>
-                    <p class="tagline">Cybersecurity Professional & Digital Forensics Expert</p>
+                    <p class="tagline">Cybersecurity Professional &amp; Digital Forensics Expert</p>
                 </div>
             </header>
         </section>
@@ -61,7 +54,7 @@
                 I believe that cybersecurity is not just about technology—it's about protecting people, organizations, and critical infrastructure. My approach combines technical expertise with continuous learning, staying ahead of emerging threats through hands-on experience and industry certifications.
             </p>
 
-            <h3>Education & Certifications</h3>
+            <h3>Education &amp; Certifications</h3>
             <ul>
                 <li><strong>B.Sc. Computer Security and Forensics</strong> - Jaramogi Oginga Odinga University of Science and Technology (2023-Present)</li>
                 <li><strong>Certificate in Computer Graphic Design</strong> - Royal Hope Computer College (2023)</li>
@@ -69,12 +62,25 @@
                 <li><strong>Leadership Training</strong> - Maseno University (2020)</li>
             </ul>
 
-            <h3>Interests & Hobbies</h3>
+            <h3>Interests &amp; Hobbies</h3>
             <p>
                 Beyond cybersecurity, I'm an active CTF player, participating in capture-the-flag competitions to sharpen my skills. I enjoy contributing to open-source security projects and mentoring aspiring cybersecurity professionals. When I'm not analyzing threats or building security tools, you can find me exploring new technologies or participating in cybersecurity communities.
             </p>
         </section>
     </main>
-
-    <script src="../scripts/sidebarToggle.js"></script>
+    <script>
+      fetch('sidebar-nav.html')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load sidebar');
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+          if (typeof initializeSidebar === 'function') {
+            initializeSidebar();
+          }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
 </body>
+</html>

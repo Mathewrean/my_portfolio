@@ -1,17 +1,12 @@
 <nav class="navbar">
   <div class="nav-container">
     <div class="nav-brand">
-      <a href="#" class="brand-link" data-href="index.html">
+      <a href="#" class="brand-link" data-href="index.html" data-page="index.html">
         <i class="fas fa-shield-alt"></i>
         <span>Mathewrean Otieno</span>
       </a>
     </div>
-    <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="nav-menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <ul class="nav-menu" id="nav-menu">
+    <ul class="nav-menu">
       <li class="nav-item">
         <a href="#" class="nav-link" data-href="index.html" data-page="index.html">
           <i class="fas fa-home"></i>
@@ -54,8 +49,6 @@
 
 <script>
 function initializeNavigation() {
-  const navToggle = document.querySelector('.nav-toggle');
-  const navMenu = document.querySelector('.nav-menu');
   const navLinks = document.querySelectorAll('.nav-link');
   const brandLink = document.querySelector('.brand-link');
   const allLinks = document.querySelectorAll('[data-href]');
@@ -71,10 +64,8 @@ function initializeNavigation() {
     if (isNested) {
       // We're in a component page (components/Resume.html, etc.)
       if (target === 'index.html') {
-        // Going to root: ../index.html
         newHref = '../index.html';
       } else if (target.startsWith('components/')) {
-        // Going to another component: strip 'components/' and just use filename
         newHref = target.replace('components/', '');
       } else {
         newHref = target;
@@ -84,8 +75,8 @@ function initializeNavigation() {
       newHref = target;
     }
     
+    // Set the href so links are clickable
     link.setAttribute('href', newHref);
-    console.log(`Set link href: ${target} → ${newHref}`);
   });
 
   // Get current page filename
@@ -93,36 +84,13 @@ function initializeNavigation() {
   if (!currentPage || currentPage === '') {
     currentPage = 'index.html';
   }
-  console.log(`Current page: ${currentPage}`);
 
   // Highlight active link based on data-page attribute
   navLinks.forEach(link => {
     const dataPage = link.getAttribute('data-page');
-    console.log(`Checking link: ${dataPage} vs ${currentPage}`);
     if (dataPage === currentPage) {
       link.classList.add('active');
-      console.log(`Activated: ${dataPage}`);
     }
-  });
-
-  // Toggle mobile menu
-  if (navToggle) {
-    navToggle.addEventListener('click', function(e) {
-      e.preventDefault();
-      navMenu.classList.toggle('active');
-      const expanded = navMenu.classList.contains('active');
-      navToggle.setAttribute('aria-expanded', expanded.toString());
-    });
-  }
-
-  // Close mobile menu on link click
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      navMenu.classList.remove('active');
-      if (navToggle) {
-        navToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
   });
 }
 
