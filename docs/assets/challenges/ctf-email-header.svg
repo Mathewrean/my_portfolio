@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#0f0f0f"/>
+  <rect x="80" y="80" width="1040" height="515" rx="24" fill="#141414" stroke="#10a37f" stroke-width="3"/>
+  <text x="120" y="170" fill="#10a37f" font-family="Space Grotesk, Arial" font-size="44" font-weight="700">CTF: Email Header Forensics</text>
+  <text x="120" y="240" fill="#e6e6e6" font-family="Space Grotesk, Arial" font-size="24">Evidence snapshot - SPF/DKIM alignment</text>
+  <g fill="#1f1f1f">
+    <rect x="120" y="300" width="420" height="42" rx="8"/>
+    <rect x="120" y="360" width="540" height="42" rx="8"/>
+    <rect x="120" y="420" width="360" height="42" rx="8"/>
+  </g>
+</svg>

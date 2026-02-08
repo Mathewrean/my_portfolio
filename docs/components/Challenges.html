@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenges - Mathewrean Otieno</title>
+  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="nav-placeholder"></div>
+  <script>
+    fetch('nav.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+        // Initialize navigation after nav.html is loaded
+        if (typeof initializeNavigation === 'function') {
+          initializeNavigation();
+        }
+      });
+  </script>
+
+  <main class="container">
+    <section class="challenges-hero">
+      <h1>Challenges</h1>
+      <p>Hands-on proofs of work across CTFs, TryHackMe rooms, Hack The Box labs, and custom exercises. Each entry includes tools used, lessons learned, and evidence screenshots.</p>
+    </section>
+    <!-- To add a new challenge: place images in /docs/assets/challenges/ and add an entry in assets/challenges/challenges.json. -->
+    <details class="challenge-meta">
+      <summary><strong>How to add a challenge</strong></summary>
+      <p>Add images to <code>docs/assets/challenges/</code>, then add a new object in <code>docs/assets/challenges/challenges.json</code>. No backend needed.</p>
+    </details>
+
+    <section class="challenges-overview" aria-label="Challenge sections">
+      <div class="overview-card">
+        <h3>CTF Challenges</h3>
+        <p>Capture the Flag writeups and flags.</p>
+        <button type="button" data-quick-filter="CTF">View CTFs</button>
+      </div>
+      <div class="overview-card">
+        <h3>TryHackMe Rooms</h3>
+        <p>Blue team, red team, and learning paths.</p>
+        <button type="button" data-quick-filter="TryHackMe">View THM</button>
+      </div>
+      <div class="overview-card">
+        <h3>Hack The Box Rooms</h3>
+        <p>Boxes, machines, and challenge labs.</p>
+        <button type="button" data-quick-filter="Hack The Box">View HTB</button>
+      </div>
+      <div class="overview-card">
+        <h3>Custom Labs</h3>
+        <p>Self-built exercises and practice labs.</p>
+        <button type="button" data-quick-filter="Custom Lab">View Labs</button>
+      </div>
+    </section>
+
+    <section class="challenge-controls" aria-label="Challenge filters">
+      <input type="text" id="challenge-search" placeholder="Search challenges, tools, or keywords" aria-label="Search challenges">
+      <select id="platform-filter" aria-label="Filter by platform"></select>
+      <select id="difficulty-filter" aria-label="Filter by difficulty"></select>
+    </section>
+
+    <section>
+      <div id="challenge-grid" class="challenge-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="gallery-modal" id="gallery-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="gallery-content">
+      <div class="gallery-header">
+        <div>
+          <strong id="gallery-title">Challenge Gallery</strong>
+          <div id="gallery-counter" class="challenge-meta"></div>
+        </div>
+        <button type="button" id="gallery-close" aria-label="Close gallery">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <img id="gallery-image" class="gallery-image" alt="Challenge evidence">
+      <div class="gallery-controls">
+        <button type="button" id="gallery-prev">Previous</button>
+        <button type="button" id="gallery-next">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../scripts/challenges.js"></script>
+</body>
+</html>

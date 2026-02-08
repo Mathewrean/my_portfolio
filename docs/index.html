@@ -38,10 +38,10 @@
           <h3>Projects</h3>
           <p>Explore my cybersecurity projects</p>
         </a>
-        <a href="components/LabChallenges.html" class="nav-card nav-link" data-page="LabChallenges.html">
-          <i class="fas fa-flask"></i>
-          <h3>Lab Challenges</h3>
-          <p>Hands-on security challenges</p>
+        <a href="components/Challenges.html" class="nav-card nav-link" data-page="Challenges.html">
+          <i class="fas fa-flag"></i>
+          <h3>Challenges</h3>
+          <p>CTF, TryHackMe, HTB, and custom labs</p>
         </a>
         <a href="components/Contacts.html" class="nav-card nav-link" data-page="Contacts.html">
           <i class="fas fa-envelope"></i>
@@ -61,9 +61,12 @@
       const response = await fetch('components/nav.html');
       const navigationHtml = await response.text();
       document.getElementById('nav-placeholder').innerHTML = navigationHtml;
-      document.querySelectorAll('.nav-link').forEach((link) => {
-      });
+      // Initialize navigation after nav.html is loaded
+      if (typeof initializeNavigation === 'function') {
+        initializeNavigation();
+      }
     }
+    fetchNavigation();
   </script>
 </body>
 </html>

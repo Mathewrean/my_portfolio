@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#0f0f0f"/>
+  <rect x="70" y="90" width="1060" height="495" rx="24" fill="#141414" stroke="#10a37f" stroke-width="3"/>
+  <text x="120" y="185" fill="#10a37f" font-family="Space Grotesk, Arial" font-size="42" font-weight="700">TryHackMe: Blue Team Blueprint</text>
+  <text x="120" y="250" fill="#e6e6e6" font-family="Space Grotesk, Arial" font-size="22">Log analysis timeline and detection notes</text>
+  <g fill="#1f1f1f">
+    <rect x="120" y="310" width="520" height="50" rx="10"/>
+    <rect x="120" y="380" width="640" height="50" rx="10"/>
+    <rect x="120" y="450" width="400" height="50" rx="10"/>
+  </g>
+</svg>

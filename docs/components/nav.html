@@ -1,49 +1,49 @@
 <nav class="navbar">
   <div class="nav-container">
     <div class="nav-brand">
-      <a href="Home.html" class="brand-link">
+      <a href="#" class="brand-link" data-href="index.html">
         <i class="fas fa-shield-alt"></i>
         <span>Mathewrean Otieno</span>
       </a>
     </div>
-    <button class="nav-toggle" aria-label="Toggle navigation">
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-controls="nav-menu" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
     </button>
-    <ul class="nav-menu">
+    <ul class="nav-menu" id="nav-menu">
       <li class="nav-item">
-        <a href="../index.html" class="nav-link" data-page="index.html">
+        <a href="#" class="nav-link" data-href="index.html" data-page="index.html">
           <i class="fas fa-home"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="../components/About.html" class="nav-link" data-page="About.html">
+        <a href="#" class="nav-link" data-href="components/About.html" data-page="About.html">
           <i class="fas fa-user"></i>
           <span>About</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="../components/Resume.html" class="nav-link" data-page="Resume.html">
+        <a href="#" class="nav-link" data-href="components/Resume.html" data-page="Resume.html">
           <i class="fas fa-file-alt"></i>
           <span>Resume</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="../components/Projects.html" class="nav-link" data-page="Projects.html">
+        <a href="#" class="nav-link" data-href="components/Projects.html" data-page="Projects.html">
           <i class="fas fa-laptop-code"></i>
           <span>Projects</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="../components/LabChallenges.html" class="nav-link" data-page="LabChallenges.html">
-          <i class="fas fa-flask"></i>
-          <span>Lab Challenges</span>
+        <a href="#" class="nav-link" data-href="components/Challenges.html" data-page="Challenges.html">
+          <i class="fas fa-flag"></i>
+          <span>Challenges</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="../components/Contacts.html" class="nav-link" data-page="Contacts.html">
+        <a href="#" class="nav-link" data-href="components/Contacts.html" data-page="Contacts.html">
           <i class="fas fa-envelope"></i>
           <span>Contact</span>
         </a>
@@ -53,33 +53,83 @@
 </nav>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initializeNavigation() {
   const navToggle = document.querySelector('.nav-toggle');
   const navMenu = document.querySelector('.nav-menu');
   const navLinks = document.querySelectorAll('.nav-link');
+  const brandLink = document.querySelector('.brand-link');
+  const allLinks = document.querySelectorAll('[data-href]');
+
+  // Determine if we're in a nested directory
+  const isNested = window.location.pathname.includes('/components/');
+  
+  // Set proper href attributes
+  allLinks.forEach((link) => {
+    let target = link.getAttribute('data-href');
+    let newHref;
+    
+    if (isNested) {
+      // We're in a component page (components/Resume.html, etc.)
+      if (target === 'index.html') {
+        // Going to root: ../index.html
+        newHref = '../index.html';
+      } else if (target.startsWith('components/')) {
+        // Going to another component: strip 'components/' and just use filename
+        newHref = target.replace('components/', '');
+      } else {
+        newHref = target;
+      }
+    } else {
+      // We're at the root (index.html)
+      newHref = target;
+    }
+    
+    link.setAttribute('href', newHref);
+    console.log(`Set link href: ${target} → ${newHref}`);
+  });
+
+  // Get current page filename
+  let currentPage = window.location.pathname.split('/').pop();
+  if (!currentPage || currentPage === '') {
+    currentPage = 'index.html';
+  }
+  console.log(`Current page: ${currentPage}`);
+
+  // Highlight active link based on data-page attribute
+  navLinks.forEach(link => {
+    const dataPage = link.getAttribute('data-page');
+    console.log(`Checking link: ${dataPage} vs ${currentPage}`);
+    if (dataPage === currentPage) {
+      link.classList.add('active');
+      console.log(`Activated: ${dataPage}`);
+    }
+  });
 
   // Toggle mobile menu
   if (navToggle) {
-    navToggle.addEventListener('click', function() {
+    navToggle.addEventListener('click', function(e) {
+      e.preventDefault();
       navMenu.classList.toggle('active');
+      const expanded = navMenu.classList.contains('active');
+      navToggle.setAttribute('aria-expanded', expanded.toString());
     });
   }
-
-  // Get current file name
-  let currentPage = window.location.pathname.split('/').pop();
-  if (!currentPage) currentPage = "index.html";
-
-  navLinks.forEach(link => {
-    if (link.getAttribute('data-page') === currentPage) {
-      link.classList.add('active');
-    }
-  });
 
   // Close mobile menu on link click
   navLinks.forEach(link => {
     link.addEventListener('click', function() {
       navMenu.classList.remove('active');
+      if (navToggle) {
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
     });
   });
-});
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeNavigation);
+} else {
+  initializeNavigation();
+}
 </script>

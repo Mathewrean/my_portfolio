@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nav Test</title>
+</head>
+<body>
+  <h1>Navigation Test</h1>
+  
+  <h2>Testing from root (index.html)</h2>
+  <div id="root-test"></div>
+  
+  <h2>Testing from components/Resume.html</h2>
+  <div id="nested-test"></div>
+
+  <script>
+    // Simulate nav initialization from root
+    console.log("=== Testing from root ===");
+    document.location.pathname = "/my_portfolio/docs/index.html";
+    let isNested = document.location.pathname.includes('/components/');
+    console.log("isNested:", isNested);
+    
+    const links = [
+      { data: "index.html", name: "Home" },
+      { data: "components/About.html", name: "About" },
+      { data: "components/Resume.html", name: "Resume" }
+    ];
+    
+    let rootResults = "<ul>";
+    links.forEach(link => {
+      let target = link.data;
+      let newHref;
+      
+      if (isNested) {
+        if (target === 'index.html') {
+          newHref = '../index.html';
+        } else if (target.startsWith('components/')) {
+          newHref = target.replace('components/', '');
+        } else {
+          newHref = target;
+        }
+      } else {
+        newHref = target;
+      }
+      
+      console.log(`${link.name}: ${target} → ${newHref}`);
+      rootResults += `<li>${link.name}: ${target} → <strong>${newHref}</strong></li>`;
+    });
+    rootResults += "</ul>";
+    document.getElementById('root-test').innerHTML = rootResults;
+    
+    // Simulate nav initialization from nested
+    console.log("\n=== Testing from components ===");
+    document.location.pathname = "/my_portfolio/docs/components/Resume.html";
+    isNested = document.location.pathname.includes('/components/');
+    console.log("isNested:", isNested);
+    
+    let nestedResults = "<ul>";
+    links.forEach(link => {
+      let target = link.data;
+      let newHref;
+      
+      if (isNested) {
+        if (target === 'index.html') {
+          newHref = '../index.html';
+        } else if (target.startsWith('components/')) {
+          newHref = target.replace('components/', '');
+        } else {
+          newHref = target;
+        }
+      } else {
+        newHref = target;
+      }
+      
+      console.log(`${link.name}: ${target} → ${newHref}`);
+      nestedResults += `<li>${link.name}: ${target} → <strong>${newHref}</strong></li>`;
+    });
+    nestedResults += "</ul>";
+    document.getElementById('nested-test').innerHTML = nestedResults;
+    
+    console.log("\n=== All tests complete ===");
+  </script>
+</body>
+</html>
