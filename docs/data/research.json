@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Threat Modeling for University ERP Systems",
+    "description": "A structured threat model for JOOUST ISACA ISG focused on identity, access, and data flow risks.",
+    "link": "docs/content-management.md",
+    "date": "2025-10-16"
+  },
+  {
+    "title": "SIEM Use Cases for Higher-Education SOC Programs",
+    "description": "Recommended detection use cases and event prioritization strategy for academic SOC operations.",
+    "link": "docs/deploy.md",
+    "date": "2025-12-02"
+  }
+]

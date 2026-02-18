@@ -1,0 +1,11 @@
+{
+  "heroTitle": "Cybersecurity Analyst & Digital Forensics Enthusiast",
+  "heroSummary": "I build secure systems, solve CTF challenges, and document practical security research and writeups.",
+  "about": "I focus on offensive and defensive security workflows, technical research, and practical challenge-based learning. This portfolio centralizes projects, certificates, challenge writeups, and publications.",
+  "contact": [
+    { "label": "Email", "href": "mailto:mathewrean@gmail.com" },
+    { "label": "GitHub", "href": "https://github.com/Mathewrean" },
+    { "label": "TryHackMe", "href": "https://tryhackme.com/p/Mathewrean" },
+    { "label": "Medium", "href": "https://medium.com/" }
+  ]
+}

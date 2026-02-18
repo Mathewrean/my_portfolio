@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Certified in Cybersecurity",
+    "issuer": "ISC2",
+    "date": "2025-08-10",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=ISC2+Certificate"
+  },
+  {
+    "name": "Google Cybersecurity Certificate",
+    "issuer": "Google",
+    "date": "2025-06-02",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Google+Certificate"
+  },
+  {
+    "name": "SOC Analyst Path Completion",
+    "issuer": "TryHackMe",
+    "date": "2025-12-12",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=THM+SOC+Path"
+  }
+]

@@ -1,73 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathewrean Otieno | Cybersecurity Enthusiast</title>
-  <link rel="stylesheet" href="styles/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mathewrean | Cybersecurity Portfolio</title>
+  <meta name="description" content="Cybersecurity portfolio with projects, certificates, challenges, research, and contact details." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-  <div id="sidebar-placeholder"></div>
-  <main class="container">
-    <section class="hero-section">
-      <header>
-        <img src="assets/university_me.jpeg" class="me profile-photo" alt="Mathewrean Otieno - Profile Photo">
-        <div class="hero-content">
-          <h1>Mathewrean Otieno</h1>
-          <p class="tagline">Cybersecurity & Digital Forensics Devotee</p>
-          <p class="hero-description">
-            Passionate cybersecurity professional specializing in digital forensics, 
-            penetration testing, and secure system design. Committed to protecting 
-            digital assets and advancing the field of cybersecurity.
-          </p>
+  <button id="themeToggle" class="floating-theme-toggle" aria-label="Toggle dark and light mode" title="Toggle theme">◐</button>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <h1>Mathewrean</h1>
+      <p>Cybersecurity</p>
+    </div>
+    <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle menu">Menu</button>
+    <nav id="sidebarNav" class="sidebar-nav" aria-label="Portfolio sections">
+      <button class="nav-link active" data-view="home">Home</button>
+      <button class="nav-link" data-view="about">About</button>
+      <button class="nav-link" data-view="resume">Resume</button>
+      <button class="nav-link" data-view="certificates">Certificates</button>
+      <button class="nav-link" data-view="projects">Projects</button>
+
+      <div class="nav-group">
+        <button class="nav-link nav-group-toggle" id="challengeGroupToggle" data-view="challenges">Challenges</button>
+        <div class="nav-submenu" id="challengeSubmenu">
+          <button class="nav-sublink" data-challenge-tab="tryhackme">TryHackMe</button>
+          <button class="nav-sublink" data-challenge-tab="hackthebox">HackTheBox</button>
+          <button class="nav-sublink" data-challenge-tab="picoctf">PicoCTF</button>
+          <button class="nav-sublink" data-challenge-tab="ctfroom">CTFROOM</button>
+          <button class="nav-sublink" data-challenge-tab="others">Others</button>
         </div>
-      </header>
-    </section>
-    <section class="quick-nav">
-      <h2>Quick Navigation</h2>
-      <div class="nav-grid">
-        <a href="components/Resume.html" class="nav-card nav-link" data-page="Resume.html">
-          <i class="fas fa-file-alt"></i>
-          <h3>Resume</h3>
-          <p>View my professional experience and skills</p>
-        </a>
-        <a href="components/Projects.html" class="nav-card nav-link" data-page="Projects.html">
-          <i class="fas fa-laptop-code"></i>
-          <h3>Projects</h3>
-          <p>Explore my cybersecurity projects</p>
-        </a>
-        <a href="components/Challenges.html" class="nav-card nav-link" data-page="Challenges.html">
-          <i class="fas fa-flag"></i>
-          <h3>Challenges</h3>
-          <p>CTF, TryHackMe, HTB, and custom labs</p>
-        </a>
-        <a href="components/Contacts.html" class="nav-card nav-link" data-page="Contacts.html">
-          <i class="fas fa-envelope"></i>
-          <h3>Contact</h3>
-          <p>Get in touch for opportunities</p>
-        </a>
       </div>
+
+      <button class="nav-link" data-view="contact">Contact</button>
+      <button class="nav-link" data-view="gallery">Gallery</button>
+      <button class="nav-link" data-view="research">Research</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <section class="view-section active" data-view="home">
+      <p class="eyebrow">Cybersecurity • Digital Forensics • Research</p>
+      <h2 id="heroTitle">Loading...</h2>
+      <p id="heroSummary" class="muted"></p>
+      <img src="assets/images/profile.jpeg" alt="Profile" class="profile-photo" id="profilePhoto" />
     </section>
-    <section class="cta-section">
-      <h2>Ready to Collaborate?</h2>
-      <p>Let's work together to strengthen cybersecurity defenses and solve complex security challenges.</p>
-      <a href="components/Contacts.html" class="option-button">Get In Touch</a>
+
+    <section class="view-section" data-view="about">
+      <h2>About</h2>
+      <p id="aboutText" class="muted"></p>
+    </section>
+
+    <section class="view-section" data-view="resume">
+      <h2>Resume</h2>
+      <p class="muted">Download the latest resume in PDF format.</p>
+      <a class="btn btn-primary" href="resume.pdf" download>Download Resume PDF</a>
+    </section>
+
+    <section class="view-section" data-view="certificates">
+      <h2>Certificates</h2>
+      <div id="certificatesGrid" class="grid"></div>
+    </section>
+
+    <section class="view-section" data-view="projects">
+      <h2>Projects</h2>
+      <div id="projectsGrid" class="grid"></div>
+    </section>
+
+    <section class="view-section" data-view="challenges">
+      <h2>Challenges</h2>
+      <div id="challengeTabs" class="tabs"></div>
+      <div id="challengeIntro" class="challenge-intro"></div>
+      <div id="challengeList" class="grid"></div>
+    </section>
+
+    <section class="view-section" data-view="contact">
+      <h2>Contact</h2>
+      <div id="contactLinks" class="contact-list"></div>
+    </section>
+
+    <section class="view-section" data-view="gallery">
+      <h2>Gallery</h2>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+
+    <section class="view-section" data-view="research">
+      <h2>Research</h2>
+      <div id="researchList" class="stack"></div>
     </section>
   </main>
-  <script>
-    fetch('components/sidebar-nav.html')
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to load sidebar');
-        return response.text();
-      })
-      .then(data => {
-        document.getElementById('sidebar-placeholder').innerHTML = data;
-        if (typeof initializeSidebar === 'function') {
-          initializeSidebar();
-        }
-      })
-      .catch(error => console.error('Error loading sidebar:', error));
-  </script>
+
+  <dialog id="certificateDialog">
+    <button id="closeDialog" class="close-dialog" aria-label="Close">Close</button>
+    <img id="dialogImage" alt="Certificate full view" />
+    <p id="dialogMeta"></p>
+  </dialog>
 </body>
 </html>
