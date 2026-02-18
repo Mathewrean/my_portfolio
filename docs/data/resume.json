@@ -1,0 +1,30 @@
+{
+  "name": "Mathew Otieno Magundho",
+  "title": "Cybersecurity Analyst",
+  "summary": "Cybersecurity-focused practitioner with hands-on experience in CTF platforms, defensive security workflows, and security research documentation.",
+  "highlights": [
+    "Hands-on labs across TryHackMe, HackTheBox, PicoCTF, and CTFROOM.",
+    "Practical experience with threat analysis, incident response concepts, and security tooling.",
+    "Technical writeups and structured challenge documentation for reproducible learning."
+  ],
+  "skills": [
+    "Network Security",
+    "Web Application Security",
+    "Linux",
+    "Incident Response Basics",
+    "Digital Forensics Fundamentals",
+    "Python",
+    "SIEM Concepts"
+  ],
+  "education": [
+    {
+      "institution": "JOOUST",
+      "program": "Cybersecurity and Digital Forensics",
+      "period": "Ongoing"
+    }
+  ],
+  "certifications": [
+    "Cisco Ethical Hacker (Cyber Shujaa Program)",
+    "TryHackMe SOC Analyst Path Completion"
+  ]
+}

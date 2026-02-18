@@ -145,6 +145,35 @@ function renderGallery(gallery) {
     .join('');
 }
 
+function renderResume(resume) {
+  if (!resume || !$('resumeContent')) return;
+  const highlights = (resume.highlights || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+  const skills = (resume.skills || []).map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('');
+  const education = (resume.education || [])
+    .map(
+      (row) =>
+        `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span></li>`,
+    )
+    .join('');
+  const certs = (resume.certifications || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+
+  $('resumeContent').innerHTML = `
+    <article class="research-item">
+      <h3>${escapeHtml(resume.name || '')}</h3>
+      <p class="meta">${escapeHtml(resume.title || '')}</p>
+      <p>${escapeHtml(resume.summary || '')}</p>
+      <h3>Highlights</h3>
+      <ul>${highlights}</ul>
+      <h3>Skills</h3>
+      <div class="tags">${skills}</div>
+      <h3>Education</h3>
+      <ul>${education}</ul>
+      <h3>Certifications</h3>
+      <ul>${certs}</ul>
+    </article>
+  `;
+}
+
 function challengeCard(entry, category) {
   const tags = (entry.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
   const sourceRow =
@@ -339,13 +368,14 @@ function applyInitialRoute() {
 window.addEventListener('hashchange', applyInitialRoute);
 
 async function boot() {
-  const [site, certificates, projects, challenges, research, gallery] = await Promise.all([
+  const [site, certificates, projects, challenges, research, gallery, resume] = await Promise.all([
     loadJSON('data/site.json'),
     loadJSON('data/certificates.json'),
     loadJSON('data/projects.json'),
     loadJSON('data/challenges.json'),
     loadJSON('data/research.json'),
     loadJSON('data/gallery.json'),
+    loadJSON('data/resume.json'),
   ]);
 
   state.challenges = challenges;
@@ -355,6 +385,7 @@ async function boot() {
   renderProjects(projects);
   renderResearch(research);
   renderGallery(gallery);
+  renderResume(resume);
   renderChallenges();
 
   setupThemeToggle();

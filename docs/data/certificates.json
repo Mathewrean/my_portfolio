@@ -1,15 +1,15 @@
 [
   {
+    "name": "Cisco Ethical Hacker (With Merit)",
+    "issuer": "Cyber Shujaa Program (USIU-Africa, Serianu Ltd, Kenya Bankers Association)",
+    "date": "2025-08-27",
+    "image": "assets/images/certificates/cisco-ethical-hacker.svg"
+  },
+  {
     "name": "Certified in Cybersecurity",
     "issuer": "ISC2",
     "date": "2025-08-10",
     "image": "https://placehold.co/900x600/1a2540/e6edf8?text=ISC2+Certificate"
-  },
-  {
-    "name": "Google Cybersecurity Certificate",
-    "issuer": "Google",
-    "date": "2025-06-02",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Google+Certificate"
   },
   {
     "name": "SOC Analyst Path Completion",
