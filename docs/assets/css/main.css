@@ -242,7 +242,10 @@ body[data-theme='light'] .sidebar {
   display: block;
   width: 100%;
   max-width: 100%;
-  height: clamp(170px, 22vw, 250px);
+  height: auto;
+  aspect-ratio: 16 / 5;
+  min-height: 140px;
+  max-height: 260px;
   border: none;
   border-radius: 10px;
   background: transparent;
