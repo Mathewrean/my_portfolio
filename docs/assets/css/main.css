@@ -233,17 +233,30 @@ body[data-theme='light'] .sidebar {
   border-radius: 12px;
   padding: 0.8rem;
   margin-bottom: 0.7rem;
+  width: 100%;
 }
 
 .badge-block img { max-width: 100%; }
 
 .thm-badge-iframe {
+  display: block;
   width: 100%;
-  max-width: 420px;
-  min-height: 120px;
+  max-width: 100%;
+  height: clamp(170px, 22vw, 250px);
   border: none;
   border-radius: 10px;
   background: transparent;
+}
+
+.thm-badge-fallback {
+  width: 100%;
+  min-height: 170px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  align-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
 }
 
 .tags {

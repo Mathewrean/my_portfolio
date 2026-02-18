@@ -187,13 +187,16 @@ function renderChallenges() {
       ? `
       <div class="badge-block">
         <p><strong>TryHackMe Profile Badge</strong></p>
-        <iframe
-          class="thm-badge-iframe"
-          src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082"
-          title="TryHackMe public profile badge"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-        ></iframe>
+        <div id="thmBadgeMount">
+          <iframe
+            id="thmBadgeIframe"
+            class="thm-badge-iframe"
+            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082"
+            title="TryHackMe public profile badge"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
       </div>`
       : '';
 
@@ -201,6 +204,39 @@ function renderChallenges() {
   $('challengeList').innerHTML = category.entries.length
     ? category.entries.map((entry) => challengeCard(entry, state.activeChallengeTab)).join('')
     : '<article class="card"><p class="meta">No challenges added yet in this category.</p></article>';
+
+  if (state.activeChallengeTab === 'tryhackme') {
+    setupTryHackMeBadgeFallback();
+  }
+}
+
+function setupTryHackMeBadgeFallback() {
+  const mount = $('thmBadgeMount');
+  const iframe = $('thmBadgeIframe');
+  if (!mount || !iframe) return;
+
+  let settled = false;
+  const showFallback = () => {
+    if (settled) return;
+    settled = true;
+    const profileUrl = state.challenges?.tryhackme?.profileUrl || 'https://tryhackme.com/p/Mathewrean';
+    mount.innerHTML = `
+      <div class="thm-badge-fallback">
+        <p class="meta">TryHackMe badge API is temporarily unavailable.</p>
+        <a class="btn" href="${escapeHtml(profileUrl)}" target="_blank" rel="noopener noreferrer">Open TryHackMe Profile</a>
+      </div>
+    `;
+  };
+
+  iframe.addEventListener('load', () => {
+    settled = true;
+  });
+
+  iframe.addEventListener('error', showFallback);
+
+  window.setTimeout(() => {
+    if (!settled) showFallback();
+  }, 4500);
 }
 
 function setActiveView(view) {
