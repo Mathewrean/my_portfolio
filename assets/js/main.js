@@ -2,6 +2,7 @@ const state = {
   activeView: 'home',
   activeChallengeTab: 'tryhackme',
   challenges: null,
+  thmResizeBound: false,
 };
 
 function $(id) {
@@ -207,6 +208,32 @@ function renderChallenges() {
 
   if (state.activeChallengeTab === 'tryhackme') {
     setupTryHackMeBadgeFallback();
+    setupTryHackMeBadgeSizing();
+  }
+}
+
+function setupTryHackMeBadgeSizing() {
+  const mount = $('thmBadgeMount');
+  const iframe = $('thmBadgeIframe');
+  if (!mount || !iframe) return;
+
+  const baseWidth = 350;
+  const baseHeight = 86;
+
+  const applySizing = () => {
+    const targetWidth = Math.max(mount.clientWidth, 280);
+    const scale = targetWidth / baseWidth;
+    iframe.style.width = `${baseWidth}px`;
+    iframe.style.height = `${baseHeight}px`;
+    iframe.style.transform = `scale(${scale})`;
+    mount.style.height = `${Math.ceil(baseHeight * scale)}px`;
+  };
+
+  requestAnimationFrame(applySizing);
+
+  if (!state.thmResizeBound) {
+    window.addEventListener('resize', applySizing, { passive: true });
+    state.thmResizeBound = true;
   }
 }
 
