@@ -3,151 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio | Cybersecurity</title>
-  <meta name="description" content="Personal cybersecurity portfolio with projects, certificates, research, and CTF challenges." />
+  <title>Mathewrean | Cybersecurity Portfolio</title>
+  <meta name="description" content="Cybersecurity portfolio with projects, certificates, challenges, research, and contact details." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="stylesheet" href="assets/css/main.css" />
   <script defer src="assets/js/main.js"></script>
 </head>
 <body>
-  <header class="site-header" id="home">
-    <div class="nav-wrap">
-      <a href="#home" class="brand">Mathewrean Portfolio</a>
-      <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation">Menu</button>
-      <nav id="siteNav" class="site-nav" aria-label="Primary">
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#resume">Resume</a>
-        <a href="#certificates">Certificates</a>
-        <a href="#projects">Projects</a>
-        <div class="nav-dropdown">
-          <button id="challengeMenuButton" class="dropdown-btn" aria-haspopup="true" aria-expanded="false">Challenges</button>
-          <div id="challengeMenu" class="dropdown-menu">
-            <a href="#challenges" data-challenge-tab="tryhackme">TryHackMe</a>
-            <a href="#challenges" data-challenge-tab="hackthebox">HackTheBox</a>
-            <a href="#challenges" data-challenge-tab="picoctf">PicoCTF</a>
-            <a href="#challenges" data-challenge-tab="ctfroom">CTFROOM</a>
-            <a href="#challenges" data-challenge-tab="others">Others</a>
-          </div>
-        </div>
-        <a href="#contact">Contact</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#research">Research</a>
-      </nav>
-      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark and light mode">Dark/Light</button>
+  <button id="themeToggle" class="floating-theme-toggle" aria-label="Toggle dark and light mode" title="Toggle theme">◐</button>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <h1>Mathewrean</h1>
+      <p>Cybersecurity</p>
     </div>
+    <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle menu">Menu</button>
+    <nav id="sidebarNav" class="sidebar-nav" aria-label="Portfolio sections">
+      <button class="nav-link active" data-view="home">Home</button>
+      <button class="nav-link" data-view="about">About</button>
+      <button class="nav-link" data-view="resume">Resume</button>
+      <button class="nav-link" data-view="certificates">Certificates</button>
+      <button class="nav-link" data-view="projects">Projects</button>
 
-    <section class="hero">
-      <p class="eyebrow">Cybersecurity • Digital Forensics • Research</p>
-      <h1 id="heroTitle">Loading...</h1>
-      <p id="heroSummary"></p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#projects">View Projects</a>
-        <a class="btn" href="#challenges">View Challenges</a>
+      <div class="nav-group">
+        <button class="nav-link nav-group-toggle" id="challengeGroupToggle" data-view="challenges">Challenges</button>
+        <div class="nav-submenu" id="challengeSubmenu">
+          <button class="nav-sublink" data-challenge-tab="tryhackme">TryHackMe</button>
+          <button class="nav-sublink" data-challenge-tab="hackthebox">HackTheBox</button>
+          <button class="nav-sublink" data-challenge-tab="picoctf">PicoCTF</button>
+          <button class="nav-sublink" data-challenge-tab="ctfroom">CTFROOM</button>
+          <button class="nav-sublink" data-challenge-tab="others">Others</button>
+        </div>
       </div>
-    </section>
-  </header>
 
-  <main>
-    <section id="about" class="section">
+      <button class="nav-link" data-view="contact">Contact</button>
+      <button class="nav-link" data-view="gallery">Gallery</button>
+      <button class="nav-link" data-view="research">Research</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <section class="view-section active" data-view="home">
+      <p class="eyebrow">Cybersecurity • Digital Forensics • Research</p>
+      <h2 id="heroTitle">Loading...</h2>
+      <p id="heroSummary" class="muted"></p>
+      <img src="assets/images/profile.jpeg" alt="Profile" class="profile-photo" id="profilePhoto" />
+    </section>
+
+    <section class="view-section" data-view="about">
       <h2>About</h2>
-      <p id="aboutText"></p>
+      <p id="aboutText" class="muted"></p>
     </section>
 
-    <section id="resume" class="section">
+    <section class="view-section" data-view="resume">
       <h2>Resume</h2>
-      <p>Download the latest resume in PDF format.</p>
+      <p class="muted">Download the latest resume in PDF format.</p>
       <a class="btn btn-primary" href="resume.pdf" download>Download Resume PDF</a>
     </section>
 
-    <section id="certificates" class="section">
-      <div class="section-head">
-        <h2>Certificates</h2>
-        <p>Professional certifications and training achievements.</p>
-      </div>
+    <section class="view-section" data-view="certificates">
+      <h2>Certificates</h2>
       <div id="certificatesGrid" class="grid"></div>
     </section>
 
-    <section id="projects" class="section">
-      <div class="section-head">
-        <h2>Projects</h2>
-        <p>Security projects with code, demos, and implementation details.</p>
-      </div>
+    <section class="view-section" data-view="projects">
+      <h2>Projects</h2>
       <div id="projectsGrid" class="grid"></div>
     </section>
 
-    <section id="challenges" class="section">
-      <div class="section-head">
-        <h2>Challenges</h2>
-        <p>Writeups and labs across major CTF platforms.</p>
-      </div>
+    <section class="view-section" data-view="challenges">
+      <h2>Challenges</h2>
       <div id="challengeTabs" class="tabs"></div>
       <div id="challengeIntro" class="challenge-intro"></div>
       <div id="challengeList" class="grid"></div>
-
-      <div class="manager-panel">
-        <h3>Add New Challenge Entry</h3>
-        <p>Use this form for fast updates. Entries are saved in your browser local storage.</p>
-        <form id="challengeForm" class="form-grid">
-          <label>Category
-            <select id="challengeCategory" required>
-              <option value="tryhackme">TryHackMe</option>
-              <option value="hackthebox">HackTheBox</option>
-              <option value="picoctf">PicoCTF</option>
-              <option value="ctfroom">CTFROOM</option>
-              <option value="others">Others</option>
-            </select>
-          </label>
-          <label>Challenge Title
-            <input id="challengeTitle" required type="text" />
-          </label>
-          <label>Description
-            <textarea id="challengeDescription" required rows="3"></textarea>
-          </label>
-          <label>Medium Article URL
-            <input id="challengeMedium" type="url" placeholder="https://medium.com/..." />
-          </label>
-          <label>Date Completed
-            <input id="challengeDate" type="date" required />
-          </label>
-          <label>Tags (comma separated)
-            <input id="challengeTags" type="text" placeholder="web, sqli, beginner" />
-          </label>
-          <label>Difficulty
-            <input id="challengeDifficulty" type="text" placeholder="Easy / Medium / Hard" />
-          </label>
-          <label>Source Site (Others only)
-            <input id="challengeSource" type="text" placeholder="Source site" />
-          </label>
-          <label>CTF Name (Others only)
-            <input id="challengeCtfName" type="text" placeholder="CTF event name" />
-          </label>
-          <label>Image Upload
-            <input id="challengeImage" type="file" accept="image/*" />
-          </label>
-          <button class="btn btn-primary" type="submit">Save Challenge</button>
-        </form>
-      </div>
     </section>
 
-    <section id="research" class="section">
-      <div class="section-head">
-        <h2>Research</h2>
-        <p>Technical documents and publications for JOOUST ISACA ISG.</p>
-      </div>
-      <div id="researchList" class="stack"></div>
+    <section class="view-section" data-view="contact">
+      <h2>Contact</h2>
+      <div id="contactLinks" class="contact-list"></div>
     </section>
 
-    <section id="gallery" class="section">
-      <div class="section-head">
-        <h2>Gallery</h2>
-        <p>CTF events, workshops, and milestones.</p>
-      </div>
+    <section class="view-section" data-view="gallery">
+      <h2>Gallery</h2>
       <div id="galleryGrid" class="gallery-grid"></div>
     </section>
 
-    <section id="contact" class="section">
-      <h2>Contact</h2>
-      <div id="contactLinks" class="contact-list"></div>
+    <section class="view-section" data-view="research">
+      <h2>Research</h2>
+      <div id="researchList" class="stack"></div>
     </section>
   </main>
 

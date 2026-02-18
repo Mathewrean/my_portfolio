@@ -3,24 +3,24 @@
     "title": "Phishing Detection Dashboard",
     "description": "A dashboard for URL and email threat scoring with actionable mitigation guidance.",
     "technologies": ["Python", "Flask", "Bootstrap", "SQLite"],
-    "github": "https://github.com/your-username/phishing-detection-dashboard",
-    "demo": "https://example.com/demo-phishing-dashboard",
+    "github": "https://github.com/Mathewrean/my_portfolio",
+    "demo": "https://github.com/Mathewrean/my_portfolio",
     "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+1"
   },
   {
     "title": "Network Forensics Toolkit",
     "description": "Toolkit for packet triage, IOC extraction, and automated incident notes generation.",
     "technologies": ["Python", "Scapy", "Pandas"],
-    "github": "https://github.com/your-username/network-forensics-toolkit",
-    "demo": "https://example.com/demo-network-forensics",
+    "github": "https://github.com/Mathewrean",
+    "demo": "https://github.com/Mathewrean",
     "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+2"
   },
   {
     "title": "Web Security Lab Notes",
     "description": "A practical repository of lab-based exploitation and remediation exercises.",
     "technologies": ["JavaScript", "Node.js", "Docker"],
-    "github": "https://github.com/your-username/web-security-labs",
-    "demo": "https://example.com/demo-web-security-labs",
+    "github": "https://github.com/Mathewrean/my_portfolio",
+    "demo": "https://github.com/Mathewrean/my_portfolio",
     "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+3"
   }
 ]

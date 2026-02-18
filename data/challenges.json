@@ -12,7 +12,7 @@
           "title": "Mr Robot CTF",
           "description": "Privilege escalation and web enumeration focused room completion.",
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=TryHackMe+Room",
-          "mediumLink": "https://medium.com/@your-profile/mr-robot-ctf-writeup",
+          "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-11-21",
           "tags": ["web", "linux", "privilege-escalation"],
           "difficulty": "Medium"
@@ -27,7 +27,7 @@
           "title": "Lame",
           "description": "Legacy SMB exploitation and service misconfiguration analysis.",
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=HackTheBox+Machine",
-          "mediumLink": "https://medium.com/@your-profile/htb-lame-walkthrough",
+          "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-09-04",
           "tags": ["smb", "metasploit", "enumeration"],
           "difficulty": "Easy"
@@ -42,7 +42,7 @@
           "title": "Buffer Overflow 1",
           "description": "Stack overwrite basics and payload crafting.",
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=PicoCTF",
-          "mediumLink": "https://medium.com/@your-profile/picoctf-buffer-overflow-1",
+          "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-07-18",
           "tags": ["binary-exploitation", "ctf"],
           "difficulty": "Medium"
@@ -57,7 +57,7 @@
           "title": "Web 101",
           "description": "Introductory SQLi and auth bypass task set.",
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFROOM",
-          "mediumLink": "https://medium.com/@your-profile/ctfroom-web-101",
+          "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-10-02",
           "tags": ["web", "sqli"],
           "difficulty": "Easy"
@@ -72,7 +72,7 @@
           "title": "Kenya Cyber Drill Finals",
           "description": "Incident response sprint involving log triage and containment planning.",
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Other+CTF",
-          "mediumLink": "https://medium.com/@your-profile/kenya-cyber-drill-finals",
+          "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-11-30",
           "tags": ["incident-response", "siem"],
           "difficulty": "Hard",

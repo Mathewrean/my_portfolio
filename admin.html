@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Admin | Challenge Entry</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <script defer src="assets/js/admin.js"></script>
+</head>
+<body>
+  <button id="themeToggle" class="floating-theme-toggle" aria-label="Toggle dark and light mode" title="Toggle theme">◐</button>
+  <div id="authGate" class="auth-gate">
+    <section class="view-section active" style="max-width: 460px;">
+      <h2>Admin Access</h2>
+      <p class="muted">Enter passphrase to open challenge manager.</p>
+      <form id="authForm" class="stack">
+        <label>Passphrase
+          <input id="adminPassphrase" type="password" required autocomplete="current-password" />
+        </label>
+        <button class="btn btn-primary" type="submit">Unlock</button>
+      </form>
+      <p id="authMessage" class="muted"></p>
+    </section>
+  </div>
+
+  <main class="content" style="margin-left:0; max-width: 980px; margin-right:auto;">
+    <section id="adminPanel" class="view-section active" hidden>
+      <h2>Challenge Manager (Private)</h2>
+      <p class="muted">This page is not linked from the public portfolio. Use it to export JSON-ready entries.</p>
+
+      <form id="challengeForm" class="grid" style="grid-template-columns: repeat(auto-fit,minmax(220px,1fr));">
+        <label>Category
+          <select id="challengeCategory" required>
+            <option value="tryhackme">TryHackMe</option>
+            <option value="hackthebox">HackTheBox</option>
+            <option value="picoctf">PicoCTF</option>
+            <option value="ctfroom">CTFROOM</option>
+            <option value="others">Others</option>
+          </select>
+        </label>
+        <label>Title
+          <input id="challengeTitle" type="text" required />
+        </label>
+        <label>Description
+          <textarea id="challengeDescription" rows="3" required></textarea>
+        </label>
+        <label>Medium URL
+          <input id="challengeMedium" type="url" />
+        </label>
+        <label>Date Completed
+          <input id="challengeDate" type="date" required />
+        </label>
+        <label>Tags (comma separated)
+          <input id="challengeTags" type="text" placeholder="web, forensics" />
+        </label>
+        <label>Difficulty
+          <input id="challengeDifficulty" type="text" placeholder="Easy / Medium / Hard" />
+        </label>
+        <label>Source Site (Others)
+          <input id="challengeSource" type="text" />
+        </label>
+        <label>CTF Name (Others)
+          <input id="challengeCtfName" type="text" />
+        </label>
+        <label>Image URL
+          <input id="challengeImage" type="url" placeholder="https://..." />
+        </label>
+        <button class="btn btn-primary" type="submit">Add Entry</button>
+      </form>
+
+      <h3 style="margin-top:1rem;">Generated Entries</h3>
+      <p class="muted">Copy entries and paste into <code>data/challenges.json</code> under the matching category.</p>
+      <pre id="output" style="white-space:pre-wrap; border:1px solid var(--line); border-radius:10px; padding:0.8rem; background:var(--surface-2);"></pre>
+      <button id="clearOutput" class="btn">Clear</button>
+    </section>
+  </main>
+</body>
+</html>

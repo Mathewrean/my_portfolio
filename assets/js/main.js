@@ -1,200 +1,51 @@
 const state = {
-  challenges: null,
+  activeView: 'home',
   activeChallengeTab: 'tryhackme',
+  challenges: null,
 };
-
-const customChallengeKey = 'portfolioCustomChallenges';
 
 function $(id) {
   return document.getElementById(id);
 }
 
-async function loadJSON(path) {
-  const res = await fetch(path);
-  if (!res.ok) {
-    throw new Error(`Failed loading ${path}`);
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function isSafeExternalUrl(raw) {
+  if (!raw || typeof raw !== 'string') return false;
+  try {
+    const url = new URL(raw, window.location.origin);
+    const protocolOk = ['http:', 'https:', 'mailto:'].includes(url.protocol);
+    if (!protocolOk) return false;
+    const lower = raw.toLowerCase();
+    const placeholderTokens = ['your-username', 'your-profile', 'example.com'];
+    return !placeholderTokens.some((token) => lower.includes(token));
+  } catch {
+    return false;
   }
-  return res.json();
 }
 
-function safeImage(url, fallback = 'https://placehold.co/800x450/18233b/9db0cf?text=Add+Image') {
-  return url && url.trim() ? url : fallback;
+function linkButton(label, href) {
+  if (!isSafeExternalUrl(href)) {
+    return `<span class="btn" aria-disabled="true">${escapeHtml(label)} (pending)</span>`;
+  }
+  return `<a class="btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
 }
 
-function renderSiteMeta(site) {
-  $('heroTitle').textContent = site.heroTitle;
-  $('heroSummary').textContent = site.heroSummary;
-  $('aboutText').textContent = site.about;
-
-  $('contactLinks').innerHTML = site.contact
-    .map((item) => `<a class="btn" href="${item.href}" target="_blank" rel="noreferrer">${item.label}</a>`)
-    .join('');
+async function loadJSON(path) {
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`Failed to load ${path}`);
+  return response.json();
 }
 
-function renderCertificates(certificates) {
-  const grid = $('certificatesGrid');
-  grid.innerHTML = certificates
-    .map(
-      (cert, index) => `
-      <article class="card">
-        <img src="${safeImage(cert.image)}" alt="${cert.name}" />
-        <h3>${cert.name}</h3>
-        <p class="meta">${cert.issuer} • ${cert.date}</p>
-        <button class="btn" data-cert-index="${index}">View Full Certificate</button>
-      </article>
-    `,
-    )
-    .join('');
-
-  grid.querySelectorAll('[data-cert-index]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const cert = certificates[Number(button.dataset.certIndex)];
-      $('dialogImage').src = safeImage(cert.image);
-      $('dialogMeta').textContent = `${cert.name} | ${cert.issuer} | ${cert.date}`;
-      $('certificateDialog').showModal();
-    });
-  });
-}
-
-function renderProjects(projects) {
-  $('projectsGrid').innerHTML = projects
-    .map(
-      (project) => `
-      <article class="card">
-        <img src="${safeImage(project.image)}" alt="${project.title}" />
-        <h3>${project.title}</h3>
-        <p>${project.description}</p>
-        <p class="meta">Tech: ${project.technologies.join(', ')}</p>
-        <div class="hero-actions">
-          <a class="btn" href="${project.github}" target="_blank" rel="noreferrer">GitHub</a>
-          <a class="btn" href="${project.demo}" target="_blank" rel="noreferrer">Live Demo</a>
-        </div>
-      </article>
-    `,
-    )
-    .join('');
-}
-
-function renderResearch(research) {
-  $('researchList').innerHTML = research
-    .map(
-      (item) => `
-      <article class="research-item">
-        <h3>${item.title}</h3>
-        <p>${item.description}</p>
-        <p class="meta">Published: ${item.date}</p>
-        <a class="btn" href="${item.link}" target="_blank" rel="noreferrer">View / Download</a>
-      </article>
-    `,
-    )
-    .join('');
-}
-
-function renderGallery(gallery) {
-  $('galleryGrid').innerHTML = gallery
-    .map(
-      (image) => `
-      <figure class="card">
-        <img src="${safeImage(image.url, 'https://placehold.co/600x450/18233b/9db0cf?text=Gallery+Image')}" alt="${image.caption}" />
-        <figcaption class="meta">${image.caption}</figcaption>
-      </figure>
-    `,
-    )
-    .join('');
-}
-
-function getAllChallenges() {
-  const custom = JSON.parse(localStorage.getItem(customChallengeKey) || '{}');
-  const merged = JSON.parse(JSON.stringify(state.challenges));
-
-  Object.keys(custom).forEach((category) => {
-    merged.categories[category] = merged.categories[category] || { entries: [] };
-    merged.categories[category].entries = [...merged.categories[category].entries, ...custom[category]];
-  });
-
-  return merged;
-}
-
-function challengeCard(entry, category) {
-  const tags = (entry.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join('');
-  const sourceRow =
-    category === 'others' && (entry.sourceSite || entry.ctfName)
-      ? `<p class="meta">${entry.sourceSite || 'Source'}${entry.ctfName ? ` • ${entry.ctfName}` : ''}</p>`
-      : '';
-
-  return `
-    <article class="card">
-      <img src="${safeImage(entry.image)}" alt="${entry.title}" />
-      <h3>${entry.title}</h3>
-      <p>${entry.description}</p>
-      <p class="meta">Completed: ${entry.dateCompleted} • Difficulty: ${entry.difficulty || 'N/A'}</p>
-      ${sourceRow}
-      <div class="tags">${tags}</div>
-      ${entry.mediumLink ? `<a class="btn" target="_blank" rel="noreferrer" href="${entry.mediumLink}">Read Medium Writeup</a>` : ''}
-    </article>
-  `;
-}
-
-function renderChallengeTabs() {
-  const allChallenges = getAllChallenges();
-  const categories = Object.keys(allChallenges.categories);
-  $('challengeTabs').innerHTML = categories
-    .map(
-      (key) =>
-        `<button class="tab-btn ${state.activeChallengeTab === key ? 'active' : ''}" data-tab="${key}">${allChallenges.categories[key].label}</button>`,
-    )
-    .join('');
-
-  $('challengeTabs').querySelectorAll('[data-tab]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.activeChallengeTab = button.dataset.tab;
-      renderChallenges();
-    });
-  });
-}
-
-function renderChallenges() {
-  const allChallenges = getAllChallenges();
-  const category = allChallenges.categories[state.activeChallengeTab];
-
-  renderChallengeTabs();
-
-  const badgeHtml =
-    state.activeChallengeTab === 'tryhackme'
-      ? `
-      <div class="badge-block">
-        <p><strong>TryHackMe Profile Badge</strong></p>
-        <a href="${allChallenges.tryhackme.profileUrl}" target="_blank" rel="noreferrer">
-          <img src="${allChallenges.tryhackme.badgeImage}" alt="TryHackMe badge" />
-        </a>
-      </div>
-      `
-      : '';
-
-  $('challengeIntro').innerHTML = `${badgeHtml}<p class="meta">${category.description}</p>`;
-  $('challengeList').innerHTML = category.entries.length
-    ? category.entries.map((entry) => challengeCard(entry, state.activeChallengeTab)).join('')
-    : '<article class="card"><p class="meta">No challenges added yet in this section.</p></article>';
-}
-
-function setupChallengeDropdown() {
-  const button = $('challengeMenuButton');
-  const menu = $('challengeMenu');
-
-  button.addEventListener('click', () => {
-    const expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', String(!expanded));
-    menu.classList.toggle('open');
-  });
-
-  menu.querySelectorAll('[data-challenge-tab]').forEach((link) => {
-    link.addEventListener('click', () => {
-      state.activeChallengeTab = link.dataset.challengeTab;
-      renderChallenges();
-      menu.classList.remove('open');
-      button.setAttribute('aria-expanded', 'false');
-    });
-  });
+function safeImage(url, fallback = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Add+Image') {
+  return url && String(url).trim() ? String(url) : fallback;
 }
 
 function setTheme(theme) {
@@ -211,52 +62,214 @@ function setupThemeToggle() {
   });
 }
 
-function setupMobileNav() {
-  $('menuToggle').addEventListener('click', () => {
-    $('siteNav').classList.toggle('open');
+function renderSiteMeta(site) {
+  $('heroTitle').textContent = site.heroTitle || '';
+  $('heroSummary').textContent = site.heroSummary || '';
+  $('aboutText').textContent = site.about || '';
+
+  $('contactLinks').innerHTML = (site.contact || [])
+    .map((item) => linkButton(item.label || 'Link', item.href || ''))
+    .join('');
+}
+
+function renderCertificates(certificates) {
+  const grid = $('certificatesGrid');
+  grid.innerHTML = (certificates || [])
+    .map(
+      (cert, index) => `
+        <article class="card">
+          <img src="${escapeHtml(safeImage(cert.image))}" alt="${escapeHtml(cert.name || 'Certificate')}" loading="lazy" />
+          <h3>${escapeHtml(cert.name || 'Certificate')}</h3>
+          <p class="meta">${escapeHtml(cert.issuer || 'Issuer')} • ${escapeHtml(cert.date || 'Date')}</p>
+          <button class="btn" data-cert-index="${index}">View Full Certificate</button>
+        </article>
+      `,
+    )
+    .join('');
+
+  grid.querySelectorAll('[data-cert-index]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const cert = certificates[Number(button.dataset.certIndex)] || {};
+      $('dialogImage').src = safeImage(cert.image);
+      $('dialogMeta').textContent = `${cert.name || 'Certificate'} | ${cert.issuer || 'Issuer'} | ${cert.date || 'Date'}`;
+      $('certificateDialog').showModal();
+    });
   });
 }
 
-function readFileAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve('');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ''));
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+function renderProjects(projects) {
+  $('projectsGrid').innerHTML = (projects || [])
+    .map(
+      (project) => `
+        <article class="card">
+          <img src="${escapeHtml(safeImage(project.image))}" alt="${escapeHtml(project.title || 'Project')}" loading="lazy" />
+          <h3>${escapeHtml(project.title || 'Project')}</h3>
+          <p>${escapeHtml(project.description || '')}</p>
+          <p class="meta">Tech: ${escapeHtml((project.technologies || []).join(', '))}</p>
+          <p>
+            ${linkButton('GitHub', project.github || '')}
+            ${linkButton('Live Demo', project.demo || '')}
+          </p>
+        </article>
+      `,
+    )
+    .join('');
+}
+
+function renderResearch(research) {
+  $('researchList').innerHTML = (research || [])
+    .map(
+      (item) => `
+        <article class="research-item">
+          <h3>${escapeHtml(item.title || 'Research')}</h3>
+          <p>${escapeHtml(item.description || '')}</p>
+          <p class="meta">Published: ${escapeHtml(item.date || 'Date')}</p>
+          ${linkButton('View / Download', item.link || '')}
+        </article>
+      `,
+    )
+    .join('');
+}
+
+function renderGallery(gallery) {
+  $('galleryGrid').innerHTML = (gallery || [])
+    .map(
+      (image) => `
+        <article class="card">
+          <img src="${escapeHtml(safeImage(image.url))}" alt="${escapeHtml(image.caption || 'Gallery image')}" loading="lazy" />
+          <p class="meta">${escapeHtml(image.caption || '')}</p>
+        </article>
+      `,
+    )
+    .join('');
+}
+
+function challengeCard(entry, category) {
+  const tags = (entry.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+  const sourceRow =
+    category === 'others' && (entry.sourceSite || entry.ctfName)
+      ? `<p class="meta">${escapeHtml(entry.sourceSite || 'Source')}${entry.ctfName ? ` • ${escapeHtml(entry.ctfName)}` : ''}</p>`
+      : '';
+
+  return `
+    <article class="card">
+      <img src="${escapeHtml(safeImage(entry.image))}" alt="${escapeHtml(entry.title || 'Challenge')}" loading="lazy" />
+      <h3>${escapeHtml(entry.title || 'Challenge')}</h3>
+      <p>${escapeHtml(entry.description || '')}</p>
+      <p class="meta">Completed: ${escapeHtml(entry.dateCompleted || 'Date')} • Difficulty: ${escapeHtml(entry.difficulty || 'N/A')}</p>
+      ${sourceRow}
+      <div class="tags">${tags}</div>
+      ${entry.mediumLink && isSafeExternalUrl(entry.mediumLink) ? `<a class="btn" href="${escapeHtml(entry.mediumLink)}" target="_blank" rel="noopener noreferrer">Read Writeup</a>` : '<span class="btn" aria-disabled="true">Writeup (pending)</span>'}
+    </article>
+  `;
+}
+
+function renderChallenges() {
+  const category = state.challenges.categories[state.activeChallengeTab];
+
+  $('challengeTabs').innerHTML = Object.keys(state.challenges.categories)
+    .map((key) => {
+      const active = key === state.activeChallengeTab ? 'active' : '';
+      return `<button class="tab-btn ${active}" data-tab="${escapeHtml(key)}">${escapeHtml(state.challenges.categories[key].label)}</button>`;
+    })
+    .join('');
+
+  $('challengeTabs').querySelectorAll('[data-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.activeChallengeTab = button.dataset.tab;
+      renderChallenges();
+      syncChallengeSubmenuActive();
+    });
+  });
+
+  const badgeHtml =
+    state.activeChallengeTab === 'tryhackme' && isSafeExternalUrl(state.challenges.tryhackme.profileUrl)
+      ? `
+      <div class="badge-block">
+        <p><strong>TryHackMe Profile Badge</strong></p>
+        <a href="${escapeHtml(state.challenges.tryhackme.profileUrl)}" target="_blank" rel="noopener noreferrer">
+          <img src="${escapeHtml(safeImage(state.challenges.tryhackme.badgeImage))}" alt="TryHackMe badge" loading="lazy" />
+        </a>
+      </div>`
+      : '';
+
+  $('challengeIntro').innerHTML = `${badgeHtml}<p class="muted">${escapeHtml(category.description || '')}</p>`;
+  $('challengeList').innerHTML = category.entries.length
+    ? category.entries.map((entry) => challengeCard(entry, state.activeChallengeTab)).join('')
+    : '<article class="card"><p class="meta">No challenges added yet in this category.</p></article>';
+}
+
+function setActiveView(view) {
+  state.activeView = view;
+
+  document.querySelectorAll('.view-section').forEach((section) => {
+    section.classList.toggle('active', section.dataset.view === view);
+  });
+
+  document.querySelectorAll('.nav-link').forEach((button) => {
+    button.classList.toggle('active', button.dataset.view === view);
+  });
+
+  if (view !== 'challenges') {
+    document.querySelectorAll('.nav-sublink').forEach((button) => button.classList.remove('active'));
+  } else {
+    syncChallengeSubmenuActive();
+  }
+}
+
+function syncChallengeSubmenuActive() {
+  document.querySelectorAll('.nav-sublink').forEach((button) => {
+    button.classList.toggle('active', button.dataset.challengeTab === state.activeChallengeTab);
   });
 }
 
-async function setupChallengeForm() {
-  $('challengeForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
+function setupNav() {
+  document.querySelectorAll('.nav-link').forEach((button) => {
+    button.addEventListener('click', () => {
+      const view = button.dataset.view;
+      setActiveView(view);
+      if (view === 'challenges') renderChallenges();
+      window.location.hash = view;
+    });
+  });
 
-    const category = $('challengeCategory').value;
-    const entry = {
-      title: $('challengeTitle').value.trim(),
-      description: $('challengeDescription').value.trim(),
-      mediumLink: $('challengeMedium').value.trim(),
-      dateCompleted: $('challengeDate').value,
-      difficulty: $('challengeDifficulty').value.trim(),
-      tags: $('challengeTags').value.split(',').map((tag) => tag.trim()).filter(Boolean),
-      sourceSite: $('challengeSource').value.trim(),
-      ctfName: $('challengeCtfName').value.trim(),
-      image: await readFileAsDataUrl($('challengeImage').files[0]),
-    };
+  document.querySelectorAll('.nav-sublink').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.activeChallengeTab = button.dataset.challengeTab;
+      setActiveView('challenges');
+      renderChallenges();
+      window.location.hash = state.activeChallengeTab;
+    });
+  });
 
-    const custom = JSON.parse(localStorage.getItem(customChallengeKey) || '{}');
-    custom[category] = custom[category] || [];
-    custom[category].push(entry);
-    localStorage.setItem(customChallengeKey, JSON.stringify(custom));
-
-    $('challengeForm').reset();
-    state.activeChallengeTab = category;
+  $('challengeGroupToggle').addEventListener('click', () => {
+    setActiveView('challenges');
     renderChallenges();
+    window.location.hash = 'challenges';
+  });
+
+  $('mobileNavToggle').addEventListener('click', () => {
+    $('sidebarNav').classList.toggle('open');
   });
 }
+
+function applyInitialRoute() {
+  const hash = (location.hash || '#home').replace('#', '');
+  const supportedViews = new Set(['home', 'about', 'resume', 'certificates', 'projects', 'challenges', 'contact', 'gallery', 'research']);
+
+  if (supportedViews.has(hash)) {
+    setActiveView(hash);
+    if (hash === 'challenges') renderChallenges();
+  } else if (state.challenges.categories[hash]) {
+    state.activeChallengeTab = hash;
+    setActiveView('challenges');
+    renderChallenges();
+  } else {
+    setActiveView('home');
+  }
+}
+
+window.addEventListener('hashchange', applyInitialRoute);
 
 async function boot() {
   const [site, certificates, projects, challenges, research, gallery] = await Promise.all([
@@ -277,10 +290,14 @@ async function boot() {
   renderGallery(gallery);
   renderChallenges();
 
-  setupChallengeDropdown();
   setupThemeToggle();
-  setupMobileNav();
-  setupChallengeForm();
+  setupNav();
+  applyInitialRoute();
+
+  const profilePhoto = $('profilePhoto');
+  profilePhoto.addEventListener('error', () => {
+    profilePhoto.style.display = 'none';
+  });
 
   $('closeDialog').addEventListener('click', () => $('certificateDialog').close());
 }

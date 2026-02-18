@@ -1,42 +1,31 @@
 # Personal Cybersecurity Portfolio
 
-Clean single-page portfolio with structured sections:
+Single-page portfolio with left vertical navigation and single-section view behavior.
 
+## Sections
 - Home
 - About
-- Resume (PDF download)
+- Resume
 - Certificates
 - Projects
-- Challenges (TryHackMe, HackTheBox, PicoCTF, CTFROOM, Others)
+- Challenges
 - Contact
 - Gallery
 - Research
 
-## Content Management
+## Challenges
+- Nested platforms: TryHackMe, HackTheBox, PicoCTF, CTFROOM, Others
+- TryHackMe badge embedded on the TryHackMe tab
+- Data source: `data/challenges.json`
 
-Portfolio content is data-driven from JSON files in `data/`.
+## Public vs Private
+- Public page: `index.html` (no challenge-entry form shown to visitors)
+- Private manager: `admin.html` (used to prepare challenge entries manually)
 
+## Data Files
 - `data/site.json`
 - `data/certificates.json`
 - `data/projects.json`
 - `data/challenges.json`
 - `data/research.json`
 - `data/gallery.json`
-
-You can also add challenge entries from the Challenges section form. These are stored in browser local storage for fast updates.
-
-## Theme and Responsive Design
-
-- Includes dark/light mode toggle
-- Mobile-first responsive layout
-- Clean card/grid-based content presentation
-
-## Files
-
-- `index.html`: Main page
-- `assets/css/main.css`: Styles and theme variables
-- `assets/js/main.js`: Rendering and interaction logic
-
-## Resume
-
-Replace `resume.pdf` with your latest CV.
