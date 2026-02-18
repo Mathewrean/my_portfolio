@@ -240,20 +240,25 @@ body[data-theme='light'] .sidebar {
 
 .thm-badge-iframe {
   display: block;
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 5;
-  min-height: 140px;
-  max-height: 260px;
+  width: 350px;
+  height: 86px;
   border: none;
   border-radius: 10px;
   background: transparent;
+  transform: scale(1.8);
+  transform-origin: top left;
+}
+
+#thmBadgeMount {
+  width: min(100%, 640px);
+  height: 154px;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 .thm-badge-fallback {
   width: 100%;
-  min-height: 170px;
+  min-height: 88px;
   border: 1px solid var(--line);
   border-radius: 10px;
   display: grid;
