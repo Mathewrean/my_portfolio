@@ -6,15 +6,45 @@
     "image": "assets/images/certificates/cisco-ethical-hacker.svg"
   },
   {
-    "name": "Certified in Cybersecurity",
-    "issuer": "ISC2",
-    "date": "2025-08-10",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=ISC2+Certificate"
+    "name": "Cyber Basics: Hack Me If You Can Bootcamp",
+    "issuer": "DevTown",
+    "date": "2025-05-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=DevTown+Bootcamp"
+  },
+  {
+    "name": "Cybersecurity & Emerging Technologies Awareness",
+    "issuer": "ICT Authority, Kenya",
+    "date": "2025-05-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=ICT+Authority"
+  },
+  {
+    "name": "Data Protection",
+    "issuer": "Strathmore University",
+    "date": "2025-03-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Strathmore+Data+Protection"
   },
   {
     "name": "SOC Analyst Path Completion",
     "issuer": "TryHackMe",
     "date": "2025-12-12",
     "image": "https://placehold.co/900x600/1a2540/e6edf8?text=THM+SOC+Path"
+  },
+  {
+    "name": "Software Development",
+    "issuer": "Power Learn Project Academy",
+    "date": "2024-10-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=PLP+Software+Development"
+  },
+  {
+    "name": "Computer Skills",
+    "issuer": "ICC Computer Training Mission",
+    "date": "2023-04-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Computer+Skills"
+  },
+  {
+    "name": "Computer Graphic Design",
+    "issuer": "Royal Hope Computer College",
+    "date": "2023-05-01",
+    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Graphic+Design"
   }
 ]

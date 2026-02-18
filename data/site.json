@@ -1,11 +1,11 @@
 {
-  "heroTitle": "Cybersecurity Analyst & Digital Forensics Enthusiast",
-  "heroSummary": "I build secure systems, solve CTF challenges, and document practical security research and writeups.",
-  "about": "I focus on offensive and defensive security workflows, technical research, and practical challenge-based learning. This portfolio centralizes projects, certificates, challenge writeups, and publications.",
+  "heroTitle": "Computer Security & Digital Forensics Undergraduate",
+  "heroSummary": "Focused on cybersecurity operations, network defense, digital forensics, and practical hands-on lab learning.",
+  "about": "Motivated BSc Computer Security and Digital Forensics undergraduate at JOOUST (2023-Present), actively building practical security skills through TryHackMe labs, CTF competitions, and technical documentation. Interested in SOC operations, IT support, cybersecurity research, and secure systems implementation.",
   "contact": [
     { "label": "Email", "href": "mailto:mathewrean@gmail.com" },
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/mathewrean" },
     { "label": "GitHub", "href": "https://github.com/Mathewrean" },
-    { "label": "TryHackMe", "href": "https://tryhackme.com/p/Mathewrean" },
-    { "label": "Medium", "href": "https://medium.com/" }
+    { "label": "TryHackMe", "href": "https://tryhackme.com/p/M47h3wR34n" }
   ]
 }

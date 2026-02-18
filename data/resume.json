@@ -1,30 +1,98 @@
 {
   "name": "Mathew Otieno Magundho",
-  "title": "Cybersecurity Analyst",
-  "summary": "Cybersecurity-focused practitioner with hands-on experience in CTF platforms, defensive security workflows, and security research documentation.",
+  "title": "Cybersecurity Analyst | Computer Security & Digital Forensics Student",
+  "summary": "Motivated undergraduate seeking internship opportunities in cybersecurity, IT support, networking, and SOC operations.",
+  "objective": "Apply academic and practical cybersecurity knowledge, strengthen hands-on technical skills, and contribute to secure, reliable IT systems while learning from industry professionals.",
   "highlights": [
-    "Hands-on labs across TryHackMe, HackTheBox, PicoCTF, and CTFROOM.",
-    "Practical experience with threat analysis, incident response concepts, and security tooling.",
-    "Technical writeups and structured challenge documentation for reproducible learning."
+    "BSc Computer Security and Digital Forensics at JOOUST (2023-Present).",
+    "Hands-on cybersecurity practice on TryHackMe and CTF platforms.",
+    "Exposure to enumeration, basic exploitation concepts, and defensive security workflows.",
+    "Leadership role as SIIS Congressman supporting student ICT initiatives."
   ],
-  "skills": [
-    "Network Security",
-    "Web Application Security",
-    "Linux",
-    "Incident Response Basics",
-    "Digital Forensics Fundamentals",
-    "Python",
-    "SIEM Concepts"
-  ],
+  "skills": {
+    "cybersecurity_networking": [
+      "Network Security Basics",
+      "Cyber Defense Fundamentals",
+      "Digital Forensics Fundamentals",
+      "Data Recovery Concepts",
+      "Log Analysis",
+      "Ethical Hacking Basics"
+    ],
+    "programming_development": [
+      "Web Development",
+      "Database Management",
+      "Version Control"
+    ],
+    "systems_tools": [
+      "Kali Linux",
+      "Windows OS",
+      "VirtualBox",
+      "VMware",
+      "Splunk",
+      "Cisco Packet Tracer",
+      "Microsoft Office Suite"
+    ]
+  },
   "education": [
     {
-      "institution": "JOOUST",
-      "program": "Cybersecurity and Digital Forensics",
-      "period": "Ongoing"
+      "institution": "Jaramogi Oginga Odinga University of Science and Technology (JOOUST)",
+      "program": "BSc Computer Security and Digital Forensics",
+      "period": "2023-Present",
+      "details": "Relevant coursework: Network Security, Digital Forensics, Data Privacy & Protection, Computer Networks, Operating Systems, Database Systems."
+    }
+  ],
+  "experience": [
+    {
+      "role": "IT Support Assistant",
+      "organization": "Systems support environment",
+      "period": "Recent",
+      "details": [
+        "Assisted lead technician in configuring and deploying local area networks.",
+        "Supported system setup, device configuration, and connectivity testing."
+      ]
+    },
+    {
+      "role": "Congressman - School of Informatics and Innovative Systems (SIIS)",
+      "organization": "JOOUST",
+      "period": "Dec 2025-Present",
+      "details": [
+        "Represent students in academic and ICT-related matters.",
+        "Participate in policy discussions and student advocacy.",
+        "Support technology-driven student initiatives and events."
+      ]
     }
   ],
   "certifications": [
-    "Cisco Ethical Hacker (Cyber Shujaa Program)",
-    "TryHackMe SOC Analyst Path Completion"
+    "Cisco Ethical Hacker - Cisco & Cyber Shujaa (Aug 2025)",
+    "Cyber Basics: Hack Me If You Can Bootcamp - DevTown (May 2025)",
+    "Cybersecurity & Emerging Technologies Awareness - ICT Authority Kenya (May 2025)",
+    "Data Protection - Strathmore University (Mar 2025)",
+    "Software Development - Power Learn Project Academy (Oct 2024)",
+    "Computer Skills - ICC Computer Training Mission (Apr 2023)",
+    "Computer Graphic Design - Royal Hope Computer College (May 2023)",
+    "Leadership Training - Maseno University, Kisumu Campus (Mar 2019)"
+  ],
+  "activities": [
+    "Member, ISACA Student Group - JOOUST",
+    "Participant, Safaricom CTF Qualifiers",
+    "Participant, Cybergame CTF 2025",
+    "Participant, Dewald Roode CTF 2025",
+    "Member, Enactus JOOUST",
+    "Member, PLP Community (Jun-Dec 2024)",
+    "Volunteer, Technology Awareness Initiatives - JOOUST"
+  ],
+  "interests": [
+    "Ethical Hacking",
+    "Digital Forensics",
+    "Cybersecurity Research",
+    "Programming",
+    "Networking"
+  ],
+  "references": [
+    {
+      "name": "Peter Thuku",
+      "role": "IT Support Technician - Systems Hub Limited",
+      "contact": "+254 729 006 174"
+    }
   ]
 }

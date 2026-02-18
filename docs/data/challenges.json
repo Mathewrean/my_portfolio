@@ -1,6 +1,6 @@
 {
   "tryhackme": {
-    "profileUrl": "https://tryhackme.com/p/Mathewrean",
+    "profileUrl": "https://tryhackme.com/p/M47h3wR34n",
     "badgeImage": "https://tryhackme-badges.s3.amazonaws.com/Mathewrean.png"
   },
   "categories": {
@@ -14,7 +14,11 @@
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=TryHackMe+Room",
           "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-11-21",
-          "tags": ["web", "linux", "privilege-escalation"],
+          "tags": [
+            "web",
+            "linux",
+            "privilege-escalation"
+          ],
           "difficulty": "Medium"
         }
       ]
@@ -29,7 +33,11 @@
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=HackTheBox+Machine",
           "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-09-04",
-          "tags": ["smb", "metasploit", "enumeration"],
+          "tags": [
+            "smb",
+            "metasploit",
+            "enumeration"
+          ],
           "difficulty": "Easy"
         }
       ]
@@ -44,7 +52,10 @@
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=PicoCTF",
           "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-07-18",
-          "tags": ["binary-exploitation", "ctf"],
+          "tags": [
+            "binary-exploitation",
+            "ctf"
+          ],
           "difficulty": "Medium"
         }
       ]
@@ -59,7 +70,10 @@
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFROOM",
           "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-10-02",
-          "tags": ["web", "sqli"],
+          "tags": [
+            "web",
+            "sqli"
+          ],
           "difficulty": "Easy"
         }
       ]
@@ -74,7 +88,10 @@
           "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Other+CTF",
           "mediumLink": "https://medium.com/",
           "dateCompleted": "2025-11-30",
-          "tags": ["incident-response", "siem"],
+          "tags": [
+            "incident-response",
+            "siem"
+          ],
           "difficulty": "Hard",
           "sourceSite": "Local CTF",
           "ctfName": "Kenya Cyber Drill"

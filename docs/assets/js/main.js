@@ -147,29 +147,48 @@ function renderGallery(gallery) {
 
 function renderResume(resume) {
   if (!resume || !$('resumeContent')) return;
-  const highlights = (resume.highlights || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-  const skills = (resume.skills || []).map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('');
+  const list = (items) => (items || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+  const skillTags = (items) => (items || []).map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('');
   const education = (resume.education || [])
-    .map(
-      (row) =>
-        `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span></li>`,
-    )
+    .map((row) => {
+      const details = row.details ? `<p class="meta">${escapeHtml(row.details)}</p>` : '';
+      return `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span>${details}</li>`;
+    })
     .join('');
-  const certs = (resume.certifications || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+  const experience = (resume.experience || [])
+    .map((row) => {
+      const details = list(row.details || []);
+      return `<li><strong>${escapeHtml(row.role || '')}</strong> - ${escapeHtml(row.organization || '')} <span class="meta">(${escapeHtml(row.period || '')})</span><ul>${details}</ul></li>`;
+    })
+    .join('');
 
   $('resumeContent').innerHTML = `
     <article class="research-item">
       <h3>${escapeHtml(resume.name || '')}</h3>
       <p class="meta">${escapeHtml(resume.title || '')}</p>
       <p>${escapeHtml(resume.summary || '')}</p>
+      <p><strong>Career Objective:</strong> ${escapeHtml(resume.objective || '')}</p>
       <h3>Highlights</h3>
-      <ul>${highlights}</ul>
-      <h3>Skills</h3>
-      <div class="tags">${skills}</div>
+      <ul>${list(resume.highlights)}</ul>
+      <h3>Technical Skills</h3>
+      <p class="meta">Cybersecurity & Networking</p>
+      <div class="tags">${skillTags(resume.skills?.cybersecurity_networking)}</div>
+      <p class="meta">Programming & Development</p>
+      <div class="tags">${skillTags(resume.skills?.programming_development)}</div>
+      <p class="meta">Systems & Tools</p>
+      <div class="tags">${skillTags(resume.skills?.systems_tools)}</div>
       <h3>Education</h3>
       <ul>${education}</ul>
+      <h3>Experience</h3>
+      <ul>${experience}</ul>
       <h3>Certifications</h3>
-      <ul>${certs}</ul>
+      <ul>${list(resume.certifications)}</ul>
+      <h3>Activities & Community</h3>
+      <ul>${list(resume.activities)}</ul>
+      <h3>Interests</h3>
+      <div class="tags">${skillTags(resume.interests)}</div>
+      <h3>References</h3>
+      <ul>${(resume.references || []).map((row) => `<li>${escapeHtml(row.name || '')} - ${escapeHtml(row.role || '')} (${escapeHtml(row.contact || '')})</li>`).join('')}</ul>
     </article>
   `;
 }
