@@ -237,6 +237,15 @@ body[data-theme='light'] .sidebar {
 
 .badge-block img { max-width: 100%; }
 
+.thm-badge-iframe {
+  width: 100%;
+  max-width: 420px;
+  min-height: 120px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+}
+
 .tags {
   display: flex;
   gap: 0.35rem;

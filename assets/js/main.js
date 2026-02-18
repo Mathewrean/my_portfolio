@@ -183,13 +183,17 @@ function renderChallenges() {
   });
 
   const badgeHtml =
-    state.activeChallengeTab === 'tryhackme' && isSafeExternalUrl(state.challenges.tryhackme.profileUrl)
+    state.activeChallengeTab === 'tryhackme'
       ? `
       <div class="badge-block">
         <p><strong>TryHackMe Profile Badge</strong></p>
-        <a href="${escapeHtml(state.challenges.tryhackme.profileUrl)}" target="_blank" rel="noopener noreferrer">
-          <img src="${escapeHtml(safeImage(state.challenges.tryhackme.badgeImage))}" alt="TryHackMe badge" loading="lazy" />
-        </a>
+        <iframe
+          class="thm-badge-iframe"
+          src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082"
+          title="TryHackMe public profile badge"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
       </div>`
       : '';
 
