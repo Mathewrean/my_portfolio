@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Mathewrean Otieno</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="sidebar-placeholder"></div>
+    <div class="container">
+        <section class="profile">
+            <img src="../assets/university_me.jpeg" alt="Mathewrean Otieno" class="profile-photo">
+            <h1>Mathew Otieno Magundho</h1>
+            <p>Computer Security & Forensics Student | Ethical Hacking & Pentesting Enthusiast | Network Security | CTF Player, M47H3WR34N @50c_574r2(soc_starz)r</p>
+        </section>
+        <section class="professional-statement">
+            <h2>Welcome to My Portfolio</h2>
+            <p>
+                I am a student pursuing a degree in Computer Security and Digital Forensics, with a strong foundation in computer operations that ignited my passion for cybersecurity.<br><br>
+                My interests include penetration testing, ethical hacking, and network security. I am actively gaining hands-on experience with cybersecurity tools and continuously expanding my expertise.<br><br>
+                I have also developed programming skills in Python and C/C++, allowing me to tackle challenges from both operational and development perspectives.<br><br>
+                Adaptable, analytical, and collaborative, I am a driven cybersecurity enthusiast eager to learn, grow, and contribute meaningfully to the tech industry.
+            </p>
+        </section>
+    </div>
+    <script>
+      fetch('sidebar-nav.html')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to load sidebar');
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById('sidebar-placeholder').innerHTML = data;
+          if (typeof initializeSidebar === 'function') {
+            initializeSidebar();
+          }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+</body>
+</html>
