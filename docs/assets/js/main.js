@@ -168,6 +168,7 @@ function renderResume(resume) {
       <p class="meta">${escapeHtml(resume.title || '')}</p>
       <p>${escapeHtml(resume.summary || '')}</p>
       <p><strong>Career Objective:</strong> ${escapeHtml(resume.objective || '')}</p>
+      ${resume.availability ? `<p><strong>Availability:</strong> ${escapeHtml(resume.availability)}</p>` : ''}
       <h3>Highlights</h3>
       <ul>${list(resume.highlights)}</ul>
       <h3>Technical Skills</h3>
