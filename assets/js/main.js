@@ -6,6 +6,7 @@ const state = {
   challengePlatform: '',
   collapsedPlatforms: new Set(),
 };
+const STATIC_DRAFT_KEY = 'portfolio_static_admin_v2';
 
 const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
 const PLATFORM_ORDER = ['TryHackMe', 'HackTheBox', 'PicoCTF', 'CTFROOM', 'CTFZone', 'Others'];
@@ -68,6 +69,35 @@ function setupThemeToggle() {
 }
 
 async function loadContent() {
+  const draftRaw = localStorage.getItem(STATIC_DRAFT_KEY);
+  if (draftRaw) {
+    try {
+      const draft = JSON.parse(draftRaw);
+      if (draft && Array.isArray(draft.challenges)) {
+        let resume = draft.resume || {};
+        if (!resume || !Object.keys(resume).length) {
+          try {
+            const resumeResponse = await fetch('data/resume.json');
+            if (resumeResponse.ok) resume = await resumeResponse.json();
+          } catch {
+            resume = {};
+          }
+        }
+        return {
+          site: draft.site || {},
+          resume,
+          challenges: { tryhackme: draft.site?.tryhackme || {}, challenges: draft.challenges || [] },
+          certificates: draft.certificates || [],
+          projects: draft.projects || [],
+          gallery: draft.gallery || [],
+          research: draft.research || [],
+        };
+      }
+    } catch (error) {
+      console.warn('Ignoring invalid static admin draft payload', error);
+    }
+  }
+
   try {
     const response = await fetch('/api/public/content');
     if (!response.ok) throw new Error('API unavailable');
@@ -365,6 +395,12 @@ function renderChallenges() {
       }
       renderChallenges();
     });
+  });
+
+  $('challengeList').querySelectorAll('.challenge-card img').forEach((img) => {
+    img.addEventListener('error', () => {
+      img.src = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Thumbnail+Missing';
+    }, { once: true });
   });
 
   const iframe = $('thmBadgeIframe');

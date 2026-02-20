@@ -358,6 +358,8 @@ function bindEvents() {
     if (!title) { toast('Title is required', 'error'); return; }
     const categories = collectChallengeCategories();
     if (!categories.length) { toast('Select at least one CTF category', 'error'); return; }
+    const thumbnailPath = $('challengeThumbnailPath').value.trim();
+    if (!thumbnailPath) { toast('Thumbnail path is required for challenge cards', 'error'); return; }
 
     const id = Number($('challengeId').value || 0) || uid();
     const item = normalizeChallenge({
@@ -365,7 +367,7 @@ function bindEvents() {
       title,
       platform: $('challengePlatform').value,
       description: $('challengeDescriptionEditor').innerText.trim(),
-      thumbnail: $('challengeThumbnailPath').value.trim(),
+      thumbnail: thumbnailPath,
       medium_link: $('challengeMedium').value.trim(),
       date_completed: $('challengeDate').value,
       categories,
@@ -380,7 +382,7 @@ function bindEvents() {
     populateChallengeSelects();
     resetChallengeForm();
     renderAllTables();
-    toast('Challenge saved');
+    toast('Challenge saved. For GitHub Pages, ensure the image exists in docs/assets/images/challenges/ and export challenges.json.');
   });
   $('challengeReset').addEventListener('click', resetChallengeForm);
 
