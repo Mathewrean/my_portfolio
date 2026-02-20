@@ -54,6 +54,14 @@ function uid() {
   return Date.now() + Math.floor(Math.random() * 1000);
 }
 
+function safeJsonParse(raw, fallback) {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+}
+
 async function sha256(value) {
   const bytes = new TextEncoder().encode(value);
   const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
@@ -219,13 +227,13 @@ function normalizeGallery(item) {
 async function loadStaticSeed() {
   const draft = localStorage.getItem(STATIC_DRAFT_KEY);
   if (draft) {
-    const parsed = JSON.parse(draft);
-    state.site = parsed.site;
-    state.cache.challenges = parsed.challenges.map(normalizeChallenge);
-    state.cache.certificates = parsed.certificates.map(normalizeCertificate);
-    state.cache.projects = parsed.projects.map(normalizeProject);
-    state.cache.research = parsed.research.map(normalizeResearch);
-    state.cache.gallery = parsed.gallery.map(normalizeGallery);
+    const parsed = safeJsonParse(draft, {});
+    state.site = parsed.site || state.site;
+    state.cache.challenges = (parsed.challenges || []).map(normalizeChallenge);
+    state.cache.certificates = (parsed.certificates || []).map(normalizeCertificate);
+    state.cache.projects = (parsed.projects || []).map(normalizeProject);
+    state.cache.research = (parsed.research || []).map(normalizeResearch);
+    state.cache.gallery = (parsed.gallery || []).map(normalizeGallery);
     state.challengeTotal = state.cache.challenges.length;
     return;
   }
@@ -294,9 +302,9 @@ function renderSimpleTable(tableId, kind, rows, rowBuilder) {
 }
 
 function rowActionButtons(kind, id, published) {
-  return `<button class="btn" data-edit="${kind}" data-id="${id}">Edit</button>
-  <button class="btn" data-toggle="${kind}" data-id="${id}">${published ? 'Unpublish' : 'Publish'}</button>
-  <button class="btn" data-delete="${kind}" data-id="${id}">Delete</button>`;
+  return `<button type="button" class="btn" data-edit="${kind}" data-id="${id}">Edit</button>
+  <button type="button" class="btn" data-toggle="${kind}" data-id="${id}">${published ? 'Unpublish' : 'Publish'}</button>
+  <button type="button" class="btn" data-delete="${kind}" data-id="${id}">Delete</button>`;
 }
 
 function renderChallenges() {
@@ -416,9 +424,7 @@ function galleryToForm(item) {
 }
 
 function bindTableActions() {
-  document.querySelectorAll('[data-edit]').forEach((btn) => btn.onclick = () => editItem(btn.dataset.edit, Number(btn.dataset.id)));
-  document.querySelectorAll('[data-delete]').forEach((btn) => btn.onclick = () => deleteItem(btn.dataset.delete, Number(btn.dataset.id)));
-  document.querySelectorAll('[data-toggle]').forEach((btn) => btn.onclick = () => toggleItem(btn.dataset.toggle, Number(btn.dataset.id)));
+  // Delegated click handler is bound once in bindEvents().
 }
 
 function editItem(kind, id) {
@@ -606,6 +612,23 @@ function bindEvents() {
   $('logoutBtn').addEventListener('click', showAuth);
   document.querySelectorAll('.admin-nav-btn').forEach((btn) => btn.addEventListener('click', () => setPanel(btn.dataset.panel)));
 
+  $('adminApp').addEventListener('click', async (event) => {
+    const btn = event.target.closest('button[data-edit],button[data-delete],button[data-toggle]');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    if (btn.dataset.edit) {
+      editItem(btn.dataset.edit, id);
+      return;
+    }
+    if (btn.dataset.delete) {
+      await deleteItem(btn.dataset.delete, id);
+      return;
+    }
+    if (btn.dataset.toggle) {
+      await toggleItem(btn.dataset.toggle, id);
+    }
+  });
+
   $('challengeFilterBtn').addEventListener('click', async () => {
     state.challengePage = 1;
     if (state.mode === 'api') {
@@ -623,7 +646,8 @@ function bindEvents() {
       const search = $('challengeSearch').value.trim().toLowerCase();
       const category = $('challengeCategoryFilter').value;
       const status = $('challengeStatusFilter').value;
-      const all = JSON.parse(localStorage.getItem(STATIC_DRAFT_KEY) || '{}').challenges || state.cache.challenges;
+      const parsed = safeJsonParse(localStorage.getItem(STATIC_DRAFT_KEY) || '{}', {});
+      const all = parsed.challenges || state.cache.challenges;
       const filtered = all.map(normalizeChallenge).filter((x) => {
         const okSearch = !search || x.title.toLowerCase().includes(search) || x.description.toLowerCase().includes(search) || (x.platform || '').toLowerCase().includes(search);
         const okCategory = !category || x.category === category;
