@@ -41,7 +41,10 @@
     <section class="admin-main">
       <header class="admin-topbar">
         <h2 id="panelTitle">Challenges</h2>
-        <button id="logoutBtn" class="btn">Logout</button>
+        <div style="display:flex; gap:.5rem; align-items:center;">
+          <span id="modeTag" class="tag">Mode</span>
+          <button id="logoutBtn" class="btn">Logout</button>
+        </div>
       </header>
 
       <div id="toast" class="toast" hidden></div>
@@ -178,6 +181,18 @@
             <label>TryHackMe badge image URL<input id="thmBadgeImage" type="url" /></label>
             <div class="full toolbar"><button class="btn btn-primary" type="submit">Save Site Settings</button></div>
           </form>
+        </details>
+
+        <details open class="admin-card"><summary>Static JSON Export (GitHub Pages)</summary>
+          <p class="muted">Use these buttons after editing forms in Static JSON Mode, then replace files in <code>docs/data/</code> and push to GitHub.</p>
+          <div class="toolbar">
+            <button id="downloadSiteJson" class="btn" type="button">Download site.json</button>
+            <button id="downloadChallengesJson" class="btn" type="button">Download challenges.json</button>
+            <button id="downloadCertificatesJson" class="btn" type="button">Download certificates.json</button>
+            <button id="downloadProjectsJson" class="btn" type="button">Download projects.json</button>
+            <button id="downloadResearchJson" class="btn" type="button">Download research.json</button>
+            <button id="downloadGalleryJson" class="btn" type="button">Download gallery.json</button>
+          </div>
         </details>
       </section>
     </section>
