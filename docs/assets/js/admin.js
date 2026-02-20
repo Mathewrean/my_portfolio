@@ -18,6 +18,7 @@ const state = {
   page: 1,
   pageSize: 8,
   filteredChallenges: [],
+  adminToken: '',
 };
 
 function $(id) { return document.getElementById(id); }
@@ -67,6 +68,38 @@ async function loadJSON(path) {
   const r = await fetch(path);
   if (!r.ok) throw new Error(`Failed to load ${path}`);
   return r.json();
+}
+
+async function tryBackendLogin(password) {
+  try {
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
+    if (!response.ok) return '';
+    const data = await response.json();
+    return data.token || '';
+  } catch {
+    return '';
+  }
+}
+
+async function uploadChallengeThumbnail(file) {
+  if (!state.adminToken || !file) return '';
+  const fd = new FormData();
+  fd.append('image', file);
+  const response = await fetch('/api/admin/static-upload/challenges', {
+    method: 'POST',
+    headers: { 'X-Admin-Token': state.adminToken },
+    body: fd,
+  });
+  const contentType = response.headers.get('content-type') || '';
+  const payload = contentType.includes('application/json') ? await response.json() : {};
+  if (!response.ok) {
+    throw new Error(payload.error || 'Thumbnail upload failed');
+  }
+  return payload.path || '';
 }
 
 function normalizeChallenge(c) {
@@ -335,6 +368,8 @@ function bindEvents() {
       $('authMessage').textContent = 'Invalid password.';
       return;
     }
+    state.adminToken = await tryBackendLogin(pass);
+    $('modeTag').textContent = state.adminToken ? 'Static JSON + Upload API' : 'Static JSON Mode';
     $('authMessage').textContent = '';
     showAdmin();
     renderAllTables();
@@ -347,10 +382,30 @@ function bindEvents() {
   $('challengePrev').addEventListener('click', () => { if (state.page > 1) { state.page -= 1; renderChallengesTable(); } });
   $('challengeNext').addEventListener('click', () => { state.page += 1; renderChallengesTable(); });
 
-  $('challengeThumbnail').addEventListener('change', () => {
+  $('challengeThumbnail').addEventListener('change', async () => {
     const f = $('challengeThumbnail').files[0];
-    $('challengeThumbnailPath').value = f ? `${IMG_BASE}${f.name}` : $('challengeThumbnailPath').value;
+    if (!f) {
+      renderChallengePreview();
+      return;
+    }
+    $('challengeThumbnailPath').value = `${IMG_BASE}${f.name}`;
     renderChallengePreview();
+
+    if (!state.adminToken) {
+      toast('Backend upload unavailable. File path set only; add file manually to docs/assets/images/challenges/.', 'error');
+      return;
+    }
+
+    try {
+      const uploadedPath = await uploadChallengeThumbnail(f);
+      if (uploadedPath) {
+        $('challengeThumbnailPath').value = uploadedPath;
+        renderChallengePreview();
+        toast(`Thumbnail uploaded: ${uploadedPath}`);
+      }
+    } catch (error) {
+      toast(error.message, 'error');
+    }
   });
 
   ['challengeTitle', 'challengePlatform', 'challengeDifficulty', 'challengeStatus', 'challengeDate', 'challengeMedium', 'challengePublished'].forEach((id) => {

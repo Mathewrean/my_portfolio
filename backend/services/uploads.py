@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 
 from ..config import (
     UPLOAD_ROOT,
+    DOCS_DIR,
     ALLOWED_IMAGE_EXTENSIONS,
     ALLOWED_DOC_EXTENSIONS,
 )
@@ -52,3 +53,22 @@ def save_many(file_storages, bucket: str, allow_docs: bool = False):
         if file_storage and file_storage.filename:
             paths.append(save_file(file_storage, bucket=bucket, allow_docs=allow_docs))
     return paths
+
+
+def save_static_image(file_storage, bucket: str = "challenges"):
+    if not file_storage or not file_storage.filename:
+        return ""
+
+    ext = _safe_ext(file_storage.filename)
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+        raise ValueError(f"Unsupported file type: {ext}")
+
+    safe_name = secure_filename(Path(file_storage.filename).stem)
+    unique_name = f"{safe_name}-{uuid4().hex[:12]}{ext}"
+
+    target_dir = DOCS_DIR / "assets" / "images" / bucket
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target_path = target_dir / unique_name
+    file_storage.save(target_path)
+
+    return f"assets/images/{bucket}/{unique_name}"

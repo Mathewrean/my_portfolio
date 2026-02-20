@@ -22,7 +22,7 @@ from .repository import (
     get_resume,
     update_resume,
 )
-from .services.uploads import ensure_upload_dirs, save_file, save_many
+from .services.uploads import ensure_upload_dirs, save_file, save_many, save_static_image
 from .services.auth import verify_password, issue_token, requires_auth
 
 
@@ -130,6 +130,18 @@ def create_app():
         if result is None:
             return jsonify({"error": "Not found"}), 404
         return jsonify({"published": result})
+
+    @app.post("/api/admin/static-upload/challenges")
+    @requires_auth
+    def admin_static_upload_challenge_image():
+        file_storage = request.files.get("image")
+        if not file_storage or not file_storage.filename:
+            return jsonify({"error": "Missing image file"}), 400
+        try:
+            path = save_static_image(file_storage, "challenges")
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
+        return jsonify({"path": path}), 201
 
     def register_simple_admin(resource, table, bucket, allow_docs=False):
         @requires_auth
