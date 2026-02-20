@@ -34,7 +34,6 @@
         <button class="admin-nav-btn" data-panel="projects">Projects</button>
         <button class="admin-nav-btn" data-panel="research">Research</button>
         <button class="admin-nav-btn" data-panel="gallery">Gallery</button>
-        <button class="admin-nav-btn" data-panel="blog">Blog</button>
         <button class="admin-nav-btn" data-panel="settings">Settings</button>
       </nav>
     </aside>
@@ -164,23 +163,6 @@
             <label>Image<input id="galleryImage" type="file" accept=".jpg,.jpeg,.png,.webp" required /></label>
             <label>Published<select id="galleryPublished"><option value="1">Yes</option><option value="0">No</option></select></label>
             <div class="full toolbar"><button class="btn btn-primary" type="submit">Save Gallery Item</button><button class="btn" type="button" id="galleryReset">Reset</button></div>
-          </form>
-        </details>
-      </section>
-
-      <section class="admin-panel" data-panel="blog">
-        <div class="table-wrap"><table><thead><tr><th>Title</th><th>Published At</th><th>Published</th><th>Actions</th></tr></thead><tbody id="blogTable"></tbody></table></div>
-        <details open class="admin-card"><summary>Add / Edit Blog</summary>
-          <form id="blogForm" class="form-grid" enctype="multipart/form-data">
-            <input type="hidden" id="blogId" />
-            <label>Title<input id="blogTitle" required /></label>
-            <label>Published date<input id="blogDate" type="date" /></label>
-            <label>External link<input id="blogLink" type="url" /></label>
-            <label>Cover/upload<input id="blogCover" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" /></label>
-            <label class="full">Excerpt<textarea id="blogExcerpt" rows="2"></textarea></label>
-            <label class="full">Content<textarea id="blogContent" rows="5"></textarea></label>
-            <label>Published<select id="blogPublished"><option value="1">Yes</option><option value="0">No</option></select></label>
-            <div class="full toolbar"><button class="btn btn-primary" type="submit">Save Blog</button><button class="btn" type="button" id="blogReset">Reset</button></div>
           </form>
         </details>
       </section>

@@ -10,9 +10,67 @@ const state = {
     projects: [],
     research: [],
     gallery: [],
-    blog: [],
   },
 };
+
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string' && value.trim()) {
+    return value.split(',').map((x) => x.trim()).filter(Boolean);
+  }
+  return [];
+}
+
+function normalizeChallenge(item) {
+  return {
+    ...item,
+    date_completed: item.date_completed || item.dateCompleted || '',
+    medium_link: item.medium_link || item.mediumLink || '',
+    github_link: item.github_link || item.githubLink || '',
+    live_link: item.live_link || item.liveLink || '',
+    source_site: item.source_site || item.sourceSite || '',
+    ctf_name: item.ctf_name || item.ctfName || '',
+    badge_thumbnail: item.badge_thumbnail || item.badgeThumbnail || '',
+    hero_image: item.hero_image || item.image || '',
+    tags: asArray(item.tags),
+  };
+}
+
+function normalizeCertificate(item) {
+  return {
+    ...item,
+    title: item.title || item.name || '',
+    issue_date: item.issue_date || item.date || '',
+    image_path: item.image_path || item.image || '',
+    verification_link: item.verification_link || item.verificationLink || '',
+    credential_id: item.credential_id || item.credentialId || '',
+  };
+}
+
+function normalizeProject(item) {
+  return {
+    ...item,
+    technologies: asArray(item.technologies),
+    github_link: item.github_link || item.github || '',
+    live_link: item.live_link || item.demo || '',
+    image_path: item.image_path || item.image || '',
+  };
+}
+
+function normalizeResearch(item) {
+  return {
+    ...item,
+    publication_date: item.publication_date || item.date || '',
+  };
+}
+
+function normalizeGallery(item) {
+  return {
+    ...item,
+    image_path: item.image_path || item.url || '',
+    event_date: item.event_date || item.date || '',
+  };
+}
 
 function $(id) {
   return document.getElementById(id);
@@ -163,20 +221,37 @@ async function loadChallenges() {
   if (status) params.set('status', status);
 
   const data = await api(`/api/admin/challenges?${params.toString()}`);
-  state.cache.challenges = data.items;
+  state.cache.challenges = (data.items || []).map(normalizeChallenge);
   state.challengeTotal = data.total;
   renderChallenges();
 }
 
 async function loadSimple(resource, key) {
-  state.cache[key] = await api(`/api/admin/${resource}`);
+  const rows = await api(`/api/admin/${resource}`);
+  if (key === 'certificates') {
+    state.cache[key] = (rows || []).map(normalizeCertificate);
+    return;
+  }
+  if (key === 'projects') {
+    state.cache[key] = (rows || []).map(normalizeProject);
+    return;
+  }
+  if (key === 'research') {
+    state.cache[key] = (rows || []).map(normalizeResearch);
+    return;
+  }
+  if (key === 'gallery') {
+    state.cache[key] = (rows || []).map(normalizeGallery);
+    return;
+  }
+  state.cache[key] = rows || [];
 }
 
 function renderAllTables() {
   renderChallenges();
 
   renderSimpleTable('certTable', 'certificate', state.cache.certificates, (item) => `
-    <tr><td>${safe(item.title)}</td><td>${safe(item.issuer)}</td><td>${safe(item.issue_date || '')}</td><td>${item.published ? 'Yes' : 'No'}</td><td>${rowActionButtons('certificate', item.id, item.published)}</td></tr>
+    <tr><td>${safe(item.title)}</td><td>${safe(item.issuer)}</td><td>${safe(item.issue_date || item.date || '')}</td><td>${item.published ? 'Yes' : 'No'}</td><td>${rowActionButtons('certificate', item.id, item.published)}</td></tr>
   `);
 
   renderSimpleTable('projectsTable', 'project', state.cache.projects, (item) => `
@@ -191,10 +266,6 @@ function renderAllTables() {
     <tr><td>${safe(item.caption || '')}</td><td>${safe(item.event_date || '')}</td><td>${item.published ? 'Yes' : 'No'}</td><td>${rowActionButtons('gallery', item.id, item.published)}</td></tr>
   `);
 
-  renderSimpleTable('blogTable', 'blog', state.cache.blog, (item) => `
-    <tr><td>${safe(item.title)}</td><td>${safe(item.published_at || '')}</td><td>${item.published ? 'Yes' : 'No'}</td><td>${rowActionButtons('blog', item.id, item.published)}</td></tr>
-  `);
-
   bindTableActions();
 }
 
@@ -205,7 +276,6 @@ async function refreshAll() {
     loadSimple('projects', 'projects'),
     loadSimple('research', 'research'),
     loadSimple('gallery', 'gallery'),
-    loadSimple('blog', 'blog'),
   ]);
 
   const settings = await api('/api/admin/settings');
@@ -228,7 +298,7 @@ function challengeToForm(item) {
   $('challengeDifficulty').value = item.difficulty || '';
   $('challengeStatus').value = item.status || 'Completed';
   $('challengeDate').value = item.date_completed || '';
-  $('challengeTags').value = (item.tags || []).join(', ');
+  $('challengeTags').value = asArray(item.tags).join(', ');
   $('challengeMedium').value = item.medium_link || '';
   $('challengeGithub').value = item.github_link || '';
   $('challengeLive').value = item.live_link || '';
@@ -248,9 +318,9 @@ function certificateToForm(item) {
   $('certId').value = item.id;
   $('certTitle').value = item.title || '';
   $('certIssuer').value = item.issuer || '';
-  $('certDate').value = item.issue_date || '';
-  $('certCredential').value = item.credential_id || '';
-  $('certVerify').value = item.verification_link || '';
+  $('certDate').value = item.issue_date || item.date || '';
+  $('certCredential').value = item.credential_id || item.credentialId || '';
+  $('certVerify').value = item.verification_link || item.verificationLink || '';
   $('certPublished').value = item.published ? '1' : '0';
 }
 
@@ -258,9 +328,9 @@ function projectToForm(item) {
   $('projectId').value = item.id;
   $('projectTitle').value = item.title || '';
   $('projectDescription').value = item.description || '';
-  $('projectTech').value = (item.technologies || []).join(', ');
-  $('projectGithub').value = item.github_link || '';
-  $('projectLive').value = item.live_link || '';
+  $('projectTech').value = asArray(item.technologies).join(', ');
+  $('projectGithub').value = item.github_link || item.github || '';
+  $('projectLive').value = item.live_link || item.demo || '';
   $('projectPublished').value = item.published ? '1' : '0';
 }
 
@@ -268,7 +338,7 @@ function researchToForm(item) {
   $('researchId').value = item.id;
   $('researchTitle').value = item.title || '';
   $('researchDescription').value = item.description || '';
-  $('researchDate').value = item.publication_date || '';
+  $('researchDate').value = item.publication_date || item.date || '';
   $('researchLink').value = item.link || '';
   $('researchPublished').value = item.published ? '1' : '0';
 }
@@ -276,18 +346,8 @@ function researchToForm(item) {
 function galleryToForm(item) {
   $('galleryId').value = item.id;
   $('galleryCaption').value = item.caption || '';
-  $('galleryDate').value = item.event_date || '';
+  $('galleryDate').value = item.event_date || item.date || '';
   $('galleryPublished').value = item.published ? '1' : '0';
-}
-
-function blogToForm(item) {
-  $('blogId').value = item.id;
-  $('blogTitle').value = item.title || '';
-  $('blogDate').value = item.published_at || '';
-  $('blogLink').value = item.link || '';
-  $('blogExcerpt').value = item.excerpt || '';
-  $('blogContent').value = item.content || '';
-  $('blogPublished').value = item.published ? '1' : '0';
 }
 
 function editItem(kind, id) {
@@ -305,7 +365,6 @@ function editItem(kind, id) {
     project: ['projects', projectToForm, 'projects'],
     research: ['research', researchToForm, 'research'],
     gallery: ['gallery', galleryToForm, 'gallery'],
-    blog: ['blog', blogToForm, 'blog'],
   };
   const map = maps[kind];
   if (!map) return;
@@ -325,7 +384,6 @@ async function deleteItem(kind, id) {
     project: 'projects',
     research: 'research',
     gallery: 'gallery',
-    blog: 'blog',
   };
   const resource = map[kind];
   await api(`/api/admin/${resource}/${id}`, { method: 'DELETE' });
@@ -340,7 +398,6 @@ async function toggleItem(kind, id) {
     project: 'projects',
     research: 'research',
     gallery: 'gallery',
-    blog: 'blog',
   };
   const resource = map[kind];
   await api(`/api/admin/${resource}/${id}/toggle`, { method: 'POST' });
@@ -529,29 +586,6 @@ function bindEvents() {
     }
   });
   $('galleryReset').addEventListener('click', () => { $('galleryForm').reset(); $('galleryId').value = ''; });
-
-  $('blogForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    try {
-      const fd = new FormData();
-      fd.append('title', $('blogTitle').value.trim());
-      fd.append('excerpt', $('blogExcerpt').value.trim());
-      fd.append('content', $('blogContent').value.trim());
-      fd.append('published_at', $('blogDate').value);
-      fd.append('link', $('blogLink').value.trim());
-      fd.append('published', $('blogPublished').value);
-      if ($('blogCover').files[0]) fd.append('cover', $('blogCover').files[0]);
-      const id = $('blogId').value;
-      await api(id ? `/api/admin/blog/${id}` : '/api/admin/blog', { method: id ? 'PUT' : 'POST', body: fd });
-      $('blogForm').reset();
-      $('blogId').value = '';
-      toast('Blog entry saved');
-      await refreshAll();
-    } catch (error) {
-      toast(error.message, 'error');
-    }
-  });
-  $('blogReset').addEventListener('click', () => { $('blogForm').reset(); $('blogId').value = ''; });
 
   $('siteSettingsForm').addEventListener('submit', async (event) => {
     event.preventDefault();
