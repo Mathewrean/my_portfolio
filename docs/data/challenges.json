@@ -78,6 +78,26 @@
         }
       ]
     },
+    "ctfzone": {
+      "label": "CTFZone",
+      "description": "Challenge walkthroughs and labs from CTFZone events and practice sets.",
+      "entries": [
+        {
+          "title": "CTFZone Starter Challenge",
+          "description": "Initial CTFZone challenge placeholder for your upcoming writeup entries.",
+          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone",
+          "mediumLink": "https://medium.com/",
+          "dateCompleted": "2026-02-18",
+          "tags": [
+            "ctf",
+            "practice"
+          ],
+          "difficulty": "Medium",
+          "sourceSite": "CTFZone",
+          "ctfName": "CTFZone Practice"
+        }
+      ]
+    },
     "others": {
       "label": "Others",
       "description": "Custom entries from any CTF or challenge source.",
