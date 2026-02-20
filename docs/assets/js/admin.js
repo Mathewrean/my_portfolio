@@ -1,6 +1,6 @@
 const entries = [];
 const adminSessionKey = 'portfolio_admin_unlocked';
-const adminPassHash = '46fcb51516fd216f3e01845e73f5127f4635eebf942ed4a3fd16b0ecf66f93d6';
+const adminPassHash = 'd9493bb755938219730159f498106289738e5bb6ee443a8466df328ad3a630ea';
 
 function $(id) {
   return document.getElementById(id);
