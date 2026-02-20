@@ -76,9 +76,18 @@
 
     <section class="view-section" data-view="challenges">
       <h2>Challenges</h2>
+      <div id="challengeFilters" class="challenge-filters">
+        <label>Platform
+          <select id="challengePlatformFilter"></select>
+        </label>
+        <label>Category
+          <select id="challengeCategoryFilter"></select>
+        </label>
+        <button id="clearChallengeFilters" class="btn" type="button">Clear Filters</button>
+      </div>
       <div id="challengeTabs" class="tabs"></div>
       <div id="challengeIntro" class="challenge-intro"></div>
-      <div id="challengeList" class="grid"></div>
+      <div id="challengeList" class="stack"></div>
     </section>
 
     <section class="view-section" data-view="contact">

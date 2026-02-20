@@ -4,6 +4,7 @@ const state = {
   challenges: [],
   challengeCategory: 'All',
   challengePlatform: '',
+  collapsedPlatforms: new Set(),
 };
 
 const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
@@ -134,6 +135,17 @@ function normalizeChallenges(challengesData) {
   return flat;
 }
 
+function sortPlatforms(values) {
+  return [...values].sort((a, b) => {
+    const ia = PLATFORM_ORDER.indexOf(a);
+    const ib = PLATFORM_ORDER.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+}
+
 function renderSiteMeta(site) {
   $('heroTitle').textContent = site.heroTitle || '';
   $('heroSummary').textContent = site.heroSummary || '';
@@ -231,35 +243,47 @@ function getGroupedChallenges() {
     groups[c.platform].push(c);
   });
 
-  const orderedKeys = Object.keys(groups).sort((a, b) => {
-    const ia = PLATFORM_ORDER.indexOf(a);
-    const ib = PLATFORM_ORDER.indexOf(b);
-    if (ia === -1 && ib === -1) return a.localeCompare(b);
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
-  });
+  const orderedKeys = sortPlatforms(Object.keys(groups));
   return { groups, orderedKeys };
 }
 
 function renderChallengePlatformMenu() {
   const submenu = $('challengeSubmenu');
   if (!submenu) return;
-  const platforms = Array.from(new Set(state.challenges.map((c) => c.platform))).sort((a, b) => {
-    const ia = PLATFORM_ORDER.indexOf(a);
-    const ib = PLATFORM_ORDER.indexOf(b);
-    if (ia === -1 && ib === -1) return a.localeCompare(b);
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
-  });
+  const platforms = sortPlatforms(new Set(state.challenges.map((c) => c.platform)));
   submenu.innerHTML = platforms.map((p) => `<button class="nav-sublink ${state.challengePlatform === p ? 'active' : ''}" data-platform="${escapeHtml(p)}">${escapeHtml(p)}</button>`).join('');
   submenu.querySelectorAll('[data-platform]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.challengePlatform = btn.dataset.platform;
+      state.collapsedPlatforms.clear();
       setActiveView('challenges');
     });
   });
+}
+
+function renderChallengeFilters() {
+  const platformSelect = $('challengePlatformFilter');
+  const categorySelect = $('challengeCategoryFilter');
+  if (!platformSelect || !categorySelect) return;
+
+  const platformOptions = sortPlatforms(new Set(state.challenges.map((c) => c.platform)));
+  const categorySet = new Set();
+  state.challenges.forEach((challenge) => {
+    (challenge.categories || []).forEach((category) => categorySet.add(category));
+  });
+  const categories = CATEGORY_OPTIONS.filter((x) => categorySet.has(x)).concat(
+    [...categorySet].filter((x) => !CATEGORY_OPTIONS.includes(x)).sort((a, b) => a.localeCompare(b)),
+  );
+
+  platformSelect.innerHTML = `<option value="">All Platforms</option>${platformOptions
+    .map((p) => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`)
+    .join('')}`;
+  categorySelect.innerHTML = `<option value="All">All Categories</option>${categories
+    .map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
+    .join('')}`;
+
+  platformSelect.value = state.challengePlatform || '';
+  categorySelect.value = state.challengeCategory || 'All';
 }
 
 function challengeCard(entry) {
@@ -278,14 +302,22 @@ function challengeCard(entry) {
 }
 
 function renderChallenges() {
-  const allCategories = Array.from(new Set(state.challenges.flatMap((c) => c.categories || []))).filter(Boolean);
-  const orderedCategories = CATEGORY_OPTIONS.filter((x) => allCategories.includes(x)).concat(allCategories.filter((x) => !CATEGORY_OPTIONS.includes(x)));
-  $('challengeTabs').innerHTML = ['All', ...orderedCategories]
-    .map((cat) => `<button class="tab-btn ${state.challengeCategory === cat ? 'active' : ''}" data-cat="${escapeHtml(cat)}" type="button">${escapeHtml(cat)}</button>`)
+  renderChallengeFilters();
+  const quickPlatforms = ['All Platforms', ...sortPlatforms(new Set(state.challenges.map((c) => c.platform)))];
+  $('challengeTabs').innerHTML = quickPlatforms
+    .map((platformLabel) => {
+      const isActive = platformLabel === 'All Platforms'
+        ? !state.challengePlatform
+        : state.challengePlatform === platformLabel;
+      return `<button class="tab-btn ${isActive ? 'active' : ''}" data-platform-tab="${escapeHtml(platformLabel)}" type="button">${escapeHtml(platformLabel)}</button>`;
+    })
     .join('');
-  $('challengeTabs').querySelectorAll('[data-cat]').forEach((btn) => {
+  $('challengeTabs').querySelectorAll('[data-platform-tab]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      state.challengeCategory = btn.dataset.cat;
+      const selected = btn.dataset.platformTab;
+      state.challengePlatform = selected === 'All Platforms' ? '' : selected;
+      renderChallengePlatformMenu();
+      renderChallengeFilters();
       renderChallenges();
     });
   });
@@ -308,14 +340,32 @@ function renderChallenges() {
     const badgeBlock = platform === 'TryHackMe'
       ? `<div class="badge-block"><p><strong>TryHackMe Profile Badge</strong></p><div id="thmBadgeMount"><iframe id="thmBadgeIframe" class="thm-badge-iframe" src="${escapeHtml(thmEmbed)}" title="TryHackMe public profile badge" loading="lazy"></iframe></div><p>${linkButton('Open TryHackMe Profile', thmProfile)}</p></div>`
       : '';
+    const collapsed = state.collapsedPlatforms.has(platform);
     return `
-      <section class="stack" style="margin-bottom:1.2rem;">
-        <h3>${escapeHtml(platform)}</h3>
-        ${badgeBlock}
-        <div class="grid">${groups[platform].map((entry) => challengeCard(entry)).join('')}</div>
+      <section class="challenge-section ${collapsed ? 'collapsed' : ''}" data-platform-section="${escapeHtml(platform)}">
+        <button class="challenge-section-toggle" data-toggle-platform="${escapeHtml(platform)}" type="button" aria-expanded="${collapsed ? 'false' : 'true'}">
+          <span>${escapeHtml(platform)}</span>
+          <span class="chevron" aria-hidden="true">▾</span>
+        </button>
+        <div class="challenge-section-body">
+          ${badgeBlock}
+          <div class="challenge-grid">${groups[platform].map((entry) => challengeCard(entry)).join('')}</div>
+        </div>
       </section>
     `;
   }).join('');
+
+  $('challengeList').querySelectorAll('[data-toggle-platform]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const platform = btn.dataset.togglePlatform;
+      if (state.collapsedPlatforms.has(platform)) {
+        state.collapsedPlatforms.delete(platform);
+      } else {
+        state.collapsedPlatforms.add(platform);
+      }
+      renderChallenges();
+    });
+  });
 
   const iframe = $('thmBadgeIframe');
   const mount = $('thmBadgeMount');
@@ -330,6 +380,7 @@ function setActiveView(view) {
   state.activeView = view;
   document.querySelectorAll('.view-section').forEach((section) => section.classList.toggle('active', section.dataset.view === view));
   document.querySelectorAll('.nav-link').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
+  document.querySelectorAll('.nav-sublink').forEach((button) => button.classList.toggle('active', button.dataset.platform === state.challengePlatform));
   if (view === 'challenges') renderChallenges();
 }
 
@@ -337,6 +388,7 @@ function setupNavigation() {
   document.querySelectorAll('.nav-link[data-view]').forEach((btn) => btn.addEventListener('click', () => setActiveView(btn.dataset.view)));
   $('challengeGroupToggle').addEventListener('click', () => {
     state.challengePlatform = '';
+    state.collapsedPlatforms.clear();
     setActiveView('challenges');
   });
 
@@ -345,6 +397,34 @@ function setupNavigation() {
   if (mobileToggle && sidebarNav) {
     mobileToggle.addEventListener('click', () => sidebarNav.classList.toggle('open'));
   }
+}
+
+function setupChallengeFilters() {
+  const platformSelect = $('challengePlatformFilter');
+  const categorySelect = $('challengeCategoryFilter');
+  const clearBtn = $('clearChallengeFilters');
+  if (!platformSelect || !categorySelect || !clearBtn) return;
+
+  platformSelect.addEventListener('change', () => {
+    state.challengePlatform = platformSelect.value;
+    state.collapsedPlatforms.clear();
+    renderChallengePlatformMenu();
+    renderChallenges();
+  });
+
+  categorySelect.addEventListener('change', () => {
+    state.challengeCategory = categorySelect.value || 'All';
+    renderChallenges();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    state.challengePlatform = '';
+    state.challengeCategory = 'All';
+    state.collapsedPlatforms.clear();
+    renderChallengePlatformMenu();
+    renderChallengeFilters();
+    renderChallenges();
+  });
 }
 
 function setupDialog() {
@@ -359,7 +439,9 @@ function setupDialog() {
   try {
     state.content = await loadContent();
     state.challenges = normalizeChallenges(state.content.challenges || {});
+    renderChallengeFilters();
     renderChallengePlatformMenu();
+    setupChallengeFilters();
 
     renderSiteMeta(state.content.site || {});
     renderResume(state.content.resume || {});
