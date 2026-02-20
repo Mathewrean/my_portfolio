@@ -52,51 +52,62 @@
       <section class="admin-panel active" data-panel="challenges">
         <div class="toolbar">
           <input id="challengeSearch" type="search" placeholder="Search challenges" />
+          <select id="challengePlatformFilter">
+            <option value="">All platforms</option>
+          </select>
           <select id="challengeCategoryFilter">
             <option value="">All categories</option>
-            <option value="tryhackme">TryHackMe</option>
-            <option value="hackthebox">HackTheBox</option>
-            <option value="picoctf">PicoCTF</option>
-            <option value="ctfroom">CTFROOM</option>
-            <option value="ctfzone">CTFZone</option>
-            <option value="others">Others</option>
-          </select>
-          <select id="challengeStatusFilter">
-            <option value="">All status</option>
-            <option value="Completed">Completed</option>
-            <option value="Ongoing">Ongoing</option>
           </select>
           <button id="challengeFilterBtn" class="btn">Apply</button>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Difficulty</th><th>Published</th><th>Actions</th></tr></thead><tbody id="challengesTable"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>Title</th><th>Platform</th><th>Categories</th><th>Status</th><th>Published</th><th>Actions</th></tr></thead><tbody id="challengesTable"></tbody></table></div>
         <div class="toolbar"><button id="challengePrev" class="btn">Prev</button><span id="challengePageInfo" class="muted"></span><button id="challengeNext" class="btn">Next</button></div>
 
         <details open class="admin-card"><summary>Add / Edit Challenge</summary>
           <form id="challengeForm" class="form-grid" enctype="multipart/form-data">
             <input type="hidden" id="challengeId" />
             <label>Title<input id="challengeTitle" required /></label>
-            <label>Category
-              <select id="challengeCategory" required>
-                <option value="tryhackme">TryHackMe</option><option value="hackthebox">HackTheBox</option><option value="picoctf">PicoCTF</option><option value="ctfroom">CTFROOM</option><option value="ctfzone">CTFZone</option><option value="others">Others</option>
+            <label>Platform
+              <select id="challengePlatform" required>
+                <option value="TryHackMe">TryHackMe</option>
+                <option value="HackTheBox">HackTheBox</option>
+                <option value="PicoCTF">PicoCTF</option>
+                <option value="CTFROOM">CTFROOM</option>
+                <option value="CTFZone">CTFZone</option>
+                <option value="Others">Others</option>
+                <option value="CyberDefenders">CyberDefenders</option>
+                <option value="Root-Me">Root-Me</option>
+                <option value="OverTheWire">OverTheWire</option>
+                <option value="VulnHub">VulnHub</option>
+                <option value="PortSwigger Labs">PortSwigger Labs</option>
+                <option value="RingZer0">RingZer0</option>
+                <option value="HackThisSite">HackThisSite</option>
+                <option value="CTFtime Events">CTFtime Events</option>
               </select>
             </label>
-            <label>Platform<input id="challengePlatform" placeholder="CTFZone" /></label>
             <label>Difficulty<input id="challengeDifficulty" placeholder="Easy/Medium/Hard" /></label>
             <label>Status<select id="challengeStatus"><option>Completed</option><option>Ongoing</option></select></label>
             <label>Date completed<input id="challengeDate" type="date" /></label>
-            <label>Tags (comma separated)<input id="challengeTags" /></label>
+            <label class="full">CTF Categories</label>
+            <div id="challengeCategoryChecks" class="tags full">
+              <label class="tag"><input type="checkbox" value="Web" /> Web</label>
+              <label class="tag"><input type="checkbox" value="Pwn" /> Pwn</label>
+              <label class="tag"><input type="checkbox" value="Crypto" /> Crypto</label>
+              <label class="tag"><input type="checkbox" value="Reverse Engineering" /> Reverse Engineering</label>
+              <label class="tag"><input type="checkbox" value="Forensics" /> Forensics</label>
+              <label class="tag"><input type="checkbox" value="OSINT" /> OSINT</label>
+              <label class="tag"><input type="checkbox" value="Misc" /> Misc</label>
+            </div>
             <label>Medium link<input id="challengeMedium" type="url" /></label>
-            <label>GitHub link<input id="challengeGithub" type="url" /></label>
-            <label>Live link<input id="challengeLive" type="url" /></label>
-            <label>Source site (others)<input id="challengeSource" /></label>
-            <label>CTF name<input id="challengeCtfName" /></label>
             <label class="full">Description (Rich text)
               <div id="challengeDescriptionEditor" class="rich-editor" contenteditable="true"></div>
             </label>
-            <label>Badge thumbnail<input id="challengeBadge" type="file" accept=".jpg,.jpeg,.png,.webp" /></label>
-            <label>Main image<input id="challengeImage" type="file" accept=".jpg,.jpeg,.png,.webp" /></label>
-            <label>Screenshots (multiple)<input id="challengeScreens" type="file" multiple accept=".jpg,.jpeg,.png,.webp" /></label>
-            <label>Attachments<input id="challengeAttachments" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" /></label>
+            <label>Thumbnail image<input id="challengeThumbnail" type="file" accept=".jpg,.jpeg,.png,.webp" /></label>
+            <label>Thumbnail JSON path<input id="challengeThumbnailPath" type="text" readonly /></label>
+            <div class="full card">
+              <p class="meta">Live Preview</p>
+              <div id="challengePreview"></div>
+            </div>
             <label>Published<select id="challengePublished"><option value="1">Yes</option><option value="0">No</option></select></label>
             <div class="full toolbar">
               <button class="btn btn-primary" type="submit">Save Challenge</button>

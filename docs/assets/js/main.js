@@ -1,12 +1,15 @@
 const state = {
   activeView: 'home',
-  activeChallengeTab: 'tryhackme',
   content: null,
+  challenges: [],
+  challengeCategory: 'All',
+  challengePlatform: '',
 };
 
-function $(id) {
-  return document.getElementById(id);
-}
+const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
+const PLATFORM_ORDER = ['TryHackMe', 'HackTheBox', 'PicoCTF', 'CTFROOM', 'CTFZone', 'Others'];
+
+function $(id) { return document.getElementById(id); }
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -15,6 +18,26 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
+}
+
+function safeImage(url, fallback = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Add+Image') {
+  return url && String(url).trim() ? String(url) : fallback;
+}
+
+function canonicalPlatform(value) {
+  const v = String(value || '').trim().toLowerCase();
+  const map = {
+    tryhackme: 'TryHackMe',
+    'try hack me': 'TryHackMe',
+    hackthebox: 'HackTheBox',
+    htb: 'HackTheBox',
+    picoctf: 'PicoCTF',
+    ctfroom: 'CTFROOM',
+    ctfzone: 'CTFZone',
+    others: 'Others',
+    other: 'Others',
+  };
+  return map[v] || (value ? String(value).trim() : 'Others');
 }
 
 function isSafeExternalUrl(raw) {
@@ -28,14 +51,8 @@ function isSafeExternalUrl(raw) {
 }
 
 function linkButton(label, href) {
-  if (!isSafeExternalUrl(href)) {
-    return `<span class="btn" aria-disabled="true">${escapeHtml(label)} (pending)</span>`;
-  }
+  if (!isSafeExternalUrl(href)) return '';
   return `<a class="btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
-}
-
-function safeImage(url, fallback = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Add+Image') {
-  return url && String(url).trim() ? String(url) : fallback;
 }
 
 function setTheme(theme) {
@@ -46,17 +63,39 @@ function setTheme(theme) {
 function setupThemeToggle() {
   const saved = localStorage.getItem('portfolioTheme') || 'dark';
   setTheme(saved);
-  $('themeToggle').addEventListener('click', () => {
-    const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-  });
+  $('themeToggle').addEventListener('click', () => setTheme(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 }
 
 async function loadContent() {
   try {
     const response = await fetch('/api/public/content');
     if (!response.ok) throw new Error('API unavailable');
-    return await response.json();
+    const data = await response.json();
+    if (!data.challenges?.challenges) {
+      const old = data.challenges || {};
+      const flat = [];
+      Object.entries(old.categories || {}).forEach(([key, cat]) => {
+        (cat.entries || []).forEach((entry, i) => {
+          flat.push({
+            id: entry.id || `${key}-${i + 1}`,
+            title: entry.title || '',
+            platform: canonicalPlatform(entry.platform || cat.label || key),
+            description: entry.description || '',
+            thumbnail: entry.thumbnail || entry.image || '',
+            medium_link: entry.medium_link || entry.mediumLink || '',
+            date_completed: entry.date_completed || entry.dateCompleted || '',
+            categories: Array.isArray(entry.categories) ? entry.categories : (entry.tags || []),
+            difficulty: entry.difficulty || '',
+            status: entry.status || 'Completed',
+            source_site: entry.source_site || entry.sourceSite || '',
+            ctf_name: entry.ctf_name || entry.ctfName || '',
+            published: entry.published !== false,
+          });
+        });
+      });
+      data.challenges = { tryhackme: old.tryhackme || {}, challenges: flat };
+    }
+    return data;
   } catch {
     const loadJSON = async (path) => {
       const res = await fetch(path);
@@ -72,8 +111,27 @@ async function loadContent() {
       loadJSON('data/gallery.json'),
       loadJSON('data/research.json'),
     ]);
-    return { site, resume, challenges, certificates, projects, gallery, research, blog: [] };
+    return { site, resume, challenges, certificates, projects, gallery, research };
   }
+}
+
+function normalizeChallenges(challengesData) {
+  const flat = (challengesData?.challenges || []).map((c, idx) => ({
+    id: c.id || idx + 1,
+    title: c.title || '',
+    platform: canonicalPlatform(c.platform),
+    description: c.description || '',
+    thumbnail: c.thumbnail || c.image || '',
+    medium_link: c.medium_link || c.mediumLink || '',
+    date_completed: c.date_completed || c.dateCompleted || '',
+    categories: (Array.isArray(c.categories) ? c.categories : (c.tags || [])).map((x) => String(x).trim()).filter(Boolean),
+    difficulty: c.difficulty || '',
+    status: c.status || 'Completed',
+    source_site: c.source_site || c.sourceSite || '',
+    ctf_name: c.ctf_name || c.ctfName || '',
+    published: c.published !== false,
+  }));
+  return flat;
 }
 
 function renderSiteMeta(site) {
@@ -84,214 +142,187 @@ function renderSiteMeta(site) {
 }
 
 function renderCertificates(certificates) {
-  $('certificatesGrid').innerHTML = (certificates || [])
-    .map(
-      (cert, index) => `
-      <article class="card">
-        <img src="${escapeHtml(safeImage(cert.image || cert.image_path))}" alt="${escapeHtml(cert.title || cert.name || 'Certificate')}" loading="lazy" />
-        <h3>${escapeHtml(cert.title || cert.name || 'Certificate')}</h3>
-        <p class="meta">${escapeHtml(cert.issuer || 'Issuer')} • ${escapeHtml(cert.date || cert.issue_date || 'Date')}</p>
-        <button class="btn" data-cert-index="${index}">View Full Certificate</button>
-      </article>
-    `,
-    )
-    .join('');
+  $('certificatesGrid').innerHTML = (certificates || []).map((cert, i) => `
+    <article class="card">
+      <img src="${escapeHtml(safeImage(cert.image || cert.image_path))}" alt="${escapeHtml(cert.title || cert.name || 'Certificate')}" loading="lazy" />
+      <h3>${escapeHtml(cert.title || cert.name || 'Certificate')}</h3>
+      <p class="meta">${escapeHtml(cert.issuer || 'Issuer')} • ${escapeHtml(cert.date || cert.issue_date || '')}</p>
+      <button class="btn" data-cert-index="${i}" type="button">View Full Certificate</button>
+    </article>
+  `).join('');
 
   $('certificatesGrid').querySelectorAll('[data-cert-index]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const cert = certificates[Number(btn.dataset.certIndex)] || {};
       $('dialogImage').src = safeImage(cert.image || cert.image_path);
-      $('dialogMeta').textContent = `${cert.title || cert.name || 'Certificate'} | ${cert.issuer || 'Issuer'} | ${cert.date || cert.issue_date || 'Date'}`;
+      $('dialogMeta').textContent = `${cert.title || cert.name || 'Certificate'} | ${cert.issuer || 'Issuer'} | ${cert.date || cert.issue_date || ''}`;
       $('certificateDialog').showModal();
     });
   });
 }
 
 function renderProjects(projects) {
-  $('projectsGrid').innerHTML = (projects || [])
-    .map(
-      (project) => `
-      <article class="card">
-        <img src="${escapeHtml(safeImage(project.image || project.image_path))}" alt="${escapeHtml(project.title || 'Project')}" loading="lazy" />
-        <h3>${escapeHtml(project.title || 'Project')}</h3>
-        <p>${escapeHtml(project.description || '')}</p>
-        <p class="meta">Tech: ${escapeHtml((project.technologies || []).join(', '))}</p>
-        <p>${linkButton('GitHub', project.github || project.github_link)} ${linkButton('Live Demo', project.demo || project.live_link)}</p>
-      </article>
-    `,
-    )
-    .join('');
+  $('projectsGrid').innerHTML = (projects || []).map((p) => `
+    <article class="card">
+      <img src="${escapeHtml(safeImage(p.image || p.image_path))}" alt="${escapeHtml(p.title || 'Project')}" loading="lazy" />
+      <h3>${escapeHtml(p.title || 'Project')}</h3>
+      <p>${escapeHtml(p.description || '')}</p>
+      <p class="meta">Tech: ${escapeHtml((p.technologies || []).join(', '))}</p>
+      <p>${linkButton('GitHub', p.github || p.github_link)} ${linkButton('Live Demo', p.demo || p.live_link)}</p>
+    </article>
+  `).join('');
 }
 
 function renderResearch(research) {
-  $('researchList').innerHTML = (research || [])
-    .map(
-      (item) => `
-      <article class="research-item">
-        <h3>${escapeHtml(item.title || 'Research')}</h3>
-        <p>${escapeHtml(item.description || '')}</p>
-        <p class="meta">Published: ${escapeHtml(item.date || item.publication_date || '')}</p>
-        ${linkButton('View / Download', item.link || '')}
-      </article>
-    `,
-    )
-    .join('');
+  $('researchList').innerHTML = (research || []).map((r) => `
+    <article class="research-item">
+      <h3>${escapeHtml(r.title || 'Research')}</h3>
+      <p>${escapeHtml(r.description || '')}</p>
+      <p class="meta">Published: ${escapeHtml(r.date || r.publication_date || '')}</p>
+      ${linkButton('View / Download', r.link || '')}
+    </article>
+  `).join('');
 }
 
 function renderGallery(gallery) {
-  $('galleryGrid').innerHTML = (gallery || [])
-    .map(
-      (image) => `
-      <article class="card">
-        <img src="${escapeHtml(safeImage(image.url || image.image_path))}" alt="${escapeHtml(image.caption || 'Gallery image')}" loading="lazy" />
-        <p class="meta">${escapeHtml(image.caption || '')}</p>
-      </article>
-    `,
-    )
-    .join('');
+  $('galleryGrid').innerHTML = (gallery || []).map((g) => `
+    <article class="card">
+      <img src="${escapeHtml(safeImage(g.url || g.image_path))}" alt="${escapeHtml(g.caption || 'Gallery image')}" loading="lazy" />
+      <p class="meta">${escapeHtml(g.caption || '')}</p>
+    </article>
+  `).join('');
 }
 
 function renderResume(resume) {
   if (!resume || !$('resumeContent')) return;
-  const list = (items) => (items || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-  const tags = (items) => (items || []).map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('');
-
-  $('resumeContent').innerHTML = `
-    <article class="research-item">
-      <h3>${escapeHtml(resume.name || '')}</h3>
-      <p class="meta">${escapeHtml(resume.title || '')}</p>
-      <p>${escapeHtml(resume.summary || '')}</p>
-      <p><strong>Career Objective:</strong> ${escapeHtml(resume.objective || '')}</p>
-      ${resume.availability ? `<p><strong>Availability:</strong> ${escapeHtml(resume.availability)}</p>` : ''}
-      <h3>Highlights</h3><ul>${list(resume.highlights)}</ul>
-      <h3>Technical Skills</h3>
-      <p class="meta">Cybersecurity & Networking</p><div class="tags">${tags(resume.skills?.cybersecurity_networking)}</div>
-      <p class="meta">Programming & Development</p><div class="tags">${tags(resume.skills?.programming_development)}</div>
-      <p class="meta">Systems & Tools</p><div class="tags">${tags(resume.skills?.systems_tools)}</div>
-      <h3>Education</h3><ul>${(resume.education || []).map((row) => `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span></li>`).join('')}</ul>
-      <h3>Experience</h3><ul>${(resume.experience || []).map((row) => `<li><strong>${escapeHtml(row.role || '')}</strong> - ${escapeHtml(row.organization || '')}<ul>${list(row.details || [])}</ul></li>`).join('')}</ul>
-      <h3>Certifications</h3><ul>${list(resume.certifications)}</ul>
-      <h3>Activities & Community</h3><ul>${list(resume.activities)}</ul>
-      <h3>Interests</h3><div class="tags">${tags(resume.interests)}</div>
-    </article>
-  `;
+  const list = (items) => (items || []).map((x) => `<li>${escapeHtml(x)}</li>`).join('');
+  const tags = (items) => (items || []).map((x) => `<span class="tag">${escapeHtml(x)}</span>`).join('');
+  $('resumeContent').innerHTML = `<article class="research-item">
+    <h3>${escapeHtml(resume.name || '')}</h3>
+    <p class="meta">${escapeHtml(resume.title || '')}</p>
+    <p>${escapeHtml(resume.summary || '')}</p>
+    <p><strong>Career Objective:</strong> ${escapeHtml(resume.objective || '')}</p>
+    ${resume.availability ? `<p><strong>Availability:</strong> ${escapeHtml(resume.availability)}</p>` : ''}
+    <h3>Highlights</h3><ul>${list(resume.highlights)}</ul>
+    <h3>Technical Skills</h3>
+    <p class="meta">Cybersecurity & Networking</p><div class="tags">${tags(resume.skills?.cybersecurity_networking)}</div>
+    <p class="meta">Programming & Development</p><div class="tags">${tags(resume.skills?.programming_development)}</div>
+    <p class="meta">Systems & Tools</p><div class="tags">${tags(resume.skills?.systems_tools)}</div>
+    <h3>Education</h3><ul>${(resume.education || []).map((row) => `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span></li>`).join('')}</ul>
+    <h3>Experience</h3><ul>${(resume.experience || []).map((row) => `<li><strong>${escapeHtml(row.role || '')}</strong> - ${escapeHtml(row.organization || '')}<ul>${list(row.details || [])}</ul></li>`).join('')}</ul>
+    <h3>Certifications</h3><ul>${list(resume.certifications)}</ul>
+    <h3>Activities & Community</h3><ul>${list(resume.activities)}</ul>
+    <h3>Interests</h3><div class="tags">${tags(resume.interests)}</div>
+  </article>`;
 }
 
-function challengeCard(entry, category) {
-  const tags = (entry.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
-  const sourceRow = category === 'others' && (entry.sourceSite || entry.ctfName)
-    ? `<p class="meta">${escapeHtml(entry.sourceSite || 'Source')}${entry.ctfName ? ` • ${escapeHtml(entry.ctfName)}` : ''}</p>`
-    : '';
+function getGroupedChallenges() {
+  const visible = (state.challenges || []).filter((c) => c.published !== false);
+  const byCategory = state.challengeCategory === 'All'
+    ? visible
+    : visible.filter((c) => (c.categories || []).includes(state.challengeCategory));
+  const byPlatform = state.challengePlatform
+    ? byCategory.filter((c) => c.platform === state.challengePlatform)
+    : byCategory;
 
-  const badge = entry.badgeThumbnail
-    ? `<img class="badge-thumb" src="${escapeHtml(safeImage(entry.badgeThumbnail))}" alt="Finished challenge badge" loading="lazy" />`
-    : '<div class="badge-thumb fallback">No badge</div>';
+  const groups = {};
+  byPlatform.forEach((c) => {
+    if (!groups[c.platform]) groups[c.platform] = [];
+    groups[c.platform].push(c);
+  });
 
+  const orderedKeys = Object.keys(groups).sort((a, b) => {
+    const ia = PLATFORM_ORDER.indexOf(a);
+    const ib = PLATFORM_ORDER.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+  return { groups, orderedKeys };
+}
+
+function renderChallengePlatformMenu() {
+  const submenu = $('challengeSubmenu');
+  if (!submenu) return;
+  const platforms = Array.from(new Set(state.challenges.map((c) => c.platform))).sort((a, b) => {
+    const ia = PLATFORM_ORDER.indexOf(a);
+    const ib = PLATFORM_ORDER.indexOf(b);
+    if (ia === -1 && ib === -1) return a.localeCompare(b);
+    if (ia === -1) return 1;
+    if (ib === -1) return -1;
+    return ia - ib;
+  });
+  submenu.innerHTML = platforms.map((p) => `<button class="nav-sublink ${state.challengePlatform === p ? 'active' : ''}" data-platform="${escapeHtml(p)}">${escapeHtml(p)}</button>`).join('');
+  submenu.querySelectorAll('[data-platform]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.challengePlatform = btn.dataset.platform;
+      setActiveView('challenges');
+    });
+  });
+}
+
+function challengeCard(entry) {
+  const badges = (entry.categories || []).map((c) => `<span class="tag">${escapeHtml(c)}</span>`).join('');
+  const writeup = entry.medium_link ? linkButton('Write-up', entry.medium_link) : '';
   return `
     <article class="card challenge-card">
-      <img src="${escapeHtml(safeImage(entry.image))}" alt="${escapeHtml(entry.title || 'Challenge')}" loading="lazy" />
-      <h3>${escapeHtml(entry.title || 'Challenge')}</h3>
+      <img src="${escapeHtml(safeImage(entry.thumbnail))}" alt="${escapeHtml(entry.title)}" loading="lazy" />
+      <h3>${escapeHtml(entry.title)}</h3>
+      <p class="meta">Platform: ${escapeHtml(entry.platform)} • Difficulty: ${escapeHtml(entry.difficulty || 'N/A')} • Status: ${escapeHtml(entry.status || 'N/A')}</p>
       <p>${escapeHtml(entry.description || '')}</p>
-      <p class="meta">Platform: ${escapeHtml(entry.platform || category)} • Difficulty: ${escapeHtml(entry.difficulty || 'N/A')}</p>
-      <p class="meta">Status: ${escapeHtml(entry.status || 'Completed')} • Completed: ${escapeHtml(entry.dateCompleted || 'N/A')}</p>
-      ${sourceRow}
-      <div class="badge-row"><span class="meta">Finished Badge:</span>${badge}</div>
-      <div class="tags">${tags}</div>
-      <p>
-        ${entry.mediumLink ? linkButton('Read Writeup', entry.mediumLink) : '<span class="btn" aria-disabled="true">Writeup (pending)</span>'}
-        ${entry.githubLink ? linkButton('GitHub', entry.githubLink) : ''}
-        ${entry.liveLink ? linkButton('Live', entry.liveLink) : ''}
-      </p>
+      <div class="tags">${badges}</div>
+      <p>${writeup}</p>
     </article>
   `;
-}
-
-function setupTryHackMeBadgeSizing() {
-  const mount = $('thmBadgeMount');
-  const iframe = $('thmBadgeIframe');
-  if (!mount || !iframe) return;
-
-  const baseWidth = 350;
-  const baseHeight = 86;
-  const apply = () => {
-    const targetWidth = Math.max(mount.clientWidth, 280);
-    const scale = targetWidth / baseWidth;
-    iframe.style.width = `${baseWidth}px`;
-    iframe.style.height = `${baseHeight}px`;
-    iframe.style.transform = `scale(${scale})`;
-    mount.style.height = `${Math.ceil(baseHeight * scale * 0.5)}px`;
-  };
-  requestAnimationFrame(apply);
-  window.addEventListener('resize', apply, { passive: true });
-}
-
-function setupTryHackMeBadgeFallback(profileUrl) {
-  const mount = $('thmBadgeMount');
-  const iframe = $('thmBadgeIframe');
-  if (!mount || !iframe) return;
-
-  let settled = false;
-  const showFallback = () => {
-    if (settled) return;
-    settled = true;
-    mount.innerHTML = `
-      <div class="thm-badge-fallback">
-        <p class="meta">TryHackMe badge API is temporarily unavailable.</p>
-        <a class="btn" href="${escapeHtml(profileUrl || 'https://tryhackme.com/p/M47h3wR34n')}" target="_blank" rel="noopener noreferrer">Open TryHackMe Profile</a>
-      </div>
-    `;
-  };
-
-  iframe.addEventListener('load', () => {
-    settled = true;
-  });
-  iframe.addEventListener('error', showFallback);
-  window.setTimeout(() => {
-    if (!settled) showFallback();
-  }, 5000);
 }
 
 function renderChallenges() {
-  const category = state.content.challenges.categories[state.activeChallengeTab];
-  if (!category) return;
-
-  $('challengeTabs').innerHTML = Object.keys(state.content.challenges.categories)
-    .map((key) => `<button class="tab-btn ${key === state.activeChallengeTab ? 'active' : ''}" data-tab="${escapeHtml(key)}">${escapeHtml(state.content.challenges.categories[key].label)}</button>`)
+  const allCategories = Array.from(new Set(state.challenges.flatMap((c) => c.categories || []))).filter(Boolean);
+  const orderedCategories = CATEGORY_OPTIONS.filter((x) => allCategories.includes(x)).concat(allCategories.filter((x) => !CATEGORY_OPTIONS.includes(x)));
+  $('challengeTabs').innerHTML = ['All', ...orderedCategories]
+    .map((cat) => `<button class="tab-btn ${state.challengeCategory === cat ? 'active' : ''}" data-cat="${escapeHtml(cat)}" type="button">${escapeHtml(cat)}</button>`)
     .join('');
-
-  $('challengeTabs').querySelectorAll('[data-tab]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.activeChallengeTab = button.dataset.tab;
+  $('challengeTabs').querySelectorAll('[data-cat]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.challengeCategory = btn.dataset.cat;
       renderChallenges();
-      syncChallengeSubmenuActive();
     });
   });
 
-  const profileUrl = state.content.challenges.tryhackme?.profileUrl || 'https://tryhackme.com/p/M47h3wR34n';
-  const badgeHtml = state.activeChallengeTab === 'tryhackme'
-    ? `
-      <div class="badge-block">
-        <p><strong>TryHackMe Profile Badge</strong></p>
-        <div id="thmBadgeMount">
-          <iframe
-            id="thmBadgeIframe"
-            class="thm-badge-iframe"
-            src="https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082"
-            title="TryHackMe public profile badge"
-            loading="lazy"
-          ></iframe>
-        </div>
-      </div>`
-    : '';
+  const { groups, orderedKeys } = getGroupedChallenges();
+  if (!orderedKeys.length) {
+    $('challengeIntro').innerHTML = '<p class="muted">No challenges match the selected filters.</p>';
+    $('challengeList').innerHTML = '';
+    return;
+  }
 
-  $('challengeIntro').innerHTML = `${badgeHtml}<p class="muted">${escapeHtml(category.description || '')}</p>`;
-  $('challengeList').innerHTML = (category.entries || []).length
-    ? category.entries.map((entry) => challengeCard(entry, state.activeChallengeTab)).join('')
-    : '<article class="card"><p class="meta">No challenges added yet in this category.</p></article>';
+  const thmProfile = state.content?.challenges?.tryhackme?.profileUrl || 'https://tryhackme.com/p/M47h3wR34n';
+  const thmEmbed = state.content?.challenges?.tryhackme?.badgeEmbed || 'https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082';
 
-  if (state.activeChallengeTab === 'tryhackme') {
-    setupTryHackMeBadgeSizing();
-    setupTryHackMeBadgeFallback(profileUrl);
+  $('challengeIntro').innerHTML = state.challengePlatform
+    ? `<p class="muted">Showing platform: <strong>${escapeHtml(state.challengePlatform)}</strong> | Category: <strong>${escapeHtml(state.challengeCategory)}</strong></p>`
+    : `<p class="muted">Grouped by platform | Category: <strong>${escapeHtml(state.challengeCategory)}</strong></p>`;
+
+  $('challengeList').innerHTML = orderedKeys.map((platform) => {
+    const badgeBlock = platform === 'TryHackMe'
+      ? `<div class="badge-block"><p><strong>TryHackMe Profile Badge</strong></p><div id="thmBadgeMount"><iframe id="thmBadgeIframe" class="thm-badge-iframe" src="${escapeHtml(thmEmbed)}" title="TryHackMe public profile badge" loading="lazy"></iframe></div><p>${linkButton('Open TryHackMe Profile', thmProfile)}</p></div>`
+      : '';
+    return `
+      <section class="stack" style="margin-bottom:1.2rem;">
+        <h3>${escapeHtml(platform)}</h3>
+        ${badgeBlock}
+        <div class="grid">${groups[platform].map((entry) => challengeCard(entry)).join('')}</div>
+      </section>
+    `;
+  }).join('');
+
+  const iframe = $('thmBadgeIframe');
+  const mount = $('thmBadgeMount');
+  if (iframe && mount) {
+    iframe.addEventListener('error', () => {
+      mount.innerHTML = `<div class="thm-badge-fallback"><p class="meta">TryHackMe badge API is temporarily unavailable.</p>${linkButton('Open TryHackMe Profile', thmProfile)}</div>`;
+    });
   }
 }
 
@@ -299,36 +330,20 @@ function setActiveView(view) {
   state.activeView = view;
   document.querySelectorAll('.view-section').forEach((section) => section.classList.toggle('active', section.dataset.view === view));
   document.querySelectorAll('.nav-link').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
-  if (view === 'challenges') {
-    renderChallenges();
-    syncChallengeSubmenuActive();
-  }
-}
-
-function syncChallengeSubmenuActive() {
-  document.querySelectorAll('.nav-sublink').forEach((button) => button.classList.toggle('active', button.dataset.challengeTab === state.activeChallengeTab));
+  if (view === 'challenges') renderChallenges();
 }
 
 function setupNavigation() {
-  document.querySelectorAll('.nav-link[data-view]').forEach((button) => {
-    button.addEventListener('click', () => setActiveView(button.dataset.view));
+  document.querySelectorAll('.nav-link[data-view]').forEach((btn) => btn.addEventListener('click', () => setActiveView(btn.dataset.view)));
+  $('challengeGroupToggle').addEventListener('click', () => {
+    state.challengePlatform = '';
+    setActiveView('challenges');
   });
-
-  document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.activeChallengeTab = button.dataset.challengeTab;
-      setActiveView('challenges');
-    });
-  });
-
-  $('challengeGroupToggle').addEventListener('click', () => setActiveView('challenges'));
 
   const mobileToggle = $('mobileNavToggle');
   const sidebarNav = $('sidebarNav');
   if (mobileToggle && sidebarNav) {
-    mobileToggle.addEventListener('click', () => {
-      sidebarNav.classList.toggle('open');
-    });
+    mobileToggle.addEventListener('click', () => sidebarNav.classList.toggle('open'));
   }
 }
 
@@ -343,6 +358,9 @@ function setupDialog() {
 
   try {
     state.content = await loadContent();
+    state.challenges = normalizeChallenges(state.content.challenges || {});
+    renderChallengePlatformMenu();
+
     renderSiteMeta(state.content.site || {});
     renderResume(state.content.resume || {});
     renderCertificates(state.content.certificates || []);
@@ -354,6 +372,6 @@ function setupDialog() {
   } catch (error) {
     console.error(error);
     $('heroTitle').textContent = 'Unable to load content.';
-    $('heroSummary').textContent = 'Start the backend server and refresh this page.';
+    $('heroSummary').textContent = 'Check data JSON files and refresh.';
   }
 })();

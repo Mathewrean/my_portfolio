@@ -1,137 +1,105 @@
 {
   "tryhackme": {
     "profileUrl": "https://tryhackme.com/p/M47h3wR34n",
-    "badgeImage": "https://tryhackme-badges.s3.amazonaws.com/Mathewrean.png"
+    "badgeEmbed": "https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082"
   },
-  "categories": {
-    "tryhackme": {
-      "label": "TryHackMe",
-      "description": "Hands-on room walkthroughs and blue/red team challenge writeups.",
-      "entries": [
-        {
-          "title": "Mr Robot CTF",
-          "description": "Privilege escalation and web enumeration focused room completion.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=TryHackMe+Room",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2025-11-21",
-          "tags": [
-            "web",
-            "linux",
-            "privilege-escalation"
-          ],
-          "difficulty": "Medium"
-        }
-      ]
+  "challenges": [
+    {
+      "id": 1,
+      "title": "Mr Robot CTF",
+      "platform": "TryHackMe",
+      "description": "Privilege escalation and web enumeration focused room completion.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=TryHackMe+Room",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2025-11-21",
+      "categories": ["Web", "Pwn"],
+      "difficulty": "Medium",
+      "status": "Completed",
+      "published": true
     },
-    "hackthebox": {
-      "label": "HackTheBox",
-      "description": "Machine and challenge writeups from HackTheBox labs.",
-      "entries": [
-        {
-          "title": "Lame",
-          "description": "Legacy SMB exploitation and service misconfiguration analysis.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=HackTheBox+Machine",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2025-09-04",
-          "tags": [
-            "smb",
-            "metasploit",
-            "enumeration"
-          ],
-          "difficulty": "Easy"
-        }
-      ]
+    {
+      "id": 2,
+      "title": "Lame",
+      "platform": "HackTheBox",
+      "description": "Legacy SMB exploitation and service misconfiguration analysis.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=HackTheBox+Machine",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2025-09-04",
+      "categories": ["Pwn", "Misc"],
+      "difficulty": "Easy",
+      "status": "Completed",
+      "published": true
     },
-    "picoctf": {
-      "label": "PicoCTF",
-      "description": "Beginner to intermediate CTF challenge solutions.",
-      "entries": [
-        {
-          "title": "Buffer Overflow 1",
-          "description": "Stack overwrite basics and payload crafting.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=PicoCTF",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2025-07-18",
-          "tags": [
-            "binary-exploitation",
-            "ctf"
-          ],
-          "difficulty": "Medium"
-        }
-      ]
+    {
+      "id": 3,
+      "title": "Buffer Overflow 1",
+      "platform": "PicoCTF",
+      "description": "Stack overwrite basics and payload crafting.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=PicoCTF",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2025-07-18",
+      "categories": ["Pwn"],
+      "difficulty": "Medium",
+      "status": "Completed",
+      "published": true
     },
-    "ctfroom": {
-      "label": "CTFROOM",
-      "description": "Room-based challenge notes from CTFROOM platform.",
-      "entries": [
-        {
-          "title": "Web 101",
-          "description": "Introductory SQLi and auth bypass task set.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFROOM",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2025-10-02",
-          "tags": [
-            "web",
-            "sqli"
-          ],
-          "difficulty": "Easy"
-        }
-      ]
+    {
+      "id": 4,
+      "title": "Web 101",
+      "platform": "CTFROOM",
+      "description": "Introductory SQLi and auth bypass task set.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFROOM",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2025-10-02",
+      "categories": ["Web"],
+      "difficulty": "Easy",
+      "status": "Completed",
+      "published": true
     },
-    "ctfzone": {
-      "label": "CTFZone",
-      "description": "Challenge walkthroughs and labs from CTFZone events and practice sets.",
-      "entries": [
-        {
-          "title": "CTFZone Starter Challenge",
-          "description": "Initial CTFZone challenge placeholder for your upcoming writeup entries.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2026-02-18",
-          "tags": [
-            "ctf",
-            "practice"
-          ],
-          "difficulty": "Medium",
-          "sourceSite": "CTFZone",
-          "ctfName": "CTFZone Practice"
-        },
-        {
-          "title": "CTFZone Web Exploit Sprint",
-          "description": "Web exploitation challenge set covering auth bypass and input-validation flaws.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone+Web",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2026-02-20",
-          "tags": [
-            "web",
-            "ctfzone",
-            "xss"
-          ],
-          "difficulty": "Medium",
-          "sourceSite": "CTFZone",
-          "ctfName": "CTFZone Arena"
-        }
-      ]
+    {
+      "id": 5,
+      "title": "CTFZone Starter Challenge",
+      "platform": "CTFZone",
+      "description": "Initial CTFZone challenge placeholder for your upcoming writeup entries.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2026-02-18",
+      "categories": ["Misc"],
+      "difficulty": "Medium",
+      "status": "Completed",
+      "source_site": "CTFZone",
+      "ctf_name": "CTFZone Practice",
+      "published": true
     },
-    "others": {
-      "label": "Others",
-      "description": "Custom entries from any CTF or challenge source.",
-      "entries": [
-        {
-          "title": "Kenya Cyber Drill Finals",
-          "description": "Incident response sprint involving log triage and containment planning.",
-          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Other+CTF",
-          "mediumLink": "https://medium.com/",
-          "dateCompleted": "2025-11-30",
-          "tags": [
-            "incident-response",
-            "siem"
-          ],
-          "difficulty": "Hard",
-          "sourceSite": "Local CTF",
-          "ctfName": "Kenya Cyber Drill"
-        }
-      ]
+    {
+      "id": 6,
+      "title": "CTFZone Web Exploit Sprint",
+      "platform": "CTFZone",
+      "description": "Web exploitation challenge set covering auth bypass and input-validation flaws.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone+Web",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2026-02-20",
+      "categories": ["Web", "Crypto"],
+      "difficulty": "Medium",
+      "status": "Completed",
+      "source_site": "CTFZone",
+      "ctf_name": "CTFZone Arena",
+      "published": true
+    },
+    {
+      "id": 7,
+      "title": "Kenya Cyber Drill Finals",
+      "platform": "Others",
+      "description": "Incident response sprint involving log triage and containment planning.",
+      "thumbnail": "https://placehold.co/900x600/1a2540/e6edf8?text=Other+CTF",
+      "medium_link": "https://medium.com/",
+      "date_completed": "2025-11-30",
+      "categories": ["Forensics", "OSINT"],
+      "difficulty": "Hard",
+      "status": "Completed",
+      "source_site": "Local CTF",
+      "ctf_name": "Kenya Cyber Drill",
+      "published": true
     }
-  }
+  ]
 }
