@@ -95,6 +95,21 @@
           "difficulty": "Medium",
           "sourceSite": "CTFZone",
           "ctfName": "CTFZone Practice"
+        },
+        {
+          "title": "CTFZone Web Exploit Sprint",
+          "description": "Web exploitation challenge set covering auth bypass and input-validation flaws.",
+          "image": "https://placehold.co/900x600/1a2540/e6edf8?text=CTFZone+Web",
+          "mediumLink": "https://medium.com/",
+          "dateCompleted": "2026-02-20",
+          "tags": [
+            "web",
+            "ctfzone",
+            "xss"
+          ],
+          "difficulty": "Medium",
+          "sourceSite": "CTFZone",
+          "ctfName": "CTFZone Arena"
         }
       ]
     },

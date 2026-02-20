@@ -7,6 +7,14 @@ const CATEGORY_META = {
   picoctf: { label: 'PicoCTF', description: 'Beginner to intermediate CTF challenge solutions.' },
   ctfroom: { label: 'CTFROOM', description: 'Room-based challenge notes from CTFROOM platform.' },
   ctfzone: { label: 'CTFZone', description: 'Challenge walkthroughs and labs from CTFZone events and practice sets.' },
+  cyberdefenders: { label: 'CyberDefenders', description: 'Blue-team and DFIR scenario challenges.' },
+  rootme: { label: 'Root-Me', description: 'Web, crypto, stego, and exploitation challenges.' },
+  overthewire: { label: 'OverTheWire', description: 'Wargames and Linux fundamentals challenge tracks.' },
+  vulnhub: { label: 'VulnHub', description: 'Boot2root and vulnerable machine walkthroughs.' },
+  portswigger: { label: 'PortSwigger Labs', description: 'Web security academy lab writeups.' },
+  ringzer0: { label: 'RingZer0', description: 'Progressive CTF puzzle and exploit challenges.' },
+  hackthissite: { label: 'HackThisSite', description: 'Classic web hacking challenge missions.' },
+  ctftime: { label: 'CTFtime Events', description: 'Event-based CTF writeups and summaries.' },
   others: { label: 'Others', description: 'Custom entries from any CTF or challenge source.' },
 };
 
@@ -17,6 +25,7 @@ const state = {
   challengePage: 1,
   challengePageSize: 8,
   challengeTotal: 0,
+  allChallenges: [],
   site: {
     heroTitle: '',
     heroSummary: '',
@@ -229,12 +238,13 @@ async function loadStaticSeed() {
   if (draft) {
     const parsed = safeJsonParse(draft, {});
     state.site = parsed.site || state.site;
-    state.cache.challenges = (parsed.challenges || []).map(normalizeChallenge);
+    state.allChallenges = (parsed.challenges || []).map(normalizeChallenge);
+    state.cache.challenges = [...state.allChallenges];
     state.cache.certificates = (parsed.certificates || []).map(normalizeCertificate);
     state.cache.projects = (parsed.projects || []).map(normalizeProject);
     state.cache.research = (parsed.research || []).map(normalizeResearch);
     state.cache.gallery = (parsed.gallery || []).map(normalizeGallery);
-    state.challengeTotal = state.cache.challenges.length;
+    state.challengeTotal = state.allChallenges.length;
     return;
   }
 
@@ -269,12 +279,13 @@ async function loadStaticSeed() {
     });
   });
 
-  state.cache.challenges = flat;
+  state.allChallenges = flat;
+  state.cache.challenges = [...state.allChallenges];
   state.cache.certificates = certificates.map(normalizeCertificate);
   state.cache.projects = projects.map(normalizeProject);
   state.cache.research = research.map(normalizeResearch);
   state.cache.gallery = gallery.map(normalizeGallery);
-  state.challengeTotal = state.cache.challenges.length;
+  state.challengeTotal = state.allChallenges.length;
 
   persistStaticDraft();
 }
@@ -282,7 +293,7 @@ async function loadStaticSeed() {
 function persistStaticDraft() {
   const payload = {
     site: state.site,
-    challenges: state.cache.challenges,
+    challenges: state.allChallenges,
     certificates: state.cache.certificates,
     projects: state.cache.projects,
     research: state.cache.research,
@@ -299,6 +310,51 @@ function staticFilePath(input, folder) {
 
 function renderSimpleTable(tableId, kind, rows, rowBuilder) {
   $(tableId).innerHTML = rows.map((row) => rowBuilder(row)).join('');
+}
+
+function applyCurrentChallengeFilter() {
+  if (state.mode === 'api') return;
+  const search = ($('challengeSearch')?.value || '').trim().toLowerCase();
+  const category = ($('challengeCategoryFilter')?.value || '').trim();
+  const status = ($('challengeStatusFilter')?.value || '').trim();
+
+  const filtered = (state.allChallenges || []).filter((x) => {
+    const okSearch =
+      !search ||
+      (x.title || '').toLowerCase().includes(search) ||
+      (x.description || '').toLowerCase().includes(search) ||
+      (x.platform || '').toLowerCase().includes(search);
+    const okCategory = !category || x.category === category;
+    const okStatus = !status || x.status === status;
+    return okSearch && okCategory && okStatus;
+  });
+  state.cache.challenges = filtered;
+  state.challengeTotal = filtered.length;
+  const maxPage = Math.max(1, Math.ceil(state.challengeTotal / state.challengePageSize));
+  if (state.challengePage > maxPage) state.challengePage = maxPage;
+}
+
+function refreshCategoryOptions() {
+  const filterSelect = $('challengeCategoryFilter');
+  const formSelect = $('challengeCategory');
+  if (!filterSelect || !formSelect) return;
+
+  const currentFilter = filterSelect.value;
+  const currentForm = formSelect.value;
+  const keys = new Set(Object.keys(CATEGORY_META));
+  (state.allChallenges || []).forEach((c) => keys.add(c.category));
+
+  const sorted = Array.from(keys).sort((a, b) => {
+    const la = (CATEGORY_META[a]?.label || a).toLowerCase();
+    const lb = (CATEGORY_META[b]?.label || b).toLowerCase();
+    return la.localeCompare(lb);
+  });
+
+  filterSelect.innerHTML = `<option value=\"\">All categories</option>` + sorted.map((k) => `<option value=\"${safe(k)}\">${safe(CATEGORY_META[k]?.label || k)}</option>`).join('');
+  formSelect.innerHTML = sorted.map((k) => `<option value=\"${safe(k)}\">${safe(CATEGORY_META[k]?.label || k)}</option>`).join('');
+
+  if (Array.from(filterSelect.options).some((o) => o.value === currentFilter)) filterSelect.value = currentFilter;
+  if (Array.from(formSelect.options).some((o) => o.value === currentForm)) formSelect.value = currentForm;
 }
 
 function rowActionButtons(kind, id, published) {
@@ -357,6 +413,8 @@ async function refreshAll() {
     };
   } else {
     await loadStaticSeed();
+    refreshCategoryOptions();
+    applyCurrentChallengeFilter();
   }
 
   $('siteHeroTitle').value = state.site.heroTitle || '';
@@ -366,6 +424,7 @@ async function refreshAll() {
   $('thmProfileUrl').value = state.site.tryhackme?.profileUrl || '';
   $('thmBadgeImage').value = state.site.tryhackme?.badgeImage || '';
 
+  refreshCategoryOptions();
   renderAllTables();
 }
 
@@ -429,7 +488,8 @@ function bindTableActions() {
 
 function editItem(kind, id) {
   if (kind === 'challenge') {
-    const item = state.cache.challenges.find((x) => x.id === id);
+    const source = state.mode === 'static' ? state.allChallenges : state.cache.challenges;
+    const item = source.find((x) => x.id === id);
     if (item) { challengeToForm(item); setPanel('challenges'); }
     return;
   }
@@ -453,8 +513,12 @@ async function deleteItem(kind, id) {
     await api(`/api/admin/${map[kind]}/${id}`, { method: 'DELETE' });
   } else {
     const map = { challenge: 'challenges', certificate: 'certificates', project: 'projects', research: 'research', gallery: 'gallery' };
-    state.cache[map[kind]] = state.cache[map[kind]].filter((x) => x.id !== id);
-    state.challengeTotal = state.cache.challenges.length;
+    if (kind === 'challenge') {
+      state.allChallenges = state.allChallenges.filter((x) => x.id !== id);
+      applyCurrentChallengeFilter();
+    } else {
+      state.cache[map[kind]] = state.cache[map[kind]].filter((x) => x.id !== id);
+    }
     persistStaticDraft();
   }
   toast('Deleted successfully');
@@ -467,8 +531,10 @@ async function toggleItem(kind, id) {
     await api(`/api/admin/${map[kind]}/${id}/toggle`, { method: 'POST' });
   } else {
     const map = { challenge: 'challenges', certificate: 'certificates', project: 'projects', research: 'research', gallery: 'gallery' };
-    const item = state.cache[map[kind]].find((x) => x.id === id);
+    const source = kind === 'challenge' ? state.allChallenges : state.cache[map[kind]];
+    const item = source.find((x) => x.id === id);
     if (item) item.published = !item.published;
+    if (kind === 'challenge') applyCurrentChallengeFilter();
     persistStaticDraft();
   }
   toast('Visibility updated');
@@ -511,7 +577,8 @@ function buildChallengesJson() {
     };
   });
 
-  state.cache.challenges.forEach((c) => {
+  const source = state.mode === 'static' ? state.allChallenges : state.cache.challenges;
+  source.forEach((c) => {
     const cat = categories[c.category] || (categories[c.category] = { label: c.category, description: '', entries: [] });
     cat.entries.push({
       title: c.title,
@@ -643,19 +710,7 @@ function bindEvents() {
       state.cache.challenges = (data.items || []).map(normalizeChallenge);
       state.challengeTotal = data.total || 0;
     } else {
-      const search = $('challengeSearch').value.trim().toLowerCase();
-      const category = $('challengeCategoryFilter').value;
-      const status = $('challengeStatusFilter').value;
-      const parsed = safeJsonParse(localStorage.getItem(STATIC_DRAFT_KEY) || '{}', {});
-      const all = parsed.challenges || state.cache.challenges;
-      const filtered = all.map(normalizeChallenge).filter((x) => {
-        const okSearch = !search || x.title.toLowerCase().includes(search) || x.description.toLowerCase().includes(search) || (x.platform || '').toLowerCase().includes(search);
-        const okCategory = !category || x.category === category;
-        const okStatus = !status || x.status === status;
-        return okSearch && okCategory && okStatus;
-      });
-      state.cache.challenges = filtered;
-      state.challengeTotal = filtered.length;
+      applyCurrentChallengeFilter();
     }
     renderAllTables();
   });
@@ -710,10 +765,11 @@ function bindEvents() {
         screenshots: Array.from($('challengeScreens').files || []).map((f) => `uploads/challenges/${f.name}`),
         attachments: Array.from($('challengeAttachments').files || []).map((f) => `uploads/attachments/${f.name}`),
       });
-      const idx = state.cache.challenges.findIndex((x) => x.id === next.id);
-      if (idx >= 0) state.cache.challenges[idx] = next;
-      else state.cache.challenges.push(next);
-      state.challengeTotal = state.cache.challenges.length;
+      const idx = state.allChallenges.findIndex((x) => x.id === next.id);
+      if (idx >= 0) state.allChallenges[idx] = next;
+      else state.allChallenges.push(next);
+      refreshCategoryOptions();
+      applyCurrentChallengeFilter();
       persistStaticDraft();
       if ($('challengeBadge').files[0] || $('challengeImage').files[0] || $('challengeScreens').files.length || $('challengeAttachments').files.length) {
         toast('Static mode: JSON paths set. Add selected files manually into docs/uploads before push.', 'ok');
