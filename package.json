@@ -2,11 +2,12 @@
   "name": "portfolio-website",
   "version": "1.0.0",
   "description": "A professional portfolio website showcasing my skills, projects, and experiences.",
-  "main": "docs/index.html",
+  "main": "run_server.py",
   "scripts": {
-    "start": "live-server docs",
-    "build": "echo 'No build needed for static site - files are in docs folder for GitHub Pages deployment'",
-    "test": "echo 'Test step not defined'"
+    "start": "python3 run_server.py",
+    "dev": "python3 run_server.py",
+    "build": "echo 'No build step required'",
+    "test": "python3 -m py_compile run_server.py backend/*.py backend/services/*.py"
   },
   "keywords": [
     "portfolio",
@@ -17,7 +18,5 @@
   ],
   "author": "Mathewrean Otieno",
   "license": "MIT",
-  "dependencies": {
-    "live-server": "^1.2.1"
-  }
+  "dependencies": {}
 }

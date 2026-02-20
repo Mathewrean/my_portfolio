@@ -1,82 +1,51 @@
-<<<<<<< HEAD
-# Personal Cybersecurity Portfolio
+# Personal Portfolio (Dynamic + Admin)
 
-Single-page portfolio with left vertical navigation and single-section view behavior.
+This project now supports:
+- Public portfolio rendering from dynamic API data.
+- Admin dashboard for CRUD operations (Challenges, Certificates, Projects, Research, Gallery, Blog, Settings).
+- Secure file upload handling with structured folders.
+- SQLite-backed storage with migration and seed logic.
+- GitHub Pages fallback for public content using `docs/data/*.json` when API is unavailable.
 
-## Sections
-- Home
-- About
-- Resume
-- Certificates
-- Projects
-- Challenges
-- Contact
-- Gallery
-- Research
+## Run Locally
 
-## Challenges
-- Nested platforms: TryHackMe, HackTheBox, PicoCTF, CTFROOM, Others
-- TryHackMe badge embedded on the TryHackMe tab
-- Data source: `data/challenges.json`
-
-## Public vs Private
-- Public page: `index.html` (no challenge-entry form shown to visitors)
-- Private manager: `admin.html` (used to prepare challenge entries manually)
-
-## Data Files
-- `data/site.json`
-- `data/certificates.json`
-- `data/projects.json`
-- `data/challenges.json`
-- `data/research.json`
-- `data/gallery.json`
-=======
-# Portfolio Website
-
-## Overview
-This portfolio website showcases my professional background, skills, and projects in the field of cybersecurity. It serves as a digital resume and a platform to highlight my work and achievements.
-
-## Project Structure
-The project is organized as follows:
-
-```
-portfolio-website
-├── docs                       # Build files for GitHub Pages deployment
-│   ├── assets                 # Assets like images
-│   ├── components             # HTML components including new challenge pages
-│   │   ├── Home.html
-│   │   ├── Resume.html
-│   │   ├── Projects.html
-│   │   ├── LabChallenges.html
-│   │   ├── Contacts.html
-│   │   ├── CTFChallenges.html
-│   │   ├── TryHackMeRooms.html
-│   │   └── HackTheBoxRooms.html
-│   ├── scripts                # JavaScript files including projectsSlider.js
-│   ├── styles                 # CSS styles
-│   └── index.html             # Main entry point linking all components
-├── package.json               # npm configuration file
-└── README.md                  # Documentation for the project
+```bash
+python3 run_server.py
 ```
 
-## Features
-- **Home Page**: Displays a professional photo, name, and a brief statement about my career in cybersecurity.
-- **Resume Section**: Outlines my academic background, work experience, certifications, and skills.
-- **Projects Section**: Showcases at least three projects with descriptions and technologies used, featuring a slider for navigation.
-- **Lab Challenges Section**: Details completed lab challenges, including problem statements, approaches, tools used, and key lessons learned.
-- **Challenge Pages**: Separate pages for CTF Challenges, TryHackMe Rooms, and Hack The Box Rooms linked from Lab Challenges.
-- **Contacts Section**: Provides links to my professional profiles (LinkedIn, GitHub, Twitter, Facebook, Reddit, Instagram) and email for potential employers and collaborators.
+Open:
+- Public site: `http://127.0.0.1:4173/`
+- Admin: `http://127.0.0.1:4173/admin`
 
-## Technologies Used
-- HTML
-- CSS
-- JavaScript
-- Font Awesome for icons
+## Admin Authentication
 
-## Author
-Mathewrean Otieno  
-Cybersecurity Enthusiast | Digital Forensics | Ethical Hacker
+- Password hash is configured in `backend/config.py` via `PORTFOLIO_ADMIN_HASH` env override.
+- Current password corresponds to the hash configured in the frontend/login flow.
+
+## Backend Structure
+
+- `backend/app.py`: Flask app, API routes, static serving, security headers.
+- `backend/db.py`: SQLite schema migration + JSON seed import.
+- `backend/repository.py`: data access and transformation layer.
+- `backend/services/auth.py`: admin token auth.
+- `backend/services/uploads.py`: secure upload/validation helpers.
+- `run_server.py`: local server entrypoint.
+
+## Upload Folders
+
+- `docs/uploads/challenges/`
+- `docs/uploads/certificates/`
+- `docs/uploads/projects/`
+- `docs/uploads/gallery/`
+- `docs/uploads/research/`
+- `docs/uploads/blog/`
+- `docs/uploads/attachments/`
+
+## Notes on Hosting
+
+- Full admin/API functionality requires a backend runtime (Flask).
+- GitHub Pages serves static files only; the public page falls back to JSON files in `docs/data/`.
 
 ## License
-This project is licensed under the MIT License.
->>>>>>> 870421d10872809d6d6b28ccdc134a870121bd35
+
+MIT
