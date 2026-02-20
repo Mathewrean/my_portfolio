@@ -31,6 +31,14 @@ function safe(v) {
     .replaceAll("'", '&#39;');
 }
 
+function sanitizeText(value) {
+  return String(value ?? '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/[\u0000-\u001F\u007F\uFFFD]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function uid() { return Date.now() + Math.floor(Math.random() * 10000); }
 function asArray(v) { return Array.isArray(v) ? v : (typeof v === 'string' && v.trim() ? v.split(',').map((x) => x.trim()).filter(Boolean) : []); }
 
@@ -64,17 +72,17 @@ async function loadJSON(path) {
 function normalizeChallenge(c) {
   return {
     id: Number(c.id ?? uid()),
-    title: c.title || '',
-    platform: c.platform || 'Others',
-    description: c.description || '',
-    thumbnail: c.thumbnail || c.image || '',
-    medium_link: c.medium_link || c.mediumLink || '',
-    date_completed: c.date_completed || c.dateCompleted || '',
-    categories: asArray(c.categories || c.tags),
-    difficulty: c.difficulty || '',
-    status: c.status || 'Completed',
-    source_site: c.source_site || c.sourceSite || '',
-    ctf_name: c.ctf_name || c.ctfName || '',
+    title: sanitizeText(c.title) || 'Untitled Challenge',
+    platform: sanitizeText(c.platform) || 'Others',
+    description: sanitizeText(c.description),
+    thumbnail: sanitizeText(c.thumbnail || c.image || ''),
+    medium_link: String(c.medium_link || c.mediumLink || '').trim(),
+    date_completed: String(c.date_completed || c.dateCompleted || '').trim(),
+    categories: asArray(c.categories || c.tags).map((x) => sanitizeText(x)).filter(Boolean),
+    difficulty: sanitizeText(c.difficulty),
+    status: sanitizeText(c.status) || 'Completed',
+    source_site: sanitizeText(c.source_site || c.sourceSite || ''),
+    ctf_name: sanitizeText(c.ctf_name || c.ctfName || ''),
     published: c.published !== false,
   };
 }
@@ -366,13 +374,13 @@ function bindEvents() {
       id,
       title,
       platform: $('challengePlatform').value,
-      description: $('challengeDescriptionEditor').innerText.trim(),
-      thumbnail: thumbnailPath,
+      description: sanitizeText($('challengeDescriptionEditor').innerText),
+      thumbnail: sanitizeText(thumbnailPath),
       medium_link: $('challengeMedium').value.trim(),
       date_completed: $('challengeDate').value,
       categories,
-      difficulty: $('challengeDifficulty').value.trim(),
-      status: $('challengeStatus').value,
+      difficulty: sanitizeText($('challengeDifficulty').value),
+      status: sanitizeText($('challengeStatus').value),
       published: $('challengePublished').value === '1',
     });
 

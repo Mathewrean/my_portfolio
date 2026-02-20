@@ -22,12 +22,21 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function sanitizeText(value) {
+  return String(value ?? '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/[\u0000-\u001F\u007F\uFFFD]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function safeImage(url, fallback = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Add+Image') {
   return url && String(url).trim() ? String(url) : fallback;
 }
 
 function canonicalPlatform(value) {
-  const v = String(value || '').trim().toLowerCase();
+  const normalized = sanitizeText(value);
+  const v = normalized.toLowerCase();
   const map = {
     tryhackme: 'TryHackMe',
     'try hack me': 'TryHackMe',
@@ -39,7 +48,7 @@ function canonicalPlatform(value) {
     others: 'Others',
     other: 'Others',
   };
-  return map[v] || (value ? String(value).trim() : 'Others');
+  return map[v] || (normalized || 'Others');
 }
 
 function isSafeExternalUrl(raw) {
@@ -149,17 +158,19 @@ async function loadContent() {
 function normalizeChallenges(challengesData) {
   const flat = (challengesData?.challenges || []).map((c, idx) => ({
     id: c.id || idx + 1,
-    title: c.title || '',
+    title: sanitizeText(c.title) || 'Untitled Challenge',
     platform: canonicalPlatform(c.platform),
-    description: c.description || '',
-    thumbnail: c.thumbnail || c.image || '',
-    medium_link: c.medium_link || c.mediumLink || '',
-    date_completed: c.date_completed || c.dateCompleted || '',
-    categories: (Array.isArray(c.categories) ? c.categories : (c.tags || [])).map((x) => String(x).trim()).filter(Boolean),
-    difficulty: c.difficulty || '',
-    status: c.status || 'Completed',
-    source_site: c.source_site || c.sourceSite || '',
-    ctf_name: c.ctf_name || c.ctfName || '',
+    description: sanitizeText(c.description),
+    thumbnail: sanitizeText(c.thumbnail || c.image || ''),
+    medium_link: String(c.medium_link || c.mediumLink || '').trim(),
+    date_completed: String(c.date_completed || c.dateCompleted || '').trim(),
+    categories: (Array.isArray(c.categories) ? c.categories : (c.tags || []))
+      .map((x) => sanitizeText(x))
+      .filter(Boolean),
+    difficulty: sanitizeText(c.difficulty),
+    status: sanitizeText(c.status) || 'Completed',
+    source_site: sanitizeText(c.source_site || c.sourceSite || ''),
+    ctf_name: sanitizeText(c.ctf_name || c.ctfName || ''),
     published: c.published !== false,
   }));
   return flat;
