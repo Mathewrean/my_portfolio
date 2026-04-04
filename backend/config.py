@@ -14,7 +14,7 @@ ADMIN_PASSWORD_HASH = os.environ.get(
 )
 
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-ALLOWED_DOC_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_DOC_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png", ".webp", ".md"}
 
 CHALLENGE_CATEGORIES = [
     ("tryhackme", "TryHackMe", "Hands-on room walkthroughs and blue/red team challenge writeups.", 1),
