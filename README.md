@@ -58,6 +58,9 @@ GitHub Pages also serves everything under `docs/assets`, while the Flask app rea
 
 To be sure the public API still matches the published snapshot, run `PYTHONPATH=. python3 scripts/check_public_endpoints.py`. It seeds the database from `docs/data/*.json` and hits every `/api/public/*` route plus the health check to confirm each returns valid JSON shaped like the docs payload.
 
+## Admin preview flag
+
+The home page now ignores any saved admin draft unless the query string contains `?preview=admin`. That means a fresh browser session always renders the official GitHub Pages content (no “Security Analyst” extras), while administrators can still preview their locally saved draft via `http://127.0.0.1:4173/?preview=admin` after saving it from the admin panel. (You can also clear the `portfolio_static_admin_v2` localStorage entry if you need to reset your draft experience.)
 ## License
 
 MIT

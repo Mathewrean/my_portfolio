@@ -7,6 +7,9 @@ const state = {
   collapsedPlatforms: new Set(),
 };
 const STATIC_DRAFT_KEY = 'portfolio_static_admin_v2';
+const ADMIN_PREVIEW_PARAM = 'preview';
+const ADMIN_PREVIEW_TOKEN = 'admin';
+const allowAdminPreview = new URLSearchParams(window.location.search).get(ADMIN_PREVIEW_PARAM) === ADMIN_PREVIEW_TOKEN;
 
 const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
 const PLATFORM_ORDER = ['TryHackMe', 'HackTheBox', 'PicoCTF', 'CTFROOM', 'CTFZone', 'Others'];
@@ -78,7 +81,7 @@ function setupThemeToggle() {
 }
 
 async function loadContent() {
-  const draftRaw = localStorage.getItem(STATIC_DRAFT_KEY);
+  const draftRaw = allowAdminPreview ? localStorage.getItem(STATIC_DRAFT_KEY) : null;
   if (draftRaw) {
     try {
       const draft = JSON.parse(draftRaw);
