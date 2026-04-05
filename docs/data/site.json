@@ -3,9 +3,21 @@
   "heroSummary": "BSc Computer Security and Digital Forensics student seeking internship/attachment roles in cybersecurity, SOC operations, networking, and IT support.",
   "about": "I am a Computer Security and Digital Forensics undergraduate at JOOUST with practical exposure to network deployment, system support, and security tooling including Kali Linux and Splunk. I actively build hands-on capability through cybersecurity labs and CTF competitions, strengthening practical problem-solving, security analysis, and operational readiness for internship or attachment roles.",
   "contact": [
-    { "label": "Email", "href": "mailto:mathewrean@gmail.com" },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/in/mathewrean" },
-    { "label": "GitHub", "href": "https://github.com/Mathewrean" },
-    { "label": "TryHackMe", "href": "https://tryhackme.com/p/M47h3wR34n" }
+    {
+      "label": "Email",
+      "href": "mailto:mathewrean@gmail.com"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/mathewrean"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/Mathewrean"
+    },
+    {
+      "label": "TryHackMe",
+      "href": "https://tryhackme.com/p/M47h3wR34n"
+    }
   ]
 }

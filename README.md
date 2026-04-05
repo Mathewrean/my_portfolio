@@ -50,6 +50,8 @@ Open:
 
 The Flask backend now hashes `docs/data/*.json` and re-seeds `portfolio.db` whenever those files change, so the live API matches the GitHub Pages snapshot automatically. If you ever want to force a refresh (for example, after manually deleting `portfolio.db`), run `python3 scripts/sync_from_docs.py` with `--yes` to skip the prompt or `--backup <path>` to keep the previous database. The script rebuilds the local store directly from `docs/data/*.json`.
 
+After editing content via the admin UI, run `PYTHONPATH=. python3 scripts/export_db_to_docs.py` to export the database back into `docs/data/*.json`. That keeps the GitHub Pages data files in sync with the live backend. Then commit the updated JSON files (plus any new uploads under `docs/uploads/` or `docs/assets/`) and push to `origin`; GitHub Pages will pick up the same content you just saved.
+
 ## Asset parity
 
 GitHub Pages also serves everything under `docs/assets`, while the Flask app reads from `assets/`. `scripts/sync_assets_from_docs.py` mirrors `docs/assets` into `assets`, including the challenge badge images GitHub Pages exposes but that were previously missing locally. Run that script whenever you update assets so both versions stay identical (`--dry-run` shows the planned changes without overwriting).
