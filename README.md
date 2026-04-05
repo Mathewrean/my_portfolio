@@ -48,9 +48,26 @@ Open:
 
 ## Syncing local data with GitHub Pages
 
-The Flask backend now hashes `docs/data/*.json` and re-seeds `portfolio.db` whenever those files change, so the live API matches the GitHub Pages snapshot automatically. If you ever want to force a refresh (for example, after manually deleting `portfolio.db`), run `python3 scripts/sync_from_docs.py` with `--yes` to skip the prompt or `--backup <path>` to keep the previous database. The script rebuilds the local store directly from `docs/data/*.json`.
+The Flask backend hashes `docs/data/*.json` and re-seeds `portfolio.db` whenever those files change so the live API reflects the GitHub Pages snapshot automatically. Run `python3 scripts/sync_from_docs.py` with `--yes` (or `--backup <path>`) when you need to restart from the published JSON snapshot.
 
-After editing content via the admin UI, run `PYTHONPATH=. python3 scripts/export_db_to_docs.py` to export the database back into `docs/data/*.json`. That keeps the GitHub Pages data files in sync with the live backend. Then commit the updated JSON files (plus any new uploads under `docs/uploads/` or `docs/assets/`) and push to `origin`; GitHub Pages will pick up the same content you just saved.
+When you edit content via the admin UI, run `PYTHONPATH=. python3 scripts/export_db_to_docs.py` to write the current database back into `docs/data/*.json`. That keeps the GitHub Pages data files aligned with the live backend. Mirror any new uploads with `scripts/sync_assets_from_docs.py`, then commit `docs/data/*.json`, `docs/assets/...`, and `docs/uploads/...` before pushing—GitHub Pages will then render the same content you just edited locally.
+
+## Environment detection & caching
+
+`assets/js/main.js` and `docs/assets/js/main.js` now respect the `<meta name="repo-base-path">` value (set to `/my_portfolio`) so both environments build fetch URLs from the correct relative root. The script also detects `localhost` vs. GitHub Pages, uses the API only when a backend is available, and falls back to `docs/data/*.json` when running in production. Cache-control meta tags (`no-cache`, `no-store`, `must-revalidate`) keep browser clients from reusing stale copies of the homepage regardless of hosting.
+
+## Automation workflow
+
+Run `python3 scripts/sync_assets_from_docs.py` and `PYTHONPATH=. python3 scripts/export_db_to_docs.py` whenever you change JSON content or uploads; the GitHub Action at `.github/workflows/ensure-docs-sync.yml` repeats those steps on every push and fails if the generated JSON/assets differ from the committed copies. That way the action alerts you before the GitHub Pages build runs if anything is out of sync.
+
+## Navigation & tabs
+
+The tab navigation now uses a view registry (`VIEW_IDS`) and consistent data attributes so toggling between Home, About, Resume, Certificates, Projects, Challenges, Contact, Gallery, and Research stays clean. `setActiveView` centralizes the tab state, and the mobile toggle plus challenge submenu keep the UI responsive.
+
+## Testing & verification
+
+- `PYTHONPATH=. python3 scripts/check_public_endpoints.py` (seeds the database from `docs/data` and hits every public `/api` route plus `/api/health`).
+- `python3 scripts/sync_assets_from_docs.py` ensures `assets/` mirrors `docs/assets/`, preventing missing images on either environment.
 
 ## Asset parity
 

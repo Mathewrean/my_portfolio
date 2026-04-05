@@ -1,18 +1,48 @@
+const VIEW_IDS = [
+  'home',
+  'about',
+  'resume',
+  'certificates',
+  'projects',
+  'challenges',
+  'contact',
+  'gallery',
+  'research',
+];
+const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
+const STATIC_DRAFT_KEY = 'portfolio_static_admin_v2';
+const ADMIN_PREVIEW_PARAM = 'preview';
+const ADMIN_PREVIEW_TOKEN = 'admin';
+const allowAdminPreview = new URLSearchParams(window.location.search).get(ADMIN_PREVIEW_PARAM) === ADMIN_PREVIEW_TOKEN;
 const state = {
-  activeView: 'home',
+  activeView: VIEW_IDS[0],
   content: null,
   challenges: [],
   challengeCategory: 'All',
   challengePlatform: '',
   collapsedPlatforms: new Set(),
 };
-const STATIC_DRAFT_KEY = 'portfolio_static_admin_v2';
-const ADMIN_PREVIEW_PARAM = 'preview';
-const ADMIN_PREVIEW_TOKEN = 'admin';
-const allowAdminPreview = new URLSearchParams(window.location.search).get(ADMIN_PREVIEW_PARAM) === ADMIN_PREVIEW_TOKEN;
-
 const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
 const PLATFORM_ORDER = ['TryHackMe', 'HackTheBox', 'PicoCTF', 'CTFROOM', 'CTFZone', 'Others'];
+
+const isLocalEnv = LOCAL_HOSTS.has(window.location.hostname) || window.location.protocol === 'file:';
+const baseMeta = document.querySelector('meta[name="repo-base-path"]')?.content?.trim() || '';
+const computedBase = baseMeta || (() => {
+  if (isLocalEnv) return '';
+  const segments = window.location.pathname.split('/').filter(Boolean);
+  return segments.length ? `/${segments[0]}` : '';
+})();
+let repoBasePath = computedBase;
+if (repoBasePath && !repoBasePath.startsWith('/')) repoBasePath = `/${repoBasePath}`;
+repoBasePath = repoBasePath.replace(/\/+$/, '');
+const DATA_ROOT = isLocalEnv ? 'data' : (repoBasePath ? `${repoBasePath}/data` : 'data');
+const PUBLIC_CONTENT_URL = isLocalEnv ? '/api/public/content' : null;
+
+function buildDataUrl(file) {
+  const trimmedRoot = DATA_ROOT.replace(/\/+$/, '');
+  const trimmedFile = file.replace(/^\/+/, '');
+  return `${trimmedRoot}/${trimmedFile}`;
+}
 
 function $(id) { return document.getElementById(id); }
 
@@ -89,7 +119,7 @@ async function loadContent() {
         let resume = draft.resume || {};
         if (!resume || !Object.keys(resume).length) {
           try {
-            const resumeResponse = await fetch('data/resume.json');
+            const resumeResponse = await fetch(buildDataUrl('resume.json'));
             if (resumeResponse.ok) resume = await resumeResponse.json();
           } catch {
             resume = {};
@@ -110,49 +140,56 @@ async function loadContent() {
     }
   }
 
-  try {
-    const response = await fetch('/api/public/content');
+  const fetchPublicContent = async () => {
+    if (!PUBLIC_CONTENT_URL) return null;
+    const response = await fetch(PUBLIC_CONTENT_URL);
     if (!response.ok) throw new Error('API unavailable');
-    const data = await response.json();
-    if (!data.challenges?.challenges) {
-      const old = data.challenges || {};
-      const flat = [];
-      Object.entries(old.categories || {}).forEach(([key, cat]) => {
-        (cat.entries || []).forEach((entry, i) => {
-          flat.push({
-            id: entry.id || `${key}-${i + 1}`,
-            title: entry.title || '',
-            platform: canonicalPlatform(entry.platform || cat.label || key),
-            description: entry.description || '',
-            thumbnail: entry.thumbnail || entry.image || '',
-            medium_link: entry.medium_link || entry.mediumLink || '',
-            date_completed: entry.date_completed || entry.dateCompleted || '',
-            categories: Array.isArray(entry.categories) ? entry.categories : (entry.tags || []),
-            difficulty: entry.difficulty || '',
-            status: entry.status || 'Completed',
-            source_site: entry.source_site || entry.sourceSite || '',
-            ctf_name: entry.ctf_name || entry.ctfName || '',
-            published: entry.published !== false,
+    return response.json();
+  };
+
+  try {
+    const data = await fetchPublicContent();
+    if (data) {
+      if (!data.challenges?.challenges) {
+        const old = data.challenges || {};
+        const flat = [];
+        Object.entries(old.categories || {}).forEach(([key, cat]) => {
+          (cat.entries || []).forEach((entry, i) => {
+            flat.push({
+              id: entry.id || `${key}-${i + 1}`,
+              title: entry.title || '',
+              platform: canonicalPlatform(entry.platform || cat.label || key),
+              description: entry.description || '',
+              thumbnail: entry.thumbnail || entry.image || '',
+              medium_link: entry.medium_link || entry.mediumLink || '',
+              date_completed: entry.date_completed || entry.dateCompleted || '',
+              categories: Array.isArray(entry.categories) ? entry.categories : (entry.tags || []),
+              difficulty: entry.difficulty || '',
+              status: entry.status || 'Completed',
+              source_site: entry.source_site || entry.sourceSite || '',
+              ctf_name: entry.ctf_name || entry.ctfName || '',
+              published: entry.published !== false,
+            });
           });
         });
-      });
-      data.challenges = { tryhackme: old.tryhackme || {}, challenges: flat };
+        data.challenges = { tryhackme: old.tryhackme || {}, challenges: flat };
+      }
+      return data;
     }
-    return data;
   } catch {
     const loadJSON = async (path) => {
-      const res = await fetch(path);
+      const res = await fetch(buildDataUrl(path));
       if (!res.ok) throw new Error(`Failed to load ${path}`);
       return res.json();
     };
     const [site, resume, challenges, certificates, projects, gallery, research] = await Promise.all([
-      loadJSON('data/site.json'),
-      loadJSON('data/resume.json'),
-      loadJSON('data/challenges.json'),
-      loadJSON('data/certificates.json'),
-      loadJSON('data/projects.json'),
-      loadJSON('data/gallery.json'),
-      loadJSON('data/research.json'),
+      loadJSON('site.json'),
+      loadJSON('resume.json'),
+      loadJSON('challenges.json'),
+      loadJSON('certificates.json'),
+      loadJSON('projects.json'),
+      loadJSON('gallery.json'),
+      loadJSON('research.json'),
     ]);
     return { site, resume, challenges, certificates, projects, gallery, research };
   }
@@ -427,20 +464,31 @@ function renderChallenges() {
 }
 
 function setActiveView(view) {
-  state.activeView = view;
-  document.querySelectorAll('.view-section').forEach((section) => section.classList.toggle('active', section.dataset.view === view));
-  document.querySelectorAll('.nav-link').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
-  document.querySelectorAll('.nav-sublink').forEach((button) => button.classList.toggle('active', button.dataset.platform === state.challengePlatform));
-  if (view === 'challenges') renderChallenges();
+  const resolved = VIEW_IDS.includes(view) ? view : VIEW_IDS[0];
+  state.activeView = resolved;
+  document.querySelectorAll('.view-section').forEach((section) =>
+    section.classList.toggle('active', section.dataset.view === resolved)
+  );
+  document.querySelectorAll('.nav-link[data-view]').forEach((button) =>
+    button.classList.toggle('active', button.dataset.view === resolved)
+  );
+  if (resolved === 'challenges') {
+    renderChallenges();
+  }
 }
 
 function setupNavigation() {
-  document.querySelectorAll('.nav-link[data-view]').forEach((btn) => btn.addEventListener('click', () => setActiveView(btn.dataset.view)));
-  $('challengeGroupToggle').addEventListener('click', () => {
-    state.challengePlatform = '';
-    state.collapsedPlatforms.clear();
-    setActiveView('challenges');
+  document.querySelectorAll('.nav-link[data-view]').forEach((btn) => {
+    btn.addEventListener('click', () => setActiveView(btn.dataset.view));
   });
+  const challengeToggle = $('challengeGroupToggle');
+  if (challengeToggle) {
+    challengeToggle.addEventListener('click', () => {
+      state.challengePlatform = '';
+      state.collapsedPlatforms.clear();
+      setActiveView('challenges');
+    });
+  }
 
   const mobileToggle = $('mobileNavToggle');
   const sidebarNav = $('sidebarNav');

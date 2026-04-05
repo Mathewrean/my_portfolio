@@ -1,0 +1,38 @@
+name: Ensure docs sync
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Mirror docs assets
+        run: |
+          python3 scripts/sync_assets_from_docs.py
+      - name: Export DB content to docs/data
+        env:
+          PYTHONPATH: .
+        run: |
+          python3 scripts/export_db_to_docs.py
+      - name: Run API smoke tests
+        env:
+          PYTHONPATH: .
+        run: |
+          python3 scripts/check_public_endpoints.py
+      - name: Show working tree status
+        run: git status --short
+      - name: Fail if generated assets/data differ
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Exported JSON/assets differ from committed versions. Please commit the updated files."
+            git status --short
+            exit 1
+          fi
