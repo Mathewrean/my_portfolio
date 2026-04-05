@@ -1,3 +1,4 @@
+import hashlib
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
@@ -167,12 +168,47 @@ def _load_json(path: Path, default):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+DATA_SIGNATURE_KEY = "__docs_data_signature__"
+
+
+def _compute_data_signature(data_dir: Path) -> str:
+    if not data_dir.exists():
+        return ""
+    hasher = hashlib.sha256()
+    for path in sorted(data_dir.glob("*.json")):
+        hasher.update(path.name.encode("utf-8"))
+        hasher.update(b"\0")
+        hasher.update(path.read_bytes())
+    return hasher.hexdigest()
+
+
 def seed_from_json(base_dir: Path):
     data_dir = base_dir / "docs" / "data"
+    signature = _compute_data_signature(data_dir)
     with get_conn() as conn:
+        sig_row = conn.execute(
+            "SELECT value FROM site_settings WHERE key=?",
+            (DATA_SIGNATURE_KEY,),
+        ).fetchone()
+        current_signature = sig_row["value"] if sig_row else None
         row = conn.execute("SELECT COUNT(*) AS c FROM challenges").fetchone()
-        if row["c"] > 0:
+        needs_seed = row["c"] == 0 or current_signature != signature
+        if not needs_seed:
             return
+        conn.executescript(
+            """
+            DELETE FROM challenge_attachments;
+            DELETE FROM challenge_screenshots;
+            DELETE FROM challenges;
+            DELETE FROM certificates;
+            DELETE FROM projects;
+            DELETE FROM gallery_items;
+            DELETE FROM research_items;
+            DELETE FROM blog_posts;
+            DELETE FROM site_settings;
+            DELETE FROM resume_data;
+            """
+        )
 
         now = now_iso()
 
@@ -301,3 +337,7 @@ def seed_from_json(base_dir: Path):
                 "INSERT OR REPLACE INTO site_settings (key, value) VALUES ('tryhackme_profile', ?)",
                 (json.dumps(thm),),
             )
+        conn.execute(
+            "INSERT OR REPLACE INTO site_settings (key, value) VALUES (?, ?)",
+            (DATA_SIGNATURE_KEY, signature),
+        )

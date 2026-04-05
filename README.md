@@ -46,6 +46,18 @@ Open:
 - Full admin/API functionality requires a backend runtime (Flask).
 - GitHub Pages serves static files only; the public page falls back to JSON files in `docs/data/`.
 
+## Syncing local data with GitHub Pages
+
+The Flask backend now hashes `docs/data/*.json` and re-seeds `portfolio.db` whenever those files change, so the live API matches the GitHub Pages snapshot automatically. If you ever want to force a refresh (for example, after manually deleting `portfolio.db`), run `python3 scripts/sync_from_docs.py` with `--yes` to skip the prompt or `--backup <path>` to keep the previous database. The script rebuilds the local store directly from `docs/data/*.json`.
+
+## Asset parity
+
+GitHub Pages also serves everything under `docs/assets`, while the Flask app reads from `assets/`. `scripts/sync_assets_from_docs.py` mirrors `docs/assets` into `assets`, including the challenge badge images GitHub Pages exposes but that were previously missing locally. Run that script whenever you update assets so both versions stay identical (`--dry-run` shows the planned changes without overwriting).
+
+## Endpoint smoke tests
+
+To be sure the public API still matches the published snapshot, run `PYTHONPATH=. python3 scripts/check_public_endpoints.py`. It seeds the database from `docs/data/*.json` and hits every `/api/public/*` route plus the health check to confirm each returns valid JSON shaped like the docs payload.
+
 ## License
 
 MIT
