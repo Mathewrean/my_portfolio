@@ -1,13 +1,34 @@
 {
   "name": "Mathewrean Otieno Magundho",
-  "tagline": "Cybersecurity & IT Operations Attachment Candidate | SOC/CTF Practitioner",
-  "eyebrow": "Cybersecurity • Digital Forensics • Research",
-  "summary": "BSc Computer Security & Digital Forensics student at JOOUST with redirected energy toward SOC operations, CTF competition prep, and digital forensics research. I pair SIIS congressional leadership, JOOUST ISACA technical writing, and CTFZone mentorship to make cybersecurity more hands-on and community driven.",
-  "about": "I balance academic rigor, student governance, and technical writing with a steady stream of TryHackMe, CTFZone, and Cyber Chief Circle challenges. My mission is to coach peers through SOC playbooks and public-sector awareness sessions while taking on blue-team tasks, network forensics, and secure DevSecOps practices.",
+  "tagline": "Cybersecurity & IT Operations | CTF Competitor & Mentor | Technical Writer | Student Leader",
+  "eyebrow": "Cybersecurity • Digital Forensics • Network Security • Research",
+  "summary": "Computer Security and Digital Forensics student at JOOUST focused on digital security operations while serving as SIIS Congressman to bridge technical security with student leadership; actively seeking an IT Operations or Cybersecurity attachment to deploy blue-team and incident response skills.",
+  "about": "I’m a Cybersecurity & Forensics student who learns by doing. As a CTFZone Campus Ambassador (handle: M47H3WR34N), I hunt vulnerabilities and master defensive playbooks, treating each challenge as an opportunity to sharpen my technical edge and understand the \"why\" behind every security control. Off the terminal, I translate complex concepts into lighter, community-ready insight as a technical writer for JOOUST ISACA. That same drive for problem-solving led me to co-develop Rechiro for the Western Region Research Hackathon, where we deployed digital innovation to bridge supply-chain gaps. I’m stacking certifications from Cybershujaa, Cisco Netacad and OPSWAT Academy to stay ahead of fast-moving threats, and I’m now seeking a forward-thinking team where I can channel my energy into securing digital ecosystems while learning from experienced practitioners.",
   "contact": [
-    { "label": "Email", "url": "mailto:mathewrean@gmail.com", "icon": "email" },
-    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/mathewrean", "icon": "linkedin" },
-    { "label": "GitHub", "url": "https://github.com/Mathewrean", "icon": "github" },
-    { "label": "TryHackMe", "url": "https://tryhackme.com/p/M47h3wR34n", "icon": "tryhackme" }
+    {
+      "label": "Phone No:",
+      "url": "tel:+254700000000",
+      "icon": "phone"
+    },
+    {
+      "label": "Email",
+      "url": "mailto:mathewrean@gmail.com",
+      "icon": "email"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/mathewrean",
+      "icon": "linkedin"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Mathewrean",
+      "icon": "github"
+    },
+    {
+      "label": "TryHackMe",
+      "url": "https://tryhackme.com/p/M47h3wR34n",
+      "icon": "tryhackme"
+    }
   ]
 }

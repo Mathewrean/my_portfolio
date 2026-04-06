@@ -63,6 +63,48 @@ const selectors = {
   dialogMeta: document.getElementById('dialogMeta'),
 };
 
+const CONTACT_ICON_SVGS = {
+  email: `
+    <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="6" width="20" height="14" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M3 8l10 8 10-8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `,
+  linkedin: `
+    <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 9h3v10H6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      <circle cx="7.5" cy="6.5" r="1.4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M12.5 13h3v6h-3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M16.5 11.5a1.6 1.6 0 0 1 1.6-1.6h1.4v9.2h-1.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `,
+  github: `
+    <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 9l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M19 9l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 11h6M10 15h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+  `,
+  tryhackme: `
+    <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3l8 4v8.5c0 4-3 7-8 8-5-1-8-4-8-8V7z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M7 12l5 4 5-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `,
+  default: `
+    <svg viewBox="0 0 26 26" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="13" cy="13" r="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <path d="M8 13h10M13 8v10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+  `,
+};
+
+function getContactIcon(name) {
+  if (!name) return CONTACT_ICON_SVGS.default;
+  const key = name.toLowerCase().trim();
+  return CONTACT_ICON_SVGS[key] || CONTACT_ICON_SVGS.default;
+}
+
 function buildUrl(root, file) {
   const cleanRoot = root.replace(/\/+$/g, '');
   const cleanFile = file.replace(/^\/+/, '');
@@ -189,11 +231,19 @@ function renderProjects(list) {
 }
 
 function createContactLinks(list) {
-  selectors.contactLinks.innerHTML = list.map((item) => `
-    <a href="${item.url}" target="_blank" rel="noopener" class="btn">
-      ${item.label}
-    </a>
-  `).join('');
+  selectors.contactLinks.innerHTML = list.map((item) => {
+    const label = item.label || '';
+    const url = item.url || '#';
+    const isMail = url.toLowerCase().startsWith('mailto:');
+    const targetRel = isMail ? '' : ' target="_blank" rel="noopener"';
+    const icon = getContactIcon(item.icon);
+    return `
+      <a class="contact-link" href="${url}"${targetRel} aria-label="${label}">
+        <span class="contact-icon">${icon}</span>
+        <span class="contact-label">${label}</span>
+      </a>
+    `;
+  }).join('');
 }
 
 function renderGallery(items) {
