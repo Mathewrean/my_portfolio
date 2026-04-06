@@ -1,14 +1,16 @@
 [
   {
-    "title": "Threat Modeling for University ERP Systems",
-    "description": "A structured threat model for JOOUST ISACA ISG focused on identity, access, and data flow risks.",
-    "link": "docs/content-management.md",
-    "date": "2025-10-16"
+    "title": "Threat Model for JOOUST ERP",
+    "description": "Documented data flows, trust zones, and priority mitigations for IAM, logging, and segmentation across the campus ERP stack.",
+    "tags": ["Threat Modeling", "ERP", "Mitigations"],
+    "md_path": "content/research/threat-modeling-erp.md",
+    "date": "2025-05-01"
   },
   {
-    "title": "SIEM Use Cases for Higher-Education SOC Programs",
-    "description": "Recommended detection use cases and event prioritization strategy for academic SOC operations.",
-    "link": "docs/deploy.md",
-    "date": "2025-12-02"
+    "title": "SIEM Drill & Analytics",
+    "description": "Captured a real-world drill led by Cyber Chief Circle that paired Arkime, Wazuh, and Splunk playbooks for rapid triage.",
+    "tags": ["SIEM", "SOC", "Arkime"],
+    "md_path": "content/research/siem-drill-analysis.md",
+    "date": "2025-11-26"
   }
 ]

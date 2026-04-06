@@ -1,50 +1,51 @@
 [
   {
-    "name": "Cisco Ethical Hacker (With Merit)",
-    "issuer": "Cyber Shujaa Program (USIU-Africa, Serianu Ltd, Kenya Bankers Association)",
+    "title": "Cisco Ethical Hacker",
+    "issuer": "Cyber Shujaa Program & Cisco Networking Academy",
     "date": "2025-08-27",
-    "image": "assets/images/certificates/cisco-ethical-hacker.svg"
+    "image_path": "assets/images/certificates/cisco-ethical-hacker.svg",
+    "credential_url": "https://www.cisco.com/"
   },
   {
-    "name": "Cyber Basics: Hack Me If You Can Bootcamp",
-    "issuer": "DevTown",
-    "date": "2025-05-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=DevTown+Bootcamp"
+    "title": "OPSWAT File Security Associate",
+    "issuer": "OPSWAT Academy",
+    "date": "2025-04-03",
+    "image_path": "https://placehold.co/400x300/0b3d91/f4f1ff?text=OFSA",
+    "credential_url": "https://www.opswat.com/"
   },
   {
-    "name": "Cybersecurity & Emerging Technologies Awareness",
-    "issuer": "ICT Authority, Kenya",
-    "date": "2025-05-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=ICT+Authority"
+    "title": "OPSWAT Network Security Associate",
+    "issuer": "OPSWAT Academy",
+    "date": "2025-05-09",
+    "image_path": "https://placehold.co/400x300/051f38/fdf7ff?text=Network+Security",
+    "credential_url": "https://www.opswat.com/"
   },
   {
-    "name": "Data Protection",
-    "issuer": "Strathmore University",
-    "date": "2025-03-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Strathmore+Data+Protection"
+    "title": "OPSWAT Email Security Associate",
+    "issuer": "OPSWAT Academy",
+    "date": "2025-06-19",
+    "image_path": "https://placehold.co/400x300/1a1b27/f5f0ff?text=Email+Security",
+    "credential_url": "https://www.opswat.com/"
   },
   {
-    "name": "SOC Analyst Path Completion",
-    "issuer": "TryHackMe",
-    "date": "2025-12-12",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=THM+SOC+Path"
+    "title": "Cybersecurity Fundamentals Associate",
+    "issuer": "OPSWAT Academy",
+    "date": "2025-05-12",
+    "image_path": "https://placehold.co/400x300/104b78/e8f0ff?text=Fundamentals",
+    "credential_url": "https://www.opswat.com/"
   },
   {
-    "name": "Software Development",
-    "issuer": "Power Learn Project Academy",
-    "date": "2024-10-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=PLP+Software+Development"
+    "title": "Data Protection",
+    "issuer": "Strathmore University (CIPIT)",
+    "date": "2025-03-12",
+    "image_path": "https://placehold.co/400x300/0d133a/eff2ff?text=Data+Protection",
+    "credential_url": "https://www.strathmore.edu/"
   },
   {
-    "name": "Computer Skills",
-    "issuer": "ICC Computer Training Mission",
-    "date": "2023-04-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Computer+Skills"
-  },
-  {
-    "name": "Computer Graphic Design",
-    "issuer": "Royal Hope Computer College",
-    "date": "2023-05-01",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Graphic+Design"
+    "title": "Security, Compliance, & Identity Fundamentals",
+    "issuer": "Microsoft Student Ambassadors",
+    "date": "2024-12-05",
+    "image_path": "https://placehold.co/400x300/1c2436/fafaff?text=SCIF",
+    "credential_url": "https://learn.microsoft.com/"
   }
 ]

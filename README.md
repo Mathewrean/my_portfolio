@@ -1,85 +1,100 @@
-# Personal Portfolio (Dynamic + Admin)
+# Mathewrean Cybersecurity Portfolio (Static)
 
-This project now supports:
-- Public portfolio rendering from dynamic API data.
-- Admin dashboard for CRUD operations (Challenges, Certificates, Projects, Research, Gallery, Blog, Settings).
-- Secure file upload handling with structured folders.
-- SQLite-backed storage with migration and seed logic.
-- GitHub Pages fallback for public content using `docs/data/*.json` when API is unavailable.
+This is the static portfolio that powers https://mathewrean.github.io/my_portfolio. The HTML/JS simply reads JSON + Markdown from `data/` and `content/` and renders the hero, about, resume, certificates, projects, challenges, research, gallery, and contact sections.
 
-## Run Locally
+## Project layout
 
-```bash
-python3 run_server.py
+```
+/my_portfolio
+├── index.html           # SPA shell with hero, tabs, modal, and toast
+├── admin.html           # lightweight admin shell (manual content editing only)
+├── assets/              # shared CSS / JS / image assets
+├── data/                # JSON content that drives every section
+└── content/             # markdown writeups for challenges & research
 ```
 
-Open:
-- Public site: `http://127.0.0.1:4173/`
-- Admin: `http://127.0.0.1:4173/admin`
+All URLs respect the `<meta name="repo-base-path" content="/my_portfolio">` tag so the same build works both locally and on GitHub Pages.
 
-## Admin Authentication
+## Running locally
 
-- Password hash is configured in `backend/config.py` via `PORTFOLIO_ADMIN_HASH` env override.
-- Current password corresponds to the hash configured in the frontend/login flow.
+```bash
+# from the repo root
+python3 -m http.server 4173
+```
 
-## Backend Structure
+Then point your browser at `http://localhost:4173/index.html`. Browsers require a web server because the fetch-based data loading won’t work via `file://`.
 
-- `backend/app.py`: Flask app, API routes, static serving, security headers.
-- `backend/db.py`: SQLite schema migration + JSON seed import.
-- `backend/repository.py`: data access and transformation layer.
-- `backend/services/auth.py`: admin token auth.
-- `backend/services/uploads.py`: secure upload/validation helpers.
-- `run_server.py`: local server entrypoint.
+## Updating content
 
-## Upload Folders
+1. Edit the appropriate JSON file in `/data` (profile, projects, certificates, challenges, research, resume, gallery).
+2. Add or update markdown files under `/content/challenges` or `/content/research` and reference them via the `md_path` values.
+3. Preview locally with the HTTP server above, then commit the JSON/Markdown changes (and any new assets) so GitHub Pages serves the same data automatically.
 
-- `docs/uploads/challenges/`
-- `docs/uploads/certificates/`
-- `docs/uploads/projects/`
-- `docs/uploads/gallery/`
-- `docs/uploads/research/`
-- `docs/uploads/blog/`
-- `docs/uploads/attachments/`
+The admin UI (`admin.html`) is a static scaffold to keep future automation or GitHub API wiring in one place, but it currently relies on manual edits (no backend sync).
 
-## Notes on Hosting
+## Challenge & research modals
 
-- Full admin/API functionality requires a backend runtime (Flask).
-- GitHub Pages serves static files only; the public page falls back to JSON files in `docs/data/`.
+`assets/js/main.js` loads `marked.js` via CDN (CSP includes the CDN reference) so every challenge or research card fetches the linked Markdown file (`content/...`) and renders it inside the modal with a close button. The modal also traps focus via simple button listeners.
 
-## Syncing local data with GitHub Pages
+## Theme toggle
 
-The Flask backend hashes `docs/data/*.json` and re-seeds `portfolio.db` whenever those files change so the live API reflects the GitHub Pages snapshot automatically. Run `python3 scripts/sync_from_docs.py` with `--yes` (or `--backup <path>`) when you need to restart from the published JSON snapshot.
+A floating `#themeToggle` button toggles `data-theme="dark"` / `data-theme="light"` on `<html>`, stores the preference in `localStorage`, and the CSS defines variables for both modes.
 
-When you edit content via the admin UI, run `PYTHONPATH=. python3 scripts/export_db_to_docs.py` to write the current database back into `docs/data/*.json`. That keeps the GitHub Pages data files aligned with the live backend. Mirror any new uploads with `scripts/sync_assets_from_docs.py`, then commit `docs/data/*.json`, `docs/assets/...`, and `docs/uploads/...` before pushing—GitHub Pages will then render the same content you just edited locally.
+## Challenges — Detailed Behaviour
 
-## Environment detection & caching
+**Sub-tabs (platform switcher)**
 
-`assets/js/main.js` and `docs/assets/js/main.js` now respect the `<meta name="repo-base-path">` value (set to `/my_portfolio`) so both environments build fetch URLs from the correct relative root. The script also detects `localhost` vs. GitHub Pages, uses the API only when a backend is available, and falls back to `docs/data/*.json` when running in production. Cache-control meta tags (`no-cache`, `no-store`, `must-revalidate`) keep browser clients from reusing stale copies of the homepage regardless of hosting.
+The challenges section renders six inline platform tabs (`TryHackMe`, `HackTheBox`, `CTFZone`, `CTFROOM`, `PicoCTF`, `Others`). Each tab maps to the corresponding slug inside `data/challenges.json`. Switching tabs re-runs the renderer so only that platform’s entries are shown, and the active tab stays visually highlighted (default tab = `TryHackMe`).
 
-## Automation workflow
+**CTF Categories**
 
-Run `python3 scripts/sync_assets_from_docs.py` and `PYTHONPATH=. python3 scripts/export_db_to_docs.py` whenever you change JSON content or uploads; the GitHub Action at `.github/workflows/ensure-docs-sync.yml` repeats those steps on every push and fails if the generated JSON/assets differ from the committed copies. That way the action alerts you before the GitHub Pages build runs if anything is out of sync.
+Every challenge entry carries an array of categories picked from the standard set below. A single battle can belong to multiple categories simultaneously, and the UI surfaces them as tags on each card.
 
-## Navigation & tabs
+```
+Web Exploitation, Cryptography, Reverse Engineering, Binary Exploitation (Pwn),
+Forensics, OSINT, Steganography, Networking, Miscellaneous, Hardware,
+Cloud Security, Mobile Security, Active Directory, Malware Analysis, Threat Hunting
+```
 
-The tab navigation now uses a view registry (`VIEW_IDS`) and consistent data attributes so toggling between Home, About, Resume, Certificates, Projects, Challenges, Contact, Gallery, and Research stays clean. `setActiveView` centralizes the tab state, and the mobile toggle plus challenge submenu keep the UI responsive.
+**Filtering (public-facing)**
 
-## Testing & verification
+- **Source filter** — dropdown above the list that repeats the six platform slugs, allowing visitors to override the active tab and show another platform’s entries without leaving the page; `Clear Filters` resets it to “All platforms”.
+- **Category filter** — dropdown seeded dynamically from the categories present in the currently displayed platform. It works in tandem with the source filter, so both platform + category constraints can be applied at once.
+- Clearing filters reverts to the default tab view with all categories included; updates happen client-side without page reloads.
 
-- `PYTHONPATH=. python3 scripts/check_public_endpoints.py` (seeds the database from `docs/data` and hits every public `/api` route plus `/api/health`).
-- `python3 scripts/sync_assets_from_docs.py` ensures `assets/` mirrors `docs/assets/`, preventing missing images on either environment.
+**`data/challenges.json` — updated schema**
 
-## Asset parity
+```json
+{
+  "tryhackme": [
+    {
+      "title": "",
+      "categories": ["Forensics", "Steganography"],
+      "difficulty": "Easy",
+      "description": "",
+      "md_path": "content/challenges/tryhackme/slug.md",
+      "date": "YYYY-MM-DD"
+    }
+  ],
+  "hackthebox": [],
+  "ctfzone": [],
+  "ctfroom": [],
+  "picoctf": [],
+  "others": []
+}
+```
 
-GitHub Pages also serves everything under `docs/assets`, while the Flask app reads from `assets/`. `scripts/sync_assets_from_docs.py` mirrors `docs/assets` into `assets`, including the challenge badge images GitHub Pages exposes but that were previously missing locally. Run that script whenever you update assets so both versions stay identical (`--dry-run` shows the planned changes without overwriting).
+`category` is now an array of strings so a challenge can be tagged with multiple CTF genres.
 
-## Endpoint smoke tests
+**Admin — Challenges tab update**
 
-To be sure the public API still matches the published snapshot, run `PYTHONPATH=. python3 scripts/check_public_endpoints.py`. It seeds the database from `docs/data/*.json` and hits every `/api/public/*` route plus the health check to confirm each returns valid JSON shaped like the docs payload.
+- Platform dropdown mirrors the six slugs so new entries land in the correct array.
+- Categories are chosen using a multi-select/checkbox group sourced from the standard list above.
+- All other fields stay the same (title, difficulty, description, date, markdown upload/paste). A slug is generated from the title at save time.
+- Saving writes a markdown file to `content/challenges/{platform}/{slug}.md` and appends an entry to the matching platform array in `data/challenges.json`. The admin list shows per-platform entries with edit/delete controls.
 
-## Admin preview flag
+## Notes for future updates
 
-The home page now ignores any saved admin draft unless the query string contains `?preview=admin`. That means a fresh browser session always renders the official GitHub Pages content (no “Security Analyst” extras), while administrators can still preview their locally saved draft via `http://127.0.0.1:4173/?preview=admin` after saving it from the admin panel. (You can also clear the `portfolio_static_admin_v2` localStorage entry if you need to reset your draft experience.)
-## License
-
-MIT
+- Keep absolute paths out of CSS/JS; rely on the `repo-base-path` meta tag and `buildUrl` helper.
+- If you want a GitHub-backed admin workflow, implement GitHub Contents API calls in `assets/js/admin.js` and guard them with stored credentials (no PATs in source).
+- Before pushing, run `python3 -m http.server` locally and walk through every tab (Home, About, Resume, Certificates, Projects, Challenges, Contact, Gallery, Research) plus modal content to ensure there are no fetch errors.

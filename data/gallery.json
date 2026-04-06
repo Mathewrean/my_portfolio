@@ -1,18 +1,26 @@
 [
   {
-    "url": "https://placehold.co/800x600/1a2540/e6edf8?text=CTF+Event",
-    "caption": "Regional CTF event participation"
+    "title": "Cyber Chief Circle CTF",
+    "image_path": "https://placehold.co/500x400/0d1b2a/f4f4ff?text=Cyber+Chief+Circle",
+    "caption": "Organized and coached teams across web, forensics, RE, crypto, and OSINT categories.",
+    "date": "2026-03-09"
   },
   {
-    "url": "https://placehold.co/800x600/1a2540/e6edf8?text=Workshop",
-    "caption": "Security workshop facilitation"
+    "title": "Enactus National Expo",
+    "image_path": "https://placehold.co/500x400/062238/eef5ff?text=Enactus",
+    "caption": "Presented Rechiro, the fisher-to-buyer platform, and networked with impact-driven innovators.",
+    "date": "2024-10-18"
   },
   {
-    "url": "https://placehold.co/800x600/1a2540/e6edf8?text=Award",
-    "caption": "Achievement recognition"
+    "title": "Huawei & AI Summit Hacks",
+    "image_path": "https://placehold.co/500x400/13263e/f3f5ff?text=Huawei+Summit",
+    "caption": "Third-place finishes at the Huawei Hackathon and AI Summit, where AppCube rapid-prototyping met security scouting.",
+    "date": "2024-11-07"
   },
   {
-    "url": "https://placehold.co/800x600/1a2540/e6edf8?text=Team+Session",
-    "caption": "Blue team practice session"
+    "title": "Cybersecurity Awareness Week",
+    "image_path": "https://placehold.co/500x400/07122a/faf7ff?text=Cyber+Week",
+    "caption": "Led JOOUST ISACA sessions with Safaricom trainers covering secure-by-design, AI threats, and telecom infrastructure.",
+    "date": "2024-08-14"
   }
 ]

@@ -1,0 +1,13 @@
+{
+  "name": "Mathewrean Otieno Magundho",
+  "tagline": "Cybersecurity & IT Operations Attachment Candidate | SOC/CTF Practitioner",
+  "eyebrow": "Cybersecurity • Digital Forensics • Research",
+  "summary": "BSc Computer Security & Digital Forensics student at JOOUST with redirected energy toward SOC operations, CTF competition prep, and digital forensics research. I pair SIIS congressional leadership, JOOUST ISACA technical writing, and CTFZone mentorship to make cybersecurity more hands-on and community driven.",
+  "about": "I balance academic rigor, student governance, and technical writing with a steady stream of TryHackMe, CTFZone, and Cyber Chief Circle challenges. My mission is to coach peers through SOC playbooks and public-sector awareness sessions while taking on blue-team tasks, network forensics, and secure DevSecOps practices.",
+  "contact": [
+    { "label": "Email", "url": "mailto:mathewrean@gmail.com", "icon": "email" },
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/mathewrean", "icon": "linkedin" },
+    { "label": "GitHub", "url": "https://github.com/Mathewrean", "icon": "github" },
+    { "label": "TryHackMe", "url": "https://tryhackme.com/p/M47h3wR34n", "icon": "tryhackme" }
+  ]
+}

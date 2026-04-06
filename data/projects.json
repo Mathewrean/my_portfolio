@@ -1,26 +1,38 @@
 [
   {
     "title": "Phishing Detection Dashboard",
-    "description": "A dashboard for URL and email threat scoring with actionable mitigation guidance.",
-    "technologies": ["Python", "Flask", "Bootstrap", "SQLite"],
-    "github": "https://github.com/Mathewrean/my_portfolio",
-    "demo": "https://github.com/Mathewrean/my_portfolio",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+1"
+    "description": "Python/Flask dashboard that scores URLs and emails, surfacing remediation guidance alongside SOC incident response playbooks.",
+    "tags": ["Python", "Flask", "Security"],
+    "repo_url": "https://github.com/Mathewrean/my_portfolio",
+    "live_url": "",
+    "image_path": "https://placehold.co/400x300/102c45/e8eefb?text=Dashboard",
+    "date": "2025-09-10"
   },
   {
     "title": "Network Forensics Toolkit",
-    "description": "Toolkit for packet triage, IOC extraction, and automated incident notes generation.",
-    "technologies": ["Python", "Scapy", "Pandas"],
-    "github": "https://github.com/Mathewrean",
-    "demo": "https://github.com/Mathewrean",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+2"
+    "description": "CLI utilities focused on packet triage, IOC enrichment, and automated incident reporting for SOC analysts.",
+    "tags": ["Scapy", "Forensics", "Python"],
+    "repo_url": "https://github.com/Mathewrean",
+    "live_url": "",
+    "image_path": "https://placehold.co/400x300/041d2f/f9f3ff?text=Toolkit",
+    "date": "2025-07-22"
   },
   {
-    "title": "Web Security Lab Notes",
-    "description": "A practical repository of lab-based exploitation and remediation exercises.",
-    "technologies": ["JavaScript", "Node.js", "Docker"],
-    "github": "https://github.com/Mathewrean/my_portfolio",
-    "demo": "https://github.com/Mathewrean/my_portfolio",
-    "image": "https://placehold.co/900x600/1a2540/e6edf8?text=Project+3"
+    "title": "Rechiro: Fisher-to-Buyer Platform",
+    "description": "Low-code prototype showcased at the Huawei Siaya Hackathon and Enactus National Expo, enabling fishermen to share fresh catch data and coordinate with verified buyers.",
+    "tags": ["AppCube", "Community", "Product"],
+    "repo_url": "",
+    "live_url": "",
+    "image_path": "https://placehold.co/400x300/0d2540/e5f3ff?text=Rechiro",
+    "date": "2024-10-18"
+  },
+  {
+    "title": "SOC Alert Triage Playbooks",
+    "description": "Documented SOC L1/L2 triage flows from TryHackMe labs plus Cyber Chief Circle practice, consolidating indicators, automation rules, and escalation steps.",
+    "tags": ["SOC", "Playbooks", "Automation"],
+    "repo_url": "",
+    "live_url": "",
+    "image_path": "https://placehold.co/400x300/0b1f2f/faf8ff?text=Playbooks",
+    "date": "2025-12-06"
   }
 ]

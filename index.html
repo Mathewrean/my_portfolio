@@ -9,10 +9,12 @@
   <meta http-equiv="Expires" content="0" />
   <title>Mathewrean | Cybersecurity Portfolio</title>
   <meta name="description" content="Cybersecurity portfolio with projects, certificates, challenges, research, and contact details." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; frame-src https://tryhackme.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
+  <!-- CSP: added marked.js CDN for MD rendering -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self'; frame-src https://tryhackme.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="stylesheet" href="assets/css/main.css" />
   <script defer src="assets/js/main.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 </head>
 <body>
   <button id="themeToggle" class="floating-theme-toggle" aria-label="Toggle dark and light mode" title="Toggle theme">◐</button>
@@ -115,5 +117,10 @@
     <img id="dialogImage" alt="Certificate full view" />
     <p id="dialogMeta"></p>
   </dialog>
+  <dialog id="contentModal" class="markdown-dialog">
+    <button id="closeContentModal" class="close-dialog" aria-label="Close">Close</button>
+    <div id="modalContent"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

@@ -1,557 +1,398 @@
-const VIEW_IDS = [
-  'home',
-  'about',
-  'resume',
-  'certificates',
-  'projects',
-  'challenges',
-  'contact',
-  'gallery',
-  'research',
+const VIEW_IDS = ['home', 'about', 'resume', 'certificates', 'projects', 'challenges', 'contact', 'gallery', 'research'];
+const themeKey = 'portfolio_theme';
+const repoMeta = document.querySelector('meta[name="repo-base-path"]');
+const repoBase = repoMeta?.content?.trim() || '';
+const normalizedBase = repoBase ? repoBase.replace(/\/+$/g, '') : '';
+const DATA_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}data`;
+const CONTENT_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}content`;
+const PLATFORM_TABS = [
+  { slug: 'tryhackme', label: 'TryHackMe' },
+  { slug: 'hackthebox', label: 'HackTheBox' },
+  { slug: 'ctfzone', label: 'CTFZone' },
+  { slug: 'ctfroom', label: 'CTFROOM' },
+  { slug: 'picoctf', label: 'PicoCTF' },
+  { slug: 'others', label: 'Others' },
 ];
-const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
-const STATIC_DRAFT_KEY = 'portfolio_static_admin_v2';
-const ADMIN_PREVIEW_PARAM = 'preview';
-const ADMIN_PREVIEW_TOKEN = 'admin';
-const allowAdminPreview = new URLSearchParams(window.location.search).get(ADMIN_PREVIEW_PARAM) === ADMIN_PREVIEW_TOKEN;
+const CATEGORY_OPTIONS = [
+  'Web Exploitation',
+  'Cryptography',
+  'Reverse Engineering',
+  'Binary Exploitation (Pwn)',
+  'Forensics',
+  'OSINT',
+  'Steganography',
+  'Networking',
+  'Miscellaneous',
+  'Hardware',
+  'Cloud Security',
+  'Mobile Security',
+  'Active Directory',
+  'Malware Analysis',
+  'Threat Hunting',
+];
 const state = {
-  activeView: VIEW_IDS[0],
-  content: null,
+  activeView: 'home',
   challenges: [],
-  challengeCategory: 'All',
-  challengePlatform: '',
-  collapsedPlatforms: new Set(),
+  activePlatformTab: 'tryhackme',
+  challengeFilter: { source: 'all', category: 'all' },
+  data: null,
 };
-const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
-const PLATFORM_ORDER = ['TryHackMe', 'HackTheBox', 'PicoCTF', 'CTFROOM', 'CTFZone', 'Others'];
 
-const isLocalEnv = LOCAL_HOSTS.has(window.location.hostname) || window.location.protocol === 'file:';
-const baseMeta = document.querySelector('meta[name="repo-base-path"]')?.content?.trim() || '';
-const computedBase = baseMeta || (() => {
-  if (isLocalEnv) return '';
-  const segments = window.location.pathname.split('/').filter(Boolean);
-  return segments.length ? `/${segments[0]}` : '';
-})();
-let repoBasePath = computedBase;
-if (repoBasePath && !repoBasePath.startsWith('/')) repoBasePath = `/${repoBasePath}`;
-repoBasePath = repoBasePath.replace(/\/+$/, '');
-const DATA_ROOT = isLocalEnv ? 'data' : (repoBasePath ? `${repoBasePath}/data` : 'data');
-const PUBLIC_CONTENT_URL = isLocalEnv ? '/api/public/content' : null;
+const selectors = {
+  heroTitle: document.getElementById('heroTitle'),
+  heroSummary: document.getElementById('heroSummary'),
+  aboutText: document.getElementById('aboutText'),
+  resumeContent: document.getElementById('resumeContent'),
+  certificatesGrid: document.getElementById('certificatesGrid'),
+  projectsGrid: document.getElementById('projectsGrid'),
+  challengeList: document.getElementById('challengeList'),
+  challengeTabs: document.getElementById('challengeTabs'),
+  challengePlatform: document.getElementById('challengePlatformFilter'),
+  challengeCategory: document.getElementById('challengeCategoryFilter'),
+  galleryGrid: document.getElementById('galleryGrid'),
+  researchList: document.getElementById('researchList'),
+  contactLinks: document.getElementById('contactLinks'),
+  toast: document.getElementById('toast'),
+  modal: document.getElementById('contentModal'),
+  modalContent: document.getElementById('modalContent'),
+  closeModal: document.getElementById('closeContentModal'),
+  certificateDialog: document.getElementById('certificateDialog'),
+  dialogImage: document.getElementById('dialogImage'),
+  dialogMeta: document.getElementById('dialogMeta'),
+};
 
-function buildDataUrl(file) {
-  const trimmedRoot = DATA_ROOT.replace(/\/+$/, '');
-  const trimmedFile = file.replace(/^\/+/, '');
-  return `${trimmedRoot}/${trimmedFile}`;
+function buildUrl(root, file) {
+  const cleanRoot = root.replace(/\/+$/g, '');
+  const cleanFile = file.replace(/^\/+/, '');
+  if (!cleanRoot) return cleanFile;
+  return `${cleanRoot}/${cleanFile}`;
 }
 
-function $(id) { return document.getElementById(id); }
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+async function fetchJson(file) {
+  const url = buildUrl(DATA_ROOT, file);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Failed to load ${file}`);
+  return response.json();
 }
 
-function sanitizeText(value) {
-  return String(value ?? '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/[\u0000-\u001F\u007F\uFFFD]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+function showToast(message) {
+  if (!selectors.toast) return;
+  selectors.toast.textContent = message;
+  selectors.toast.classList.add('visible');
+  setTimeout(() => selectors.toast?.classList.remove('visible'), 3200);
 }
 
-function safeImage(url, fallback = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Add+Image') {
-  return url && String(url).trim() ? String(url) : fallback;
-}
-
-function canonicalPlatform(value) {
-  const normalized = sanitizeText(value);
-  const v = normalized.toLowerCase();
-  const map = {
-    tryhackme: 'TryHackMe',
-    'try hack me': 'TryHackMe',
-    hackthebox: 'HackTheBox',
-    htb: 'HackTheBox',
-    picoctf: 'PicoCTF',
-    ctfroom: 'CTFROOM',
-    ctfzone: 'CTFZone',
-    others: 'Others',
-    other: 'Others',
-  };
-  return map[v] || (normalized || 'Others');
-}
-
-function isSafeExternalUrl(raw) {
-  if (!raw || typeof raw !== 'string') return false;
-  try {
-    const url = new URL(raw, window.location.origin);
-    return ['http:', 'https:', 'mailto:'].includes(url.protocol);
-  } catch {
-    return false;
-  }
-}
-
-function linkButton(label, href) {
-  if (!isSafeExternalUrl(href)) return '';
-  return `<a class="btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>`;
-}
-
-function setTheme(theme) {
+function applyTheme(theme) {
   document.body.setAttribute('data-theme', theme);
-  localStorage.setItem('portfolioTheme', theme);
+  localStorage.setItem(themeKey, theme);
 }
 
-function setupThemeToggle() {
-  const saved = localStorage.getItem('portfolioTheme') || 'dark';
-  setTheme(saved);
-  $('themeToggle').addEventListener('click', () => setTheme(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
-}
-
-async function loadContent() {
-  const draftRaw = allowAdminPreview ? localStorage.getItem(STATIC_DRAFT_KEY) : null;
-  if (draftRaw) {
-    try {
-      const draft = JSON.parse(draftRaw);
-      if (draft && Array.isArray(draft.challenges)) {
-        let resume = draft.resume || {};
-        if (!resume || !Object.keys(resume).length) {
-          try {
-            const resumeResponse = await fetch(buildDataUrl('resume.json'));
-            if (resumeResponse.ok) resume = await resumeResponse.json();
-          } catch {
-            resume = {};
-          }
-        }
-        return {
-          site: draft.site || {},
-          resume,
-          challenges: { tryhackme: draft.site?.tryhackme || {}, challenges: draft.challenges || [] },
-          certificates: draft.certificates || [],
-          projects: draft.projects || [],
-          gallery: draft.gallery || [],
-          research: draft.research || [],
-        };
-      }
-    } catch (error) {
-      console.warn('Ignoring invalid static admin draft payload', error);
-    }
-  }
-
-  const fetchPublicContent = async () => {
-    if (!PUBLIC_CONTENT_URL) return null;
-    const response = await fetch(PUBLIC_CONTENT_URL);
-    if (!response.ok) throw new Error('API unavailable');
-    return response.json();
-  };
-
-  try {
-    const data = await fetchPublicContent();
-    if (data) {
-      if (!data.challenges?.challenges) {
-        const old = data.challenges || {};
-        const flat = [];
-        Object.entries(old.categories || {}).forEach(([key, cat]) => {
-          (cat.entries || []).forEach((entry, i) => {
-            flat.push({
-              id: entry.id || `${key}-${i + 1}`,
-              title: entry.title || '',
-              platform: canonicalPlatform(entry.platform || cat.label || key),
-              description: entry.description || '',
-              thumbnail: entry.thumbnail || entry.image || '',
-              medium_link: entry.medium_link || entry.mediumLink || '',
-              date_completed: entry.date_completed || entry.dateCompleted || '',
-              categories: Array.isArray(entry.categories) ? entry.categories : (entry.tags || []),
-              difficulty: entry.difficulty || '',
-              status: entry.status || 'Completed',
-              source_site: entry.source_site || entry.sourceSite || '',
-              ctf_name: entry.ctf_name || entry.ctfName || '',
-              published: entry.published !== false,
-            });
-          });
-        });
-        data.challenges = { tryhackme: old.tryhackme || {}, challenges: flat };
-      }
-      return data;
-    }
-  } catch {
-    const loadJSON = async (path) => {
-      const res = await fetch(buildDataUrl(path));
-      if (!res.ok) throw new Error(`Failed to load ${path}`);
-      return res.json();
-    };
-    const [site, resume, challenges, certificates, projects, gallery, research] = await Promise.all([
-      loadJSON('site.json'),
-      loadJSON('resume.json'),
-      loadJSON('challenges.json'),
-      loadJSON('certificates.json'),
-      loadJSON('projects.json'),
-      loadJSON('gallery.json'),
-      loadJSON('research.json'),
-    ]);
-    return { site, resume, challenges, certificates, projects, gallery, research };
-  }
-}
-
-function normalizeChallenges(challengesData) {
-  const flat = (challengesData?.challenges || []).map((c, idx) => ({
-    id: c.id || idx + 1,
-    title: sanitizeText(c.title) || 'Untitled Challenge',
-    platform: canonicalPlatform(c.platform),
-    description: sanitizeText(c.description),
-    thumbnail: sanitizeText(c.thumbnail || c.image || ''),
-    medium_link: String(c.medium_link || c.mediumLink || '').trim(),
-    date_completed: String(c.date_completed || c.dateCompleted || '').trim(),
-    categories: (Array.isArray(c.categories) ? c.categories : (c.tags || []))
-      .map((x) => sanitizeText(x))
-      .filter(Boolean),
-    difficulty: sanitizeText(c.difficulty),
-    status: sanitizeText(c.status) || 'Completed',
-    source_site: sanitizeText(c.source_site || c.sourceSite || ''),
-    ctf_name: sanitizeText(c.ctf_name || c.ctfName || ''),
-    published: c.published !== false,
-  }));
-  return flat;
-}
-
-function sortPlatforms(values) {
-  return [...values].sort((a, b) => {
-    const ia = PLATFORM_ORDER.indexOf(a);
-    const ib = PLATFORM_ORDER.indexOf(b);
-    if (ia === -1 && ib === -1) return a.localeCompare(b);
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
+function initThemeToggle() {
+  const saved = localStorage.getItem(themeKey);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = document.body.getAttribute('data-theme');
+    applyTheme(current === 'dark' ? 'light' : 'dark');
   });
-}
-
-function renderSiteMeta(site) {
-  $('heroTitle').textContent = site.heroTitle || '';
-  $('heroSummary').textContent = site.heroSummary || '';
-  $('aboutText').textContent = site.about || '';
-  $('contactLinks').innerHTML = (site.contact || []).map((item) => linkButton(item.label, item.href)).join('');
-}
-
-function renderCertificates(certificates) {
-  $('certificatesGrid').innerHTML = (certificates || []).map((cert, i) => `
-    <article class="card">
-      <img src="${escapeHtml(safeImage(cert.image || cert.image_path))}" alt="${escapeHtml(cert.title || cert.name || 'Certificate')}" loading="lazy" />
-      <h3>${escapeHtml(cert.title || cert.name || 'Certificate')}</h3>
-      <p class="meta">${escapeHtml(cert.issuer || 'Issuer')} • ${escapeHtml(cert.date || cert.issue_date || '')}</p>
-      <button class="btn" data-cert-index="${i}" type="button">View Full Certificate</button>
-    </article>
-  `).join('');
-
-  $('certificatesGrid').querySelectorAll('[data-cert-index]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const cert = certificates[Number(btn.dataset.certIndex)] || {};
-      $('dialogImage').src = safeImage(cert.image || cert.image_path);
-      $('dialogMeta').textContent = `${cert.title || cert.name || 'Certificate'} | ${cert.issuer || 'Issuer'} | ${cert.date || cert.issue_date || ''}`;
-      $('certificateDialog').showModal();
-    });
-  });
-}
-
-function renderProjects(projects) {
-  $('projectsGrid').innerHTML = (projects || []).map((p) => `
-    <article class="card">
-      <img src="${escapeHtml(safeImage(p.image || p.image_path))}" alt="${escapeHtml(p.title || 'Project')}" loading="lazy" />
-      <h3>${escapeHtml(p.title || 'Project')}</h3>
-      <p>${escapeHtml(p.description || '')}</p>
-      <p class="meta">Tech: ${escapeHtml((p.technologies || []).join(', '))}</p>
-      <p>${linkButton('GitHub', p.github || p.github_link)} ${linkButton('Live Demo', p.demo || p.live_link)}</p>
-    </article>
-  `).join('');
-}
-
-function renderResearch(research) {
-  $('researchList').innerHTML = (research || []).map((r) => `
-    <article class="research-item">
-      <h3>${escapeHtml(r.title || 'Research')}</h3>
-      <p>${escapeHtml(r.description || '')}</p>
-      <p class="meta">Published: ${escapeHtml(r.date || r.publication_date || '')}</p>
-      ${linkButton('View / Download', r.link || '')}
-    </article>
-  `).join('');
-}
-
-function renderGallery(gallery) {
-  $('galleryGrid').innerHTML = (gallery || []).map((g) => `
-    <article class="card">
-      <img src="${escapeHtml(safeImage(g.url || g.image_path))}" alt="${escapeHtml(g.caption || 'Gallery image')}" loading="lazy" />
-      <p class="meta">${escapeHtml(g.caption || '')}</p>
-    </article>
-  `).join('');
-}
-
-function renderResume(resume) {
-  if (!resume || !$('resumeContent')) return;
-  const list = (items) => (items || []).map((x) => `<li>${escapeHtml(x)}</li>`).join('');
-  const tags = (items) => (items || []).map((x) => `<span class="tag">${escapeHtml(x)}</span>`).join('');
-  $('resumeContent').innerHTML = `<article class="research-item">
-    <h3>${escapeHtml(resume.name || '')}</h3>
-    <p class="meta">${escapeHtml(resume.title || '')}</p>
-    <p>${escapeHtml(resume.summary || '')}</p>
-    <p><strong>Career Objective:</strong> ${escapeHtml(resume.objective || '')}</p>
-    ${resume.availability ? `<p><strong>Availability:</strong> ${escapeHtml(resume.availability)}</p>` : ''}
-    <h3>Highlights</h3><ul>${list(resume.highlights)}</ul>
-    <h3>Technical Skills</h3>
-    <p class="meta">Cybersecurity & Networking</p><div class="tags">${tags(resume.skills?.cybersecurity_networking)}</div>
-    <p class="meta">Programming & Development</p><div class="tags">${tags(resume.skills?.programming_development)}</div>
-    <p class="meta">Systems & Tools</p><div class="tags">${tags(resume.skills?.systems_tools)}</div>
-    <h3>Education</h3><ul>${(resume.education || []).map((row) => `<li><strong>${escapeHtml(row.institution || '')}</strong> - ${escapeHtml(row.program || '')} <span class="meta">(${escapeHtml(row.period || '')})</span></li>`).join('')}</ul>
-    <h3>Experience</h3><ul>${(resume.experience || []).map((row) => `<li><strong>${escapeHtml(row.role || '')}</strong> - ${escapeHtml(row.organization || '')}<ul>${list(row.details || [])}</ul></li>`).join('')}</ul>
-    <h3>Certifications</h3><ul>${list(resume.certifications)}</ul>
-    <h3>Activities & Community</h3><ul>${list(resume.activities)}</ul>
-    <h3>Interests</h3><div class="tags">${tags(resume.interests)}</div>
-  </article>`;
-}
-
-function getGroupedChallenges() {
-  const visible = (state.challenges || []).filter((c) => c.published !== false);
-  const byCategory = state.challengeCategory === 'All'
-    ? visible
-    : visible.filter((c) => (c.categories || []).includes(state.challengeCategory));
-  const byPlatform = state.challengePlatform
-    ? byCategory.filter((c) => c.platform === state.challengePlatform)
-    : byCategory;
-
-  const groups = {};
-  byPlatform.forEach((c) => {
-    if (!groups[c.platform]) groups[c.platform] = [];
-    groups[c.platform].push(c);
-  });
-
-  const orderedKeys = sortPlatforms(Object.keys(groups));
-  return { groups, orderedKeys };
-}
-
-function renderChallengePlatformMenu() {
-  const submenu = $('challengeSubmenu');
-  if (!submenu) return;
-  const platforms = sortPlatforms(new Set(state.challenges.map((c) => c.platform)));
-  submenu.innerHTML = platforms.map((p) => `<button class="nav-sublink ${state.challengePlatform === p ? 'active' : ''}" data-platform="${escapeHtml(p)}">${escapeHtml(p)}</button>`).join('');
-  submenu.querySelectorAll('[data-platform]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.challengePlatform = btn.dataset.platform;
-      state.collapsedPlatforms.clear();
-      setActiveView('challenges');
-    });
-  });
-}
-
-function renderChallengeFilters() {
-  const platformSelect = $('challengePlatformFilter');
-  const categorySelect = $('challengeCategoryFilter');
-  if (!platformSelect || !categorySelect) return;
-
-  const platformOptions = sortPlatforms(new Set(state.challenges.map((c) => c.platform)));
-  const categorySet = new Set();
-  state.challenges.forEach((challenge) => {
-    (challenge.categories || []).forEach((category) => categorySet.add(category));
-  });
-  const categories = CATEGORY_OPTIONS.filter((x) => categorySet.has(x)).concat(
-    [...categorySet].filter((x) => !CATEGORY_OPTIONS.includes(x)).sort((a, b) => a.localeCompare(b)),
-  );
-
-  platformSelect.innerHTML = `<option value="">All Platforms</option>${platformOptions
-    .map((p) => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`)
-    .join('')}`;
-  categorySelect.innerHTML = `<option value="All">All Categories</option>${categories
-    .map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
-    .join('')}`;
-
-  platformSelect.value = state.challengePlatform || '';
-  categorySelect.value = state.challengeCategory || 'All';
-}
-
-function challengeCard(entry) {
-  const badges = (entry.categories || []).map((c) => `<span class="tag">${escapeHtml(c)}</span>`).join('');
-  const writeup = entry.medium_link ? linkButton('Write-up', entry.medium_link) : '';
-  return `
-    <article class="card challenge-card">
-      <img src="${escapeHtml(safeImage(entry.thumbnail))}" alt="${escapeHtml(entry.title)}" loading="lazy" />
-      <h3>${escapeHtml(entry.title)}</h3>
-      <p class="meta">Platform: ${escapeHtml(entry.platform)} • Difficulty: ${escapeHtml(entry.difficulty || 'N/A')} • Status: ${escapeHtml(entry.status || 'N/A')}</p>
-      <p>${escapeHtml(entry.description || '')}</p>
-      <div class="tags">${badges}</div>
-      <p>${writeup}</p>
-    </article>
-  `;
-}
-
-function renderChallenges() {
-  renderChallengeFilters();
-  const quickPlatforms = ['All Platforms', ...sortPlatforms(new Set(state.challenges.map((c) => c.platform)))];
-  $('challengeTabs').innerHTML = quickPlatforms
-    .map((platformLabel) => {
-      const isActive = platformLabel === 'All Platforms'
-        ? !state.challengePlatform
-        : state.challengePlatform === platformLabel;
-      return `<button class="tab-btn ${isActive ? 'active' : ''}" data-platform-tab="${escapeHtml(platformLabel)}" type="button">${escapeHtml(platformLabel)}</button>`;
-    })
-    .join('');
-  $('challengeTabs').querySelectorAll('[data-platform-tab]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const selected = btn.dataset.platformTab;
-      state.challengePlatform = selected === 'All Platforms' ? '' : selected;
-      renderChallengePlatformMenu();
-      renderChallengeFilters();
-      renderChallenges();
-    });
-  });
-
-  const { groups, orderedKeys } = getGroupedChallenges();
-  if (!orderedKeys.length) {
-    $('challengeIntro').innerHTML = '<p class="muted">No challenges match the selected filters.</p>';
-    $('challengeList').innerHTML = '';
-    return;
-  }
-
-  const thmProfile = state.content?.challenges?.tryhackme?.profileUrl || 'https://tryhackme.com/p/M47h3wR34n';
-  const thmEmbed = state.content?.challenges?.tryhackme?.badgeEmbed || 'https://tryhackme.com/api/v2/badges/public-profile?userPublicId=2981082';
-
-  $('challengeIntro').innerHTML = state.challengePlatform
-    ? `<p class="muted">Showing platform: <strong>${escapeHtml(state.challengePlatform)}</strong> | Category: <strong>${escapeHtml(state.challengeCategory)}</strong></p>`
-    : `<p class="muted">Grouped by platform | Category: <strong>${escapeHtml(state.challengeCategory)}</strong></p>`;
-
-  $('challengeList').innerHTML = orderedKeys.map((platform) => {
-    const badgeBlock = platform === 'TryHackMe'
-      ? `<div class="badge-block"><p><strong>TryHackMe Profile Badge</strong></p><div id="thmBadgeMount"><iframe id="thmBadgeIframe" class="thm-badge-iframe" src="${escapeHtml(thmEmbed)}" title="TryHackMe public profile badge" loading="lazy"></iframe></div><p>${linkButton('Open TryHackMe Profile', thmProfile)}</p></div>`
-      : '';
-    const collapsed = state.collapsedPlatforms.has(platform);
-    return `
-      <section class="challenge-section ${collapsed ? 'collapsed' : ''}" data-platform-section="${escapeHtml(platform)}">
-        <button class="challenge-section-toggle" data-toggle-platform="${escapeHtml(platform)}" type="button" aria-expanded="${collapsed ? 'false' : 'true'}">
-          <span>${escapeHtml(platform)}</span>
-          <span class="chevron" aria-hidden="true">▾</span>
-        </button>
-        <div class="challenge-section-body">
-          ${badgeBlock}
-          <div class="challenge-grid">${groups[platform].map((entry) => challengeCard(entry)).join('')}</div>
-        </div>
-      </section>
-    `;
-  }).join('');
-
-  $('challengeList').querySelectorAll('[data-toggle-platform]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const platform = btn.dataset.togglePlatform;
-      if (state.collapsedPlatforms.has(platform)) {
-        state.collapsedPlatforms.delete(platform);
-      } else {
-        state.collapsedPlatforms.add(platform);
-      }
-      renderChallenges();
-    });
-  });
-
-  $('challengeList').querySelectorAll('.challenge-card img').forEach((img) => {
-    img.addEventListener('error', () => {
-      img.src = 'https://placehold.co/900x600/1b2b4b/e8eefb?text=Thumbnail+Missing';
-    }, { once: true });
-  });
-
-  const iframe = $('thmBadgeIframe');
-  const mount = $('thmBadgeMount');
-  if (iframe && mount) {
-    iframe.addEventListener('error', () => {
-      mount.innerHTML = `<div class="thm-badge-fallback"><p class="meta">TryHackMe badge API is temporarily unavailable.</p>${linkButton('Open TryHackMe Profile', thmProfile)}</div>`;
-    });
-  }
 }
 
 function setActiveView(view) {
-  const resolved = VIEW_IDS.includes(view) ? view : VIEW_IDS[0];
-  state.activeView = resolved;
-  document.querySelectorAll('.view-section').forEach((section) =>
-    section.classList.toggle('active', section.dataset.view === resolved)
-  );
-  document.querySelectorAll('.nav-link[data-view]').forEach((button) =>
-    button.classList.toggle('active', button.dataset.view === resolved)
-  );
-  if (resolved === 'challenges') {
-    renderChallenges();
-  }
+  const target = VIEW_IDS.includes(view) ? view : VIEW_IDS[0];
+  state.activeView = target;
+  document.querySelectorAll('.view-section').forEach((section) => {
+    section.classList.toggle('active', section.dataset.view === target);
+  });
+  document.querySelectorAll('.nav-link[data-view]').forEach((button) => {
+    button.classList.toggle('active', button.dataset.view === target);
+  });
 }
 
 function setupNavigation() {
-  document.querySelectorAll('.nav-link[data-view]').forEach((btn) => {
-    btn.addEventListener('click', () => setActiveView(btn.dataset.view));
+  document.querySelectorAll('.nav-link[data-view]').forEach((button) => {
+    button.addEventListener('click', () => setActiveView(button.dataset.view));
   });
-  const challengeToggle = $('challengeGroupToggle');
-  if (challengeToggle) {
-    challengeToggle.addEventListener('click', () => {
-      state.challengePlatform = '';
-      state.collapsedPlatforms.clear();
+  document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
       setActiveView('challenges');
+      setActivePlatformTab(button.dataset.challengeTab);
     });
-  }
+  });
+  const mobileToggle = document.getElementById('mobileNavToggle');
+  const sidebar = document.getElementById('sidebarNav');
+  mobileToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+}
 
-  const mobileToggle = $('mobileNavToggle');
-  const sidebarNav = $('sidebarNav');
-  if (mobileToggle && sidebarNav) {
-    mobileToggle.addEventListener('click', () => sidebarNav.classList.toggle('open'));
+function renderHero(profile) {
+  selectors.heroTitle.textContent = profile.name || '';
+  selectors.heroSummary.textContent = profile.tagline || '';
+  document.querySelector('.eyebrow').textContent = profile.eyebrow || 'Cybersecurity • Digital Forensics • Research';
+}
+
+function renderAbout(profile) {
+  selectors.aboutText.textContent = profile.about || profile.summary || '';
+}
+
+function renderResume(data) {
+  if (!selectors.resumeContent) return;
+  selectors.resumeContent.innerHTML = '';
+  data.highlights?.forEach((section) => {
+    const sectionEl = document.createElement('article');
+    sectionEl.className = 'section-highlight';
+    const header = document.createElement('h3');
+    header.textContent = section.section;
+    sectionEl.appendChild(header);
+    section.items.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'resume-card';
+      card.innerHTML = `<h4>${item.title}</h4><p class="meta">${item.subtitle} • ${item.period}</p><p>${item.description}</p>`;
+      sectionEl.appendChild(card);
+    });
+    selectors.resumeContent.appendChild(sectionEl);
+  });
+}
+
+function renderCertificates(list) {
+  selectors.certificatesGrid.innerHTML = list.map((cert) => `
+    <article class="card" data-title="${cert.title}">
+      <img src="${cert.image_path}" alt="${cert.title}" loading="lazy" />
+      <h3>${cert.title}</h3>
+      <p class="meta">${cert.issuer} • ${cert.date}</p>
+      <p><a class="btn" href="${cert.credential_url || '#'}" target="_blank" rel="noopener">View credential</a></p>
+    </article>
+  `).join('');
+  selectors.certificatesGrid.querySelectorAll('article').forEach((card) => {
+    card.addEventListener('click', (event) => {
+      event.stopPropagation();
+      selectors.dialogImage?.setAttribute('src', card.querySelector('img')?.src || '');
+      selectors.dialogMeta.textContent = card.querySelector('p.meta')?.textContent || '';
+      selectors.certificateDialog?.showModal();
+    });
+  });
+}
+
+function renderProjects(list) {
+  selectors.projectsGrid.innerHTML = list.map((project) => `
+    <article class="card">
+      <img src="${project.image_path}" alt="${project.title}" loading="lazy" />
+      <h3>${project.title}</h3>
+      <p>${project.description}</p>
+      <p class="meta">${project.tags.join(', ')}</p>
+      <p>
+        ${project.repo_url ? `<a class="btn" href="${project.repo_url}" target="_blank" rel="noopener">Repository</a>` : ''}
+        ${project.live_url ? `<a class="btn" href="${project.live_url}" target="_blank" rel="noopener">Live</a>` : ''}
+      </p>
+    </article>
+  `).join('');
+}
+
+function createContactLinks(list) {
+  selectors.contactLinks.innerHTML = list.map((item) => `
+    <a href="${item.url}" target="_blank" rel="noopener" class="btn">
+      ${item.label}
+    </a>
+  `).join('');
+}
+
+function renderGallery(items) {
+  selectors.galleryGrid.innerHTML = items.map((item) => `
+    <article class="card">
+      <img src="${item.image_path}" alt="${item.title}" loading="lazy" />
+      <h3>${item.title}</h3>
+      <p>${item.caption}</p>
+      <p class="meta">${item.date}</p>
+    </article>
+  `).join('');
+}
+
+function renderResearch(entries) {
+  selectors.researchList.innerHTML = entries.map((entry) => `
+    <article class="card research-card" data-md="${entry.md_path}">
+      <h3>${entry.title}</h3>
+      <p>${entry.description}</p>
+      <p class="meta">${entry.tags.join(', ')} • ${entry.date}</p>
+      <button class="btn" data-md="${entry.md_path}">Read more</button>
+    </article>
+  `).join('');
+  selectors.researchList.querySelectorAll('[data-md]').forEach((button) => {
+    button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Research details'));
+  });
+}
+
+function normalizeChallenges(challengeData) {
+  const entries = [];
+  Object.entries(challengeData).forEach(([platform, list]) => {
+    list.forEach((item) => {
+      entries.push({ ...item, platform });
+    });
+  });
+  return entries;
+}
+
+function renderChallengeTabs() {
+  if (!selectors.challengeTabs) return;
+  selectors.challengeTabs.innerHTML = PLATFORM_TABS.map((tab) => `
+    <button type="button" class="tab${state.activePlatformTab === tab.slug ? ' active' : ''}" data-platform="${tab.slug}">${tab.label}</button>
+  `).join('');
+  selectors.challengeTabs.querySelectorAll('button').forEach((button) => {
+    button.addEventListener('click', () => setActivePlatformTab(button.dataset.platform));
+  });
+}
+
+function setActivePlatformTab(slug) {
+  const valid = PLATFORM_TABS.some((tab) => tab.slug === slug);
+  const target = valid ? slug : PLATFORM_TABS[0].slug;
+  state.activePlatformTab = target;
+  selectors.challengeTabs?.querySelectorAll('button').forEach((button) => {
+    button.classList.toggle('active', button.dataset.platform === target);
+  });
+  state.challengeFilter.category = 'all';
+  selectors.challengeCategory && (selectors.challengeCategory.value = 'all');
+  renderChallengesView();
+}
+
+function renderChallengeFilters() {
+  if (!selectors.challengePlatform) return;
+  selectors.challengePlatform.innerHTML = `<option value="all">All platforms</option>${PLATFORM_TABS.map((tab) => `<option value="${tab.slug}">${tab.label}</option>`).join('')}`;
+  selectors.challengePlatform.value = state.challengeFilter.source;
+}
+
+function computeActivePlatform() {
+  return state.challengeFilter.source !== 'all' ? state.challengeFilter.source : state.activePlatformTab;
+}
+
+function updateCategoryOptions(entries) {
+  if (!selectors.challengeCategory) return;
+  const categories = new Set();
+  entries.forEach((entry) => {
+    (entry.categories || []).forEach((cat) => categories.add(cat));
+  });
+  const opts = Array.from(categories).sort((a, b) => a.localeCompare(b));
+  selectors.challengeCategory.innerHTML = `<option value="all">All categories</option>${opts.map((cat) => `<option value="${cat}">${cat}</option>`).join('')}`;
+  if (state.challengeFilter.category !== 'all' && !categories.has(state.challengeFilter.category)) {
+    state.challengeFilter.category = 'all';
+  }
+  selectors.challengeCategory.value = state.challengeFilter.category;
+}
+
+function renderChallengeList(entries) {
+  if (!selectors.challengeList) return;
+  if (!entries.length) {
+    selectors.challengeList.innerHTML = '<p class="muted">No challenges match the current filters.</p>';
+    return;
+  }
+  selectors.challengeList.innerHTML = entries.map((entry) => {
+    const tags = (entry.categories || []).map((cat) => `<span class="tag">${cat}</span>`).join('');
+    return `
+      <article class="card challenge-card" data-md="${entry.md_path}">
+        <h3>${entry.title}</h3>
+        <div class="tags">${tags}</div>
+        <p>${entry.description}</p>
+        <p class="meta">${entry.platform} • ${entry.difficulty}</p>
+        <button class="btn" data-md="${entry.md_path}">Read writeup</button>
+      </article>
+    `;
+  }).join('');
+  selectors.challengeList.querySelectorAll('[data-md]').forEach((button) => {
+    button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Challenge write-up'));
+  });
+}
+
+function renderChallengesView() {
+  const platform = computeActivePlatform();
+  const platformEntries = state.challenges.filter((entry) => entry.platform === platform);
+  updateCategoryOptions(platformEntries);
+  const filtered = state.challengeFilter.category === 'all'
+    ? platformEntries
+    : platformEntries.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
+  renderChallengeList(filtered);
+}
+
+async function openMarkdown(path, title) {
+  try {
+    const url = path.startsWith('http') ? path : buildUrl(CONTENT_ROOT, path);
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Markdown not found');
+    const text = await response.text();
+    selectors.modalContent.innerHTML = `<h3>${title}</h3>${marked.parse(text)}`;
+    selectors.modal?.showModal();
+  } catch (err) {
+    showToast(err.message || 'Unable to load content.');
   }
 }
 
-function setupChallengeFilters() {
-  const platformSelect = $('challengePlatformFilter');
-  const categorySelect = $('challengeCategoryFilter');
-  const clearBtn = $('clearChallengeFilters');
-  if (!platformSelect || !categorySelect || !clearBtn) return;
-
-  platformSelect.addEventListener('change', () => {
-    state.challengePlatform = platformSelect.value;
-    state.collapsedPlatforms.clear();
-    renderChallengePlatformMenu();
-    renderChallenges();
+function setupModal() {
+  selectors.closeModal?.addEventListener('click', () => selectors.modal?.close());
+  selectors.modal?.addEventListener('click', (event) => {
+    if (event.target === selectors.modal) selectors.modal.close();
   });
-
-  categorySelect.addEventListener('change', () => {
-    state.challengeCategory = categorySelect.value || 'All';
-    renderChallenges();
-  });
-
-  clearBtn.addEventListener('click', () => {
-    state.challengePlatform = '';
-    state.challengeCategory = 'All';
-    state.collapsedPlatforms.clear();
-    renderChallengePlatformMenu();
-    renderChallengeFilters();
-    renderChallenges();
+  document.getElementById('closeDialog')?.addEventListener('click', () => selectors.certificateDialog?.close());
+  selectors.certificateDialog?.addEventListener('click', (event) => {
+    if (event.target === selectors.certificateDialog) selectors.certificateDialog.close();
   });
 }
 
-function setupDialog() {
-  $('closeDialog').addEventListener('click', () => $('certificateDialog').close());
+async function loadData() {
+  try {
+    const [profile, certificates, projects, challenges, research, resume, gallery] = await Promise.all([
+      fetchJson('profile.json'),
+      fetchJson('certificates.json'),
+      fetchJson('projects.json'),
+      fetchJson('challenges.json'),
+      fetchJson('research.json'),
+      fetchJson('resume.json'),
+      fetchJson('gallery.json'),
+    ]);
+    state.data = { profile, certificates, projects, challenges, research, resume, gallery };
+    applyData();
+  } catch (error) {
+    showToast(error.message || 'Failed to load portfolio data');
+  }
+}
+
+function applyData() {
+  const { profile, certificates, projects, challenges, research, resume, gallery } = state.data;
+  renderHero(profile);
+  renderAbout(profile);
+  renderResume(resume);
+  renderCertificates(certificates);
+  renderProjects(projects);
+  createContactLinks(profile.contact || []);
+  renderGallery(gallery);
+  renderResearch(research);
+  const challengeEntries = normalizeChallenges(challenges);
+  state.challenges = challengeEntries;
+  renderChallengeTabs();
+  renderChallengeFilters();
+  renderChallengesView();
+}
+
+function setupChallengeControls() {
+  selectors.challengePlatform?.addEventListener('change', (event) => {
+    state.challengeFilter.source = event.target.value;
+    renderChallengesView();
+  });
+  selectors.challengeCategory?.addEventListener('change', (event) => {
+    state.challengeFilter.category = event.target.value;
+    renderChallengesView();
+  });
+  document.getElementById('clearChallengeFilters')?.addEventListener('click', () => {
+    state.challengeFilter.source = 'all';
+    state.challengeFilter.category = 'all';
+    if (selectors.challengePlatform) selectors.challengePlatform.value = 'all';
+    if (selectors.challengeCategory) selectors.challengeCategory.value = 'all';
+    renderChallengesView();
+  });
 }
 
 (async function init() {
-  setupThemeToggle();
+  initThemeToggle();
   setupNavigation();
-  setupDialog();
-
+  setupModal();
+  setupChallengeControls();
   try {
-    state.content = await loadContent();
-    state.challenges = normalizeChallenges(state.content.challenges || {});
-    renderChallengeFilters();
-    renderChallengePlatformMenu();
-    setupChallengeFilters();
-
-    renderSiteMeta(state.content.site || {});
-    renderResume(state.content.resume || {});
-    renderCertificates(state.content.certificates || []);
-    renderProjects(state.content.projects || []);
-    renderResearch(state.content.research || []);
-    renderGallery(state.content.gallery || []);
-    renderChallenges();
-    setActiveView(state.activeView);
-  } catch (error) {
-    console.error(error);
-    $('heroTitle').textContent = 'Unable to load content.';
-    $('heroSummary').textContent = 'Check data JSON files and refresh.';
+    await loadData();
+  } catch (err) {
+    console.error(err);
   }
 })();

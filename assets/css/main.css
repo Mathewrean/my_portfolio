@@ -89,6 +89,13 @@ body[data-theme='light'] .sidebar {
   font-family: inherit;
 }
 
+.nav-link:focus-visible,
+.nav-sublink:focus-visible,
+.mobile-nav-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .nav-link.active,
 .nav-sublink.active {
   border-color: var(--accent);

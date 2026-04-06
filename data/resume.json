@@ -1,128 +1,57 @@
 {
-  "name": "Mathew Otieno Magundho",
-  "title": "Computer Security & Digital Forensics Student | SOC / Technical Writer | CTFZone Campus Ambassador",
-  "summary": "Driven JOOUST undergraduate pairing campus advocacy, technical writing, and community building with hands-on SOC work and capture-the-flag competitions. I blend TryHackMe/CTFZone practice with policy leadership, awareness campaigns, and mentorship to deliver secure, people-centered solutions.",
-  "objective": "Seeking cybersecurity attachment roles that leverage my SOC, offensive security, and leadership experience across campus organisations and competitive CTF ecosystems.",
+  "cv_path": "Mathew_Magundho_CV.pdf",
+  "cover_letter_path": "assets/Mathew_Magundho_Cover_Letter.pdf",
   "highlights": [
-    "BSc Computer Security & Digital Forensics, JOOUST (2023–2027).",
-    "Congressman for the School of Informatics & Innovative Systems representing student welfare, governance, and policy.",
-    "Campus Ambassador for CTFZone Labs, mentoring peers through realistic labs and SOC-style challenges.",
-    "Technical writer for JOOUST ISACA Student Group — translating security insights into awareness campaigns and publications.",
-    "Hands-on SOC and offensive practice through TryHackMe labs (e.g., MAC Flooding, Attacktive Directory, SIEM triage) and competitive CTFs (Cyber Chief Circle, Huntress, Cyber Drill).",
-    "Experience supporting IT infrastructure rollouts, user onboarding, and knowledge-sharing sessions for Systems Hub Ltd."
-  ],
-  "skills": {
-    "cybersecurity": [
-      "SOC triage & log analysis (Splunk, Wazuh, Arkime)",
-      "Penetration testing (TryHackMe labs, Hackathon build-ins)",
-      "Zero-trust architectures & secure design",
-      "Incident response & threat hunting",
-      "Threat intelligence & OSINT tooling"
-    ],
-    "technical_writing_leadership": [
-      "Technical publication & awareness scripting",
-      "Student representation & committee governance",
-      "Community building (CTFZone ambassador, ISACA, Enactus)"
-    ],
-    "tools_programming": [
-      "Python & scripting",
-      "Django / web prototyping",
-      "Kali Linux, VirtualBox, Docker",
-      "Microsoft Office / Office 365 automation",
-      "Network tooling: Nmap, packet analysis, Cisco Packet Tracer"
-    ]
-  },
-  "education": [
     {
-      "institution": "Jaramogi Oginga Odinga University of Science and Technology center for E-Learning",
-      "program": "Bachelor of Science - Computer Security & Digital Forensics",
-      "period": "2023 – 2027",
-      "details": "Relevant coursework: Network Security, Digital Forensics, Data Privacy & Protection, Computer Networks, Operating Systems, Database Systems, and Information Systems Audit."
-    }
-  ],
-  "experience": [
-    {
-      "role": "Campus Ambassador",
-      "organization": "CTFZone Labs",
-      "period": "Feb 2026 – Present",
-      "details": [
-        "Represent the CTFZone Labs platform across JOOUST, hosting mentor hours and challenge walkthroughs for TryHackMe-style labs.",
-        "Boost campus participation in capture-the-flag events by coordinating study groups, content sharings, and LinkedIn reflections.",
-        "Collaborate with CTFZone on event promotions, ensuring students access mentorship, labs, and competitive opportunities."
+      "section": "Education",
+      "items": [
+        {
+          "title": "BSc Computer Security & Digital Forensics",
+          "subtitle": "Jaramogi Oginga Odinga University of Science and Technology",
+          "period": "2023 – 2027",
+          "description": "Core focus on digital forensics, network defense, privacy, and secure systems design. Member of JOOUST ISACA, Enactus, and Cyber Chief Circle, contributing technical writing and awareness campaigns."
+        }
       ]
     },
     {
-      "role": "Congressman, School of Informatics & Innovative Systems (SIIS)",
-      "organization": "JOOUST Students’ Association",
-      "period": "Dec 2025 – Present",
-      "details": [
-        "Advocate for student welfare and ICT initiatives in policy, budgeting, and oversight discussions.",
-        "Chair congressional committees focused on accountability, communication, and campus cyber awareness.",
-        "Serve as the primary liaison between SIIS students, faculty, and the administration."
+      "section": "Experience",
+      "items": [
+        {
+          "title": "Campus Ambassador",
+          "subtitle": "CTFZone Labs",
+          "period": "Feb 2026 – Present",
+          "description": "Lead campus mentorship sessions, host guided TryHackMe/CTFZone labs, and promote local awareness of hands-on cybersecurity skills."
+        },
+        {
+          "title": "Congressman, School of Informatics & Innovative Systems",
+          "subtitle": "JOOUST Students’ Association",
+          "period": "Dec 2025 – Present",
+          "description": "Represent student interests in policy and budget forums, support accountability initiatives, and connect peers with academic resources."
+        },
+        {
+          "title": "IT Support Intern",
+          "subtitle": "Systems Hub Ltd",
+          "period": "Jun 2025 – Aug 2025",
+          "description": "Assisted with network rollouts, workstation imaging, and user access recovery. Streamlined ticket handling with Microsoft Office automation."
+        }
       ]
     },
     {
-      "role": "Technical Writer",
-      "organization": "JOOUST ISACA Student Group",
-      "period": "Feb 2025 – Present",
-      "details": [
-        "Draft technical articles and awareness material on topics such as zero-trust, SIEM workflows, and cloud risk management.",
-        "Capture event insights from Cyber Chief Circle, Cybersecurity Awareness Week, and ISACA meetups for broader campus communication."
+      "section": "Leadership & Community",
+      "items": [
+        {
+          "title": "Technical Writer",
+          "subtitle": "JOOUST ISACA Student Group",
+          "period": "Feb 2025 – Present",
+          "description": "Publish technical pieces on zero-trust, SOC playbooks, and secure software practices for chapter members and student audiences."
+        },
+        {
+          "title": "Cybersecurity Event Contributor",
+          "subtitle": "Cyber Chief Circle, Chain Erasmus, Enactus JOOUST",
+          "period": "2024 – Present",
+          "description": "Presented at hackathons, digital-summit sessions, and awareness campaigns covering AI/DevSecOps, SIEM operations, and digital inclusion."
+        }
       ]
-    },
-    {
-      "role": "IT Support Assistant (Internship)",
-      "organization": "Systems Hub Ltd",
-      "period": "Jun 2025 – Aug 2025",
-      "details": [
-        "Assisted with LAN deployments, workstation imaging, and network cabling for client sites.",
-        "Streamlined ticket processes using Microsoft Office automation and supported user access recovery tasks."
-      ]
     }
-  ],
-  "projects": [
-    {
-      "title": "Rechiro – Fishermen Connectivity Platform",
-      "description": "Co-created a mobile-friendly platform through Enactus JOOUST to connect fishermen with buyers across Web3/fintech touchpoints, showcased at the 23rd Enactus National Expo."
-    },
-    {
-      "title": "Cyber Chief Circle Capture The Flag",
-      "description": "Helped organize and mentor participants through multi-category challenges (Web, Forensics, RE, Crypto, OSINT) while building insights on zero trust and secure system design."
-    }
-  ],
-  "certifications": [
-    "Cisco Ethical Hacker (Cisco Cyber Shujaa Program) – Aug 2025",
-    "OPSWAT File Security Associate – Apr 2025",
-    "OPSWAT Email Security Associate – Jun 2025",
-    "OPSWAT Network Security Associate – May 2025",
-    "OPSWAT Cybersecurity Fundamentals Associate – May 2025",
-    "Microsoft Security, Compliance, and Identity Fundamentals – Dec 2024",
-    "Cisco Introduction to Cybersecurity – Nov 2024",
-    "Strathmore University Data Protection – Mar 2025",
-    "DevTown Cyber Basics: Hack Me If You Can Bootcamp – May 2025",
-    "Power Learn Project Academy Software Development – Oct 2024",
-    "ICC Computer Training Mission – Computer Skills (OpenOffice) – Apr 2023",
-    "LinkedIn Learning: Cybersecurity Awareness – Cybersecurity Terminology & Threat Landscape – Jun 2024"
-  ],
-  "activities": [
-    "JOOUST ISACA Student Group – Member & Technical Writer",
-    "Enactus JOOUST – Innovation and fintech competitions",
-    "Cyber Chief Circle and CTFZone communities – challenges, hackathons, and small-group labs",
-    "Cybersecurity Awareness Week, Chain Erasmus projects, and Cyber Drill collaborations with industry partners"
-  ],
-  "interests": [
-    "CTF & Capture-the-Flag competitions",
-    "SOC Operations & Log Analysis",
-    "Offensive Security tooling",
-    "Mentorship and student leadership",
-    "Data privacy and ethical cyber governance"
-  ],
-  "references": [
-    {
-      "name": "Peter Thuku",
-      "role": "IT Support Technician - Systems Hub Limited",
-      "contact": "+254 729 006 174"
-    }
-  ],
-  "availability": "Available for cybersecurity attachment opportunities beginning July (dates subject to university confirmation)."
+  ]
 }
