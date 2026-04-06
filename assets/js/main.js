@@ -247,9 +247,22 @@ function setActivePlatformTab(slug) {
   selectors.challengeTabs?.querySelectorAll('button').forEach((button) => {
     button.classList.toggle('active', button.dataset.platform === target);
   });
+  document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((link) => {
+    link.classList.toggle('active', link.dataset.challengeTab === target);
+  });
   state.challengeFilter.category = 'all';
   selectors.challengeCategory && (selectors.challengeCategory.value = 'all');
   renderChallengesView();
+}
+
+function hydrateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const view = params.get('view');
+  const tab = params.get('tab');
+  if (view === 'challenges') {
+    setActiveView('challenges');
+    if (tab) setActivePlatformTab(tab);
+  }
 }
 
 function renderChallengeFilters() {
@@ -393,6 +406,7 @@ function setupChallengeControls() {
   setupChallengeControls();
   try {
     await loadData();
+    hydrateFromUrl();
   } catch (err) {
     console.error(err);
   }
