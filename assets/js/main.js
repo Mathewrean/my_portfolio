@@ -387,11 +387,13 @@ function renderChallengeList(entries) {
 function renderChallengesView() {
   const platform = computeActivePlatform();
   const platformEntries = state.challenges.filter((entry) => entry.platform === platform);
-  updateCategoryOptions(platformEntries);
+  const entriesToUse = platformEntries.length ? platformEntries : [...state.challenges];
+  updateCategoryOptions(entriesToUse);
   const filtered = state.challengeFilter.category === 'all'
-    ? platformEntries
-    : platformEntries.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
-  renderChallengeList(filtered);
+    ? entriesToUse
+    : entriesToUse.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
+  const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
+  renderChallengeList(sorted);
 }
 
 async function openMarkdown(path, title) {
