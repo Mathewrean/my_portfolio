@@ -125,8 +125,8 @@ function setupNavigation() {
 }
 
 function renderHero(profile) {
-  selectors.heroTitle.textContent = profile.name || '';
-  selectors.heroSummary.textContent = profile.tagline || '';
+  selectors.heroTitle.textContent = profile.name || 'Mathewrean';
+  selectors.heroSummary.textContent = profile.tagline || 'Cybersecurity Portfolio';
   document.querySelector('.eyebrow').textContent = profile.eyebrow || 'Cybersecurity • Digital Forensics • Research';
 }
 
@@ -347,25 +347,35 @@ function setupModal() {
 }
 
 async function loadData() {
-  try {
-    const [profile, certificates, projects, challenges, research, resume, gallery] = await Promise.all([
-      fetchJson('profile.json'),
-      fetchJson('certificates.json'),
-      fetchJson('projects.json'),
-      fetchJson('challenges.json'),
-      fetchJson('research.json'),
-      fetchJson('resume.json'),
-      fetchJson('gallery.json'),
-    ]);
-    state.data = { profile, certificates, projects, challenges, research, resume, gallery };
-    applyData();
-  } catch (error) {
-    showToast(error.message || 'Failed to load portfolio data');
+  const dataKeys = [
+    { key: 'profile', file: 'profile.json' },
+    { key: 'certificates', file: 'certificates.json' },
+    { key: 'projects', file: 'projects.json' },
+    { key: 'challenges', file: 'challenges.json' },
+    { key: 'research', file: 'research.json' },
+    { key: 'resume', file: 'resume.json' },
+    { key: 'gallery', file: 'gallery.json' }
+  ];
+  const failed = [];
+  state.data = {};
+  for (const { key, file } of dataKeys) {
+    try {
+      console.log(`Fetching: ${buildUrl(DATA_ROOT, file)}`);
+      state.data[key] = await fetchJson(file);
+    } catch (err) {
+      console.error(`Failed ${file}:`, err);
+      failed.push(file);
+      state.data[key] = key === 'profile' ? { name: 'Portfolio', tagline: 'Loading content...' } : [];
+    }
   }
+  if (failed.length) {
+    showToast(`Loaded partial data. Failed: ${failed.join(', ')}`);
+  }
+  applyData();
 }
 
 function applyData() {
-  const { profile, certificates, projects, challenges, research, resume, gallery } = state.data;
+  const { profile = {}, certificates = [], projects = [], challenges = {}, research = [], resume = {}, gallery = [] } = state.data || {};
   renderHero(profile);
   renderAbout(profile);
   renderResume(resume);
