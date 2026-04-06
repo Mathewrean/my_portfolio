@@ -422,6 +422,29 @@ pre {
   object-fit: cover;
 }
 
+.challenge-card-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.challenge-badge {
+  width: 76px;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.challenge-card-actions {
+  margin-top: 0.4rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .research-item {
   border: 1px solid var(--line);
   border-radius: 12px;

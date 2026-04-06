@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#ff6a00"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="220" rx="24" ry="24" fill="url(#grad2)" stroke="#ffb347" stroke-width="3"/>
+  <text x="50%" y="50%" text-anchor="middle" font-family="Orbitron, sans-serif" font-size="24" fill="#f2f7ff">Layer 2</text>
+  <text x="50%" y="70%" text-anchor="middle" font-family="Share Tech Mono, monospace" font-size="18" fill="#f2f7ff">MAC Flooding + ARP</text>
+</svg>

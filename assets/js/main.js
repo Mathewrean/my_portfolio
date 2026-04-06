@@ -348,19 +348,28 @@ function renderChallengeList(entries) {
   }
   selectors.challengeList.innerHTML = entries.map((entry) => {
     const tags = (entry.categories || []).map((cat) => `<span class="tag">${cat}</span>`).join('');
+    const badge = entry.badge_image ? `<img class="challenge-badge" src="${entry.badge_image}" alt="${entry.title} badge" loading="lazy" />` : '';
+    const writeup = entry.writeup_url
+      ? `<a class="btn btn-primary" href="${entry.writeup_url}" target="_blank" rel="noopener">Read on Medium</a>`
+      : '<span class="muted">Write-up coming soon</span>';
     return `
-      <article class="card challenge-card" data-md="${entry.md_path}">
-        <h3>${entry.title}</h3>
+      <article class="card challenge-card">
+        <div class="challenge-card-header">
+          ${badge}
+          <div>
+            <h3>${entry.title}</h3>
+            <p class="meta">${entry.platform} • ${entry.difficulty}</p>
+          </div>
+        </div>
         <div class="tags">${tags}</div>
         <p>${entry.description}</p>
-        <p class="meta">${entry.platform} • ${entry.difficulty}</p>
-        <button class="btn" data-md="${entry.md_path}">Read writeup</button>
+        <div class="challenge-card-actions">
+          ${writeup}
+          <span class="muted">${entry.date}</span>
+        </div>
       </article>
     `;
   }).join('');
-  selectors.challengeList.querySelectorAll('[data-md]').forEach((button) => {
-    button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Challenge write-up'));
-  });
 }
 
 function renderChallengesView() {

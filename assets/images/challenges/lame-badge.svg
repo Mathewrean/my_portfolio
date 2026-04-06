@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+  <defs>
+    <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#121212"/>
+      <stop offset="100%" stop-color="#6d00ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="220" rx="24" ry="24" fill="url(#grad5)" stroke="#a17cff" stroke-width="3"/>
+  <text x="50%" y="60%" text-anchor="middle" font-family="Orbitron, sans-serif" font-size="32" fill="#f2f7ff">LAME</text>
+  <text x="50%" y="78%" text-anchor="middle" font-family="Share Tech Mono, monospace" font-size="16" fill="#f2f7ff">HTB Retrospective</text>
+</svg>

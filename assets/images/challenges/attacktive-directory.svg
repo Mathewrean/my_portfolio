@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f0f0f"/>
+      <stop offset="100%" stop-color="#0f7a5b"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="220" rx="24" ry="24" fill="url(#grad)" stroke="#10a37f" stroke-width="3"/>
+  <text x="50%" y="55%" text-anchor="middle" font-family="Orbitron, sans-serif" font-size="28" fill="#f2f7ff">Attacktive</text>
+  <text x="50%" y="75%" text-anchor="middle" font-family="Share Tech Mono, monospace" font-size="20" fill="#47c79a">Directory Badge</text>
+</svg>

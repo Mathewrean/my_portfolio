@@ -5,7 +5,8 @@
       "categories": ["Active Directory", "Forensics"],
       "difficulty": "Intermediate",
       "description": "Exploited a vulnerable Domain Controller to steal credentials, capture a DC hash, and document mitigation options.",
-      "md_path": "content/challenges/tryhackme/attacktive-directory.md",
+      "writeup_url": "https://mathewrean.medium.com/attacktive-directory-adc2d9",
+      "badge_image": "assets/images/challenges/attacktive-directory.svg",
       "date": "2026-02-08"
     },
     {
@@ -13,7 +14,8 @@
       "categories": ["Networking", "Threat Hunting"],
       "difficulty": "Intermediate",
       "description": "Delved into layer-2 attacks, sniffing unicast traffic and convincing victim hosts via ARP poisoning while highlighting VLAN and switch hardening.",
-      "md_path": "content/challenges/tryhackme/l2-mac-flooding-arp-spoofing.md",
+      "writeup_url": "https://mathewrean.medium.com/l2-mac-flooding-arp-spoofing-putting-the-switch-to-work",
+      "badge_image": "assets/images/challenges/l2-mac-flooding-arp-spoofing.svg",
       "date": "2026-03-22"
     },
     {
@@ -21,7 +23,8 @@
       "categories": ["Forensics", "Threat Hunting"],
       "difficulty": "Beginner",
       "description": "Mapped common log sources, applied detection rules, and shared visualization tips for SOC workflows.",
-      "md_path": "content/challenges/tryhackme/intro-log-analysis.md",
+      "writeup_url": "https://mathewrean.medium.com/intro-to-log-analysis-detecting-the-signal",
+      "badge_image": "assets/images/challenges/intro-log-analysis.svg",
       "date": "2026-03-14"
     },
     {
@@ -29,7 +32,8 @@
       "categories": ["OSINT", "Threat Hunting"],
       "difficulty": "Beginner",
       "description": "Surveyed OSINT wheels, built context-rich profiles, and connected indicators back to SOC reporting standards.",
-      "md_path": "content/challenges/tryhackme/threat-intelligence-tools.md",
+      "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
+      "badge_image": "assets/images/challenges/threat-intelligence-tools.svg",
       "date": "2026-03-12"
     }
   ],
@@ -39,7 +43,8 @@
       "categories": ["Networking", "Binary Exploitation (Pwn)"],
       "difficulty": "Intermediate",
       "description": "Enumerated legacy SMB shares, abused weak permissions, and followed a multistage privilege escalation path.",
-      "md_path": "content/challenges/hackthebox/lame.md",
+      "writeup_url": "https://mathewrean.medium.com/lame-smb-and-unstable-virtual-machines",
+      "badge_image": "assets/images/challenges/lame-badge.svg",
       "date": "2025-09-04"
     }
   ],
@@ -51,7 +56,8 @@
       "categories": ["Cryptography"],
       "difficulty": "Beginner",
       "description": "Explored classical ciphers while mapping the math behind mix-and-mangle encryption engines.",
-      "md_path": "content/challenges/picoctf/crypto-101.md",
+      "writeup_url": "https://mathewrean.medium.com/encryption-crypto-101-classic-ciphers-b9c51f",
+      "badge_image": "assets/images/challenges/crypto-101.svg",
       "date": "2025-11-02"
     }
   ],
