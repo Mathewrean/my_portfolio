@@ -352,6 +352,7 @@ function renderChallengeList(entries) {
     const writeup = entry.writeup_url
       ? `<a class="btn btn-primary" href="${entry.writeup_url}" target="_blank" rel="noopener">Read on Medium</a>`
       : '<span class="muted">Write-up coming soon</span>';
+    const tools = (entry.tools || []).map((tool) => `<span class="challenge-tool">${tool}</span>`).join('');
     return `
       <article class="card challenge-card">
         <div class="challenge-card-header">
@@ -363,6 +364,7 @@ function renderChallengeList(entries) {
         </div>
         <div class="tags">${tags}</div>
         <p>${entry.description}</p>
+        ${tools ? `<div class="challenge-tools">${tools}</div>` : ''}
         <div class="challenge-card-actions">
           ${writeup}
           <span class="muted">${entry.date}</span>

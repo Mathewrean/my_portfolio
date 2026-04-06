@@ -1,59 +1,104 @@
 {
-  "tryhackme": [
+  "ctfzone": [
     {
-      "title": "Attacktive Directory",
-      "categories": ["Active Directory", "Forensics"],
-      "difficulty": "Intermediate",
-      "description": "Exploited a vulnerable Domain Controller to steal credentials, capture a DC hash, and document mitigation options.",
+      "title": "Base",
+      "categories": [
+        "Cryptography"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy decoding challenge",
       "writeup_url": "https://mathewrean.medium.com/attacktive-directory-adc2d9",
-      "badge_image": "assets/images/challenges/attacktive-directory.svg",
-      "date": "2026-02-08"
+      "badge_image": "assets/images/challenges/Base-5dcd87bd42cc.png",
+      "tools": [
+        "Dcode",
+        "CyberChef"
+      ],
+      "date": "2026-02-20"
     },
     {
-      "title": "L2 MAC Flooding & ARP Spoofing",
-      "categories": ["Networking", "Threat Hunting"],
-      "difficulty": "Intermediate",
-      "description": "Delved into layer-2 attacks, sniffing unicast traffic and convincing victim hosts via ARP poisoning while highlighting VLAN and switch hardening.",
+      "title": "Blow Mind",
+      "categories": [
+        "Cryptography"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy bcrypt hash cracking challenge",
       "writeup_url": "https://mathewrean.medium.com/l2-mac-flooding-arp-spoofing-putting-the-switch-to-work",
-      "badge_image": "assets/images/challenges/l2-mac-flooding-arp-spoofing.svg",
-      "date": "2026-03-22"
+      "badge_image": "assets/images/challenges/blowmind-c3cbd81b1a29.png",
+      "date": "2026-03-05"
     },
     {
-      "title": "Intro to Log Analysis",
-      "categories": ["Forensics", "Threat Hunting"],
-      "difficulty": "Beginner",
-      "description": "Mapped common log sources, applied detection rules, and shared visualization tips for SOC workflows.",
+      "title": "Common Modulus",
+      "categories": [
+        "Cryptography"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy decode after getting same modulus and different exponents in RSA encryption",
       "writeup_url": "https://mathewrean.medium.com/intro-to-log-analysis-detecting-the-signal",
-      "badge_image": "assets/images/challenges/intro-log-analysis.svg",
-      "date": "2026-03-14"
+      "badge_image": "assets/images/challenges/common_Modulus-893a4093a1be.png",
+      "date": "2026-03-30"
     },
     {
-      "title": "Threat Intelligence Tools",
-      "categories": ["OSINT", "Threat Hunting"],
-      "difficulty": "Beginner",
-      "description": "Surveyed OSINT wheels, built context-rich profiles, and connected indicators back to SOC reporting standards.",
+      "title": "Fly-Over",
+      "categories": [
+        "Hardware Security",
+        "Reverse Engineering"
+      ],
+      "difficulty": "Easy",
+      "description": "Exploiting access config in a hardware program to dump the firmware and reverse engineer it to find the flag.",
       "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
-      "badge_image": "assets/images/challenges/threat-intelligence-tools.svg",
-      "date": "2026-03-12"
+      "badge_image": "assets/images/challenges/flyover_badge-f8b93c4c165a.png",
+      "date": "2026-02-21"
+    },
+    {
+      "title": "X-Mas",
+      "categories": [
+        "Web Exploitation"
+      ],
+      "difficulty": "Easy",
+      "description": "Exploiting a vulnerable web to SSTI and RCE to get the flag.",
+      "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
+      "badge_image": "assets/images/challenges/xmas_badge-69852e21f6e0.png",
+      "date": "2026-02-21"
     }
   ],
   "hackthebox": [
     {
       "title": "Lame",
-      "categories": ["Networking", "Binary Exploitation (Pwn)"],
-      "difficulty": "Intermediate",
+      "categories": [
+        "Linux",
+        "Boot2Root"
+      ],
+      "difficulty": "Easy",
       "description": "Enumerated legacy SMB shares, abused weak permissions, and followed a multistage privilege escalation path.",
       "writeup_url": "https://mathewrean.medium.com/lame-smb-and-unstable-virtual-machines",
-      "badge_image": "assets/images/challenges/lame-badge.svg",
-      "date": "2025-09-04"
+      "badge_image": "assets/images/challenges/lame_badge-ee35f6c6ac70.png",
+      "date": "2025-03-04"
+    },
+    {
+      "title": "Fawn",
+      "categories": [
+        "Network Enumeration",
+        "Insecure Services"
+      ],
+      "difficulty": "Easy",
+      "description": "Exploited a misconfigured FTP service on a Linux target by performing an anonymous login to retrieve the root flag.",
+      "writeup_url": "https://medium.com/your-writeup",
+      "badge_image": "assets/images/challenges/fawn_badge-7e58daa0d214.png",
+      "tools": [
+        "Nmap",
+        "FTP Client"
+      ],
+      "date": "2026-02-26"
     }
   ],
-  "ctfzone": [],
+  "tryhackme": [],
   "ctfroom": [],
   "picoctf": [
     {
       "title": "Encryption - Crypto 101",
-      "categories": ["Cryptography"],
+      "categories": [
+        "Cryptography"
+      ],
       "difficulty": "Beginner",
       "description": "Explored classical ciphers while mapping the math behind mix-and-mangle encryption engines.",
       "writeup_url": "https://mathewrean.medium.com/encryption-crypto-101-classic-ciphers-b9c51f",
