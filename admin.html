@@ -15,112 +15,128 @@
 </head>
 <body>
   <button id="themeToggle" class="floating-theme-toggle" aria-label="Toggle dark and light mode">◐</button>
-  <aside class="sidebar">
+  <aside class="sidebar admin-sidebar">
     <div class="sidebar-brand">
       <h1>Portfolio Admin</h1>
       <p>Mathewrean</p>
     </div>
+    <nav class="sidebar-nav" aria-label="Admin sections">
+      <button class="admin-nav-btn active" data-panel="profile">Profile</button>
+      <button class="admin-nav-btn" data-panel="resume">Resume</button>
+      <button class="admin-nav-btn" data-panel="certificates">Certificates</button>
+      <button class="admin-nav-btn" data-panel="projects">Projects</button>
+      <button class="admin-nav-btn" data-panel="challenges">Challenges</button>
+      <button class="admin-nav-btn" data-panel="research">Research</button>
+      <button class="admin-nav-btn" data-panel="gallery">Gallery</button>
+      <button class="admin-nav-btn" data-panel="contact">Contact</button>
+    </nav>
   </aside>
   <main class="content admin">
-    <section class="admin-card">
-      <h2>GitHub credentials</h2>
-      <form id="credentialsForm" class="form-grid">
-        <label>Owner<input name="owner" required /></label>
-        <label>Repository<input name="repo" required /></label>
-        <label>Personal Access Token<input name="token" type="password" required /></label>
-        <button type="submit" class="btn btn-primary">Save credentials</button>
-        <button type="button" id="clearCredentials" class="btn">Clear</button>
-      </form>
-      <p id="credentialStatus" class="muted"></p>
-    </section>
-
-    <section class="admin-card">
-      <h2>profile.json</h2>
-      <form id="profileForm" class="form-grid">
-        <label>Name<input name="name" required /></label>
-        <label>Tagline<input name="tagline" /></label>
-        <label>Eyebrow<input name="eyebrow" /></label>
-        <label>Summary<textarea name="summary" rows="2"></textarea></label>
-        <label>About<textarea name="about" rows="3"></textarea></label>
-        <label>Contacts (JSON array)<textarea name="contact" rows="3"></textarea></label>
-        <button type="submit" class="btn btn-primary">Save profile</button>
-      </form>
-    </section>
-
-    <section class="admin-card">
-      <h2>resume.json</h2>
-      <p class="muted">Edit the highlights JSON manually.</p>
-      <textarea id="resumeEditor" rows="12"></textarea>
-      <div class="toolbar">
-        <button id="saveResume" class="btn btn-primary">Save resume</button>
+    <section class="admin-panel active" data-panel="profile">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel" id="profilePreview">
+          <h2>Current profile</h2>
+          <div id="profileCurrent" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Edit profile</h2>
+          <form id="profileForm" class="form-grid">
+            <label>Name<input name="name" required /></label>
+            <label>Tagline<input name="tagline" /></label>
+            <label>Eyebrow<input name="eyebrow" /></label>
+            <label>Summary<textarea name="summary" rows="2"></textarea></label>
+            <label>About<textarea name="about" rows="3"></textarea></label>
+            <label>Contact (JSON)<textarea name="contact" rows="3"></textarea></label>
+            <button type="submit" class="btn btn-primary">Save profile</button>
+          </form>
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>certificates.json</h2>
-      <p class="muted">Paste JSON array of certificates.</p>
-      <textarea id="certEditor" rows="8"></textarea>
-      <div class="toolbar">
-        <button id="saveCertificates" class="btn btn-primary">Save certificates</button>
+    <section class="admin-panel" data-panel="resume">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Highlights</h2>
+          <div id="resumePreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Edit resume</h2>
+          <textarea id="resumeEditor" rows="12"></textarea>
+          <div class="toolbar">
+            <button id="saveResume" class="btn btn-primary">Save resume</button>
+          </div>
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>projects.json</h2>
-      <textarea id="projectsEditor" rows="8"></textarea>
-      <div class="toolbar">
-        <button id="saveProjects" class="btn btn-primary">Save projects</button>
+    <section class="admin-panel" data-panel="certificates">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Certificates</h2>
+          <div id="certPreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Add / edit certificate</h2>
+          <!-- form placeholder -->
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>challenges.json</h2>
-      <textarea id="challengesEditor" rows="8"></textarea>
-      <div class="toolbar">
-        <button id="saveChallenges" class="btn btn-primary">Save challenges</button>
+    <section class="admin-panel" data-panel="projects">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Projects</h2>
+          <div id="projectPreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Add / edit project</h2>
+          <!-- form placeholder -->
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>research.json</h2>
-      <textarea id="researchEditor" rows="8"></textarea>
-      <div class="toolbar">
-        <button id="saveResearch" class="btn btn-primary">Save research</button>
+    <section class="admin-panel" data-panel="challenges">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Challenges</h2>
+          <div id="challengePreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Add / edit challenge</h2>
+          <!-- form placeholder -->
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>gallery.json</h2>
-      <textarea id="galleryEditor" rows="6"></textarea>
-      <div class="toolbar">
-        <button id="saveGallery" class="btn btn-primary">Save gallery</button>
+    <section class="admin-panel" data-panel="research">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Research</h2>
+          <div id="researchPreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Add / edit research</h2>
+          <!-- form placeholder -->
+        </article>
       </div>
     </section>
-
-    <section class="admin-card">
-      <h2>Add markdown content</h2>
-      <form id="contentForm" class="form-grid">
-        <label>Path<select id="contentType">
-          <option value="challenges/tryhackme">challenge (tryhackme)</option>
-          <option value="challenges/hackthebox">challenge (hackthebox)</option>
-          <option value="research">research</option>
-        </select></label>
-        <label>Slug<input name="slug" required placeholder="my-challenge" /></label>
-        <label>Title<input name="title" /></label>
-        <label>Markdown<textarea name="markdown" rows="6" required></textarea></label>
-        <button type="submit" class="btn btn-primary">Save markdown</button>
-      </form>
+    <section class="admin-panel" data-panel="gallery">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Gallery</h2>
+          <div id="galleryPreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Add / edit gallery image</h2>
+          <!-- form placeholder -->
+        </article>
+      </div>
     </section>
-
-    <section class="admin-card danger">
-      <h2>Danger zone</h2>
-      <p class="muted">Type the command to confirm before clearing.</p>
-      <div class="form-grid">
-        <input id="dangerInput" placeholder="Type: clear certificates" />
-        <button id="clearCertificates" class="btn">Clear certificates</button>
-        <button id="clearProjects" class="btn">Clear projects</button>
-        <button id="clearResearch" class="btn">Clear research</button>
-        <button id="clearGallery" class="btn">Clear gallery</button>
+    <section class="admin-panel" data-panel="contact">
+      <div class="admin-panel-grid">
+        <article class="panel preview-panel">
+          <h2>Contact links</h2>
+          <div id="contactPreview" class="preview-stack"></div>
+        </article>
+        <article class="panel form-panel">
+          <h2>Edit contact info</h2>
+          <!-- form placeholder -->
+        </article>
       </div>
     </section>
   </main>
