@@ -3,7 +3,8 @@ const themeKey = 'portfolio_theme';
 const repoMeta = document.querySelector('meta[name="repo-base-path"]');
 const repoBase = repoMeta?.content?.trim() || '';
 const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const normalizedBase = isLocalhost ? '' : (repoBase ? repoBase.replace(/\/+$/g, '') : '');
+const isGithubPages = window.location.hostname.endsWith('.github.io');
+const normalizedBase = isLocalhost || isGithubPages ? '' : (repoBase ? repoBase.replace(/\/+$/g, '') : '');
 const DATA_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}data`;
 const CONTENT_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}content`;
 const PLATFORM_TABS = [
