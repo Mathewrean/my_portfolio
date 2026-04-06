@@ -9,17 +9,28 @@ const PLATFORM_OPTIONS = [
 const CATEGORY_OPTIONS = ['Web', 'Pwn', 'Crypto', 'Reverse Engineering', 'Forensics', 'OSINT', 'Misc'];
 
 const state = {
-  challenges: [],
+  challenges: {},
   certificates: [],
   projects: [],
   research: [],
   gallery: [],
-  site: { heroTitle: '', heroSummary: '', about: '', contact: [], tryhackme: { profileUrl: '', badgeEmbed: '' } },
-  page: 1,
-  pageSize: 8,
-  filteredChallenges: [],
+  profile: null,
+  resume: null,
+  contact: [],
   adminToken: '',
+  editing: {},
 };
+
+const ADMIN_SECTIONS = [
+  { id: 'profile', path: 'data/profile.json', preview: 'profileCurrent', form: 'profileForm', render: renderProfilePreview, fill: fillProfileForm },
+  { id: 'resume', path: 'data/resume.json', preview: 'resumePreview' },
+  { id: 'certificates', path: 'data/certificates.json', preview: 'certPreview' },
+  { id: 'projects', path: 'data/projects.json', preview: 'projectPreview' },
+  { id: 'challenges', path: 'data/challenges.json', preview: 'challengePreview' },
+  { id: 'research', path: 'data/research.json', preview: 'researchPreview' },
+  { id: 'gallery', path: 'data/gallery.json', preview: 'galleryPreview' },
+  { id: 'contact', path: 'data/profile.json', preview: 'contactPreview', render: renderContactPreview },
+];
 
 function $(id) { return document.getElementById(id); }
 
@@ -58,6 +69,214 @@ function toast(message, type = 'ok') {
   setTimeout(() => { el.hidden = true; }, 2600);
 }
 
+function gatherFormData(form) {
+  const data = {};
+  Array.from(form.elements).forEach((el) => {
+    if (!el.name) return;
+    data[el.name] = el.value;
+  });
+  return data;
+}
+
+function resetForm(formId) {
+  const form = $(formId);
+  if (!form) return;
+  form.reset();
+}
+
+function handleProjectSubmit(e) {
+  e.preventDefault();
+  const form = $('projectForm');
+  const data = gatherFormData(form);
+  const entry = {
+    title: data.title,
+    description: data.description,
+    tags: data.tags ? data.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    repo_url: data.repo_url,
+    live_url: data.live_url,
+    date: data.date,
+  };
+  if (state.editing.project != null) {
+    state.projects[state.editing.project] = entry;
+    state.editing.project = null;
+  } else {
+    state.projects.push(entry);
+  }
+  renderDefaultPreview('projects', state.projects);
+  resetForm('projectForm');
+  toast('Project saved');
+}
+
+function handleResearchSubmit(e) {
+  e.preventDefault();
+  const form = $('researchForm');
+  const data = gatherFormData(form);
+  const entry = {
+    title: data.title,
+    description: data.description,
+    tags: data.tags ? data.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    date: data.date,
+    markdown: data.markdown,
+  };
+  const idx = state.editing.research;
+  if (idx != null) {
+    state.research[idx] = entry;
+    state.editing.research = null;
+  } else {
+    state.research.push(entry);
+  }
+  renderDefaultPreview('research', state.research);
+  resetForm('researchForm');
+  toast('Research entry saved');
+}
+
+function handleGallerySubmit(e) {
+  e.preventDefault();
+  const form = $('galleryForm');
+  const data = gatherFormData(form);
+  const entry = {
+    title: data.title,
+    caption: data.caption,
+    date: data.date,
+  };
+  const idx = state.editing.gallery;
+  if (idx != null) {
+    state.gallery[idx] = entry;
+    state.editing.gallery = null;
+  } else {
+    state.gallery.push(entry);
+  }
+  renderDefaultPreview('gallery', state.gallery);
+  resetForm('galleryForm');
+  toast('Gallery image saved');
+}
+
+function handleChallengeSubmit(e) {
+  e.preventDefault();
+  const form = $('challengeForm');
+  const data = gatherFormData(form);
+  const platform = data.platform || 'tryhackme';
+  const categories = data.categories ? data.categories.split(',').map((v) => v.trim()).filter(Boolean) : [];
+  const obj = {
+    title: data.title,
+    platform,
+    difficulty: data.difficulty,
+    description: data.description,
+    date: data.date,
+    categories,
+    markdown: data.markdown,
+  };
+  const collection = state.challenges[platform] || [];
+  if (state.editing.challenge?.platform === platform) {
+    collection[state.editing.challenge.index] = obj;
+  } else {
+    collection.push(obj);
+  }
+  state.challenges[platform] = collection;
+  state.editing.challenge = null;
+  renderDefaultPreview('challenges', state.challenges);
+  resetForm('challengeForm');
+  toast('Challenge saved');
+}
+
+function renderProfilePreview(profile) {
+  $('profileCurrent').innerHTML = profile ? `
+    <p><strong>${safe(profile.name)}</strong></p>
+    <p>${safe(profile.tagline)}</p>
+    <p>${safe(profile.about)}</p>
+    <div class="preview-stack">
+      ${profile.contact?.map((c) => `<span class="tag">${safe(c.label)}</span>`).join('') || ''}
+    </div>
+  ` : '<p>No profile data loaded.</p>';
+}
+
+function renderContactPreview(profile) {
+  $('contactPreview').innerHTML = profile ? 
+    (profile.contact || []).map((c) => `<p><strong>${safe(c.label)}:</strong> ${safe(c.url)}</p>`).join('') : '<p>No contact links.</p>';
+}
+
+function renderResumePreview(resume) {
+  const container = $('resumePreview');
+  if (!resume) return container.innerHTML = '<p>No resume highlights.</p>';
+  container.innerHTML = resume.highlights?.map((section) => `
+    <div class="card">
+      <h3>${safe(section.section)}</h3>
+      ${section.items.map((item) => `<p>${safe(item.title)} — ${safe(item.subtitle)}</p>`).join('')}
+    </div>
+  `).join('') || '<p>No highlights.</p>';
+}
+
+function renderCertificatePreview(list) {
+  const container = $('certPreview');
+  if (!list) return container.innerHTML = '<p>No certificates yet.</p>';
+  container.innerHTML = list.map((cert) => `
+    <div class="card">
+      <p><strong>${safe(cert.title)}</strong></p>
+      <p>${safe(cert.issuer)} • ${safe(cert.date)}</p>
+    </div>
+  `).join('');
+}
+
+function fillProfileForm(profile) {
+  if (!profile) return;
+  const form = $('profileForm');
+  form.name.value = profile.name;
+  form.tagline.value = profile.tagline;
+  form.eyebrow.value = profile.eyebrow;
+  form.summary.value = profile.summary;
+  form.about.value = profile.about;
+  form.contact.value = JSON.stringify(profile.contact || [], null, 2);
+}
+
+function fillProjectForm(index) {
+  const project = state.projects[index];
+  if (!project) return;
+  const form = $('projectForm');
+  form.title.value = project.title;
+  form.description.value = project.description;
+  form.tags.value = (project.tags || project.technologies || []).join(', ');
+  form.repo_url.value = project.repo_url || project.github_link || '';
+  form.live_url.value = project.live_url || '';
+  form.date.value = project.date || '';
+  state.editing.project = index;
+}
+
+function fillChallengeFormEntry(index, platform = 'tryhackme') {
+  const entry = state.challenges[platform]?.[index];
+  if (!entry) return;
+  const form = $('challengeForm');
+  form.title.value = entry.title;
+  form.platform.value = platform;
+  form.difficulty.value = entry.difficulty;
+  form.description.value = entry.description;
+  form.date.value = entry.date || '';
+  form.categories.value = (entry.categories || []).join(', ');
+  form.markdown.value = entry.markdown || entry.description || '';
+  state.editing.challenge = { platform, index };
+}
+
+function fillResearchForm(index) {
+  const research = state.research[index];
+  if (!research) return;
+  const form = $('researchForm');
+  form.title.value = research.title;
+  form.description.value = research.description;
+  form.tags.value = (research.tags || research.categories || []).join(', ');
+  form.date.value = research.date || research.publication_date || '';
+  form.markdown.value = research.markdown || '';
+  state.editing.research = research.id ?? index;
+}
+
+function fillGalleryForm(index) {
+  const entry = state.gallery[index];
+  if (!entry) return;
+  const form = $('galleryForm');
+  form.title.value = entry.title;
+  form.caption.value = entry.caption;
+  form.date.value = entry.date || entry.event_date || '';
+  state.editing.gallery = entry.id ?? index;
+}
+
 async function sha256(value) {
   const bytes = new TextEncoder().encode(value);
   const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
@@ -68,6 +287,48 @@ async function loadJSON(path) {
   const r = await fetch(path);
   if (!r.ok) throw new Error(`Failed to load ${path}`);
   return r.json();
+}
+
+async function loadAdminData() {
+  for (const section of ADMIN_SECTIONS) {
+    try {
+      const data = await loadJSON(section.path);
+      state[section.id] = data;
+      if (section.render) section.render(data);
+      else renderDefaultPreview(section.id, data);
+      if (section.fill && section.form) section.fill(data);
+    } catch (err) {
+      console.warn(`Cannot load ${section.id}:`, err);
+    }
+  }
+  setupPreviewHandlers();
+}
+
+function setupPreviewHandlers() {
+  ['projectPreview', 'challengePreview', 'researchPreview', 'galleryPreview'].forEach((id) => {
+    $(id)?.addEventListener('click', handlePreviewAction);
+  });
+}
+
+function handlePreviewAction(event) {
+  const action = event.target.dataset.action;
+  const index = Number(event.target.dataset.index);
+  switch (action) {
+    case 'edit-project':
+      fillProjectForm(index);
+      break;
+    case 'edit-challenge':
+      fillChallengeFormEntry(index, event.target.dataset.platform);
+      break;
+    case 'edit-research':
+      fillResearchForm(index);
+      break;
+    case 'edit-gallery':
+      fillGalleryForm(index);
+      break;
+    default:
+      return;
+  }
 }
 
 async function tryBackendLogin(password) {
@@ -167,6 +428,81 @@ function normalizeGallery(x) {
   };
 }
 
+function renderListPreview(containerId, items, mapper) {
+  const container = $(containerId);
+  if (!container) return;
+  if (!items?.length) {
+    container.innerHTML = '<p class="muted">No entries yet.</p>';
+    return;
+  }
+  container.innerHTML = items.map(mapper).join('');
+}
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+function generateFileName(original) {
+  const name = slugify(original.replace(/\.\w+$/, '')) || 'file';
+  const ext = (original.match(/(\.[^.]+)$/) || [''])[0];
+  const suffix = Date.now();
+  return `${name}-${suffix}${ext}`;
+}
+
+function renderDefaultPreview(sectionId, data) {
+  switch (sectionId) {
+    case 'resume':
+      return renderResumePreview(data);
+    case 'certificates':
+      return renderCertificatePreview(data);
+    case 'projects':
+      return renderListPreview('projectPreview', data, (item, index) => `
+        <div class="card">
+          <p><strong>${safe(item.title)}</strong></p>
+          <p>${safe(item.description)}</p>
+          <div class="toolbar">
+            <button class="btn btn-sm" data-action="edit-project" data-index="${index}">Edit</button>
+          </div>
+        </div>`);
+    case 'challenges':
+      return renderListPreview('challengePreview', data.tryhackme || [], (item, index) => `
+        <div class="card">
+          <p><strong>${safe(item.title)}</strong></p>
+          <p>${safe(item.description)}</p>
+          <div class="toolbar">
+            <button class="btn btn-sm" data-action="edit-challenge" data-index="${index}" data-platform="tryhackme">Edit</button>
+          </div>
+        </div>`);
+    case 'research':
+      return renderListPreview('researchPreview', data, (item, index) => `
+        <div class="card">
+          <p><strong>${safe(item.title)}</strong></p>
+          <p>${safe(item.description)}</p>
+          <div class="toolbar">
+            <button class="btn btn-sm" data-action="edit-research" data-index="${index}">Edit</button>
+          </div>
+        </div>`);
+    case 'gallery':
+      return renderListPreview('galleryPreview', data, (item, index) => `
+        <div class="card">
+          <p><strong>${safe(item.title)}</strong></p>
+          <p>${safe(item.caption)}</p>
+          <div class="toolbar">
+            <button class="btn btn-sm" data-action="edit-gallery" data-index="${index}">Edit</button>
+          </div>
+        </div>`);
+    case 'contact':
+      return renderContactPreview(data);
+    default:
+      return;
+  }
+}
+
 function populateChallengeSelects() {
   const platformFilter = $('challengePlatformFilter');
   const platformForm = $('challengePlatform');
@@ -247,11 +583,10 @@ function renderAllTables() {
 function setPanel(panel) {
   document.querySelectorAll('.admin-nav-btn').forEach((b) => b.classList.toggle('active', b.dataset.panel === panel));
   document.querySelectorAll('.admin-panel').forEach((s) => s.classList.toggle('active', s.dataset.panel === panel));
-  $('panelTitle').textContent = panel[0].toUpperCase() + panel.slice(1);
 }
 
 function showAuth() { $('authGate').style.display = 'grid'; $('adminApp').hidden = true; }
-function showAdmin() { $('authGate').style.display = 'none'; $('adminApp').hidden = false; }
+function showAdmin() { $('authGate').style.display = 'none'; $('adminApp').hidden = false; setPanel('profile'); }
 
 function collectChallengeCategories() {
   return Array.from(document.querySelectorAll('#challengeCategoryChecks input[type="checkbox"]:checked')).map((x) => x.value);
@@ -372,11 +707,15 @@ function bindEvents() {
     $('modeTag').textContent = state.adminToken ? 'Static JSON + Upload API' : 'Static JSON Mode';
     $('authMessage').textContent = '';
     showAdmin();
-    renderAllTables();
+    await loadAdminData();
   });
 
   $('logoutBtn').addEventListener('click', showAuth);
   document.querySelectorAll('.admin-nav-btn').forEach((b) => b.addEventListener('click', () => setPanel(b.dataset.panel)));
+  $('projectForm')?.addEventListener('submit', handleProjectSubmit);
+  $('challengeForm')?.addEventListener('submit', handleChallengeSubmit);
+  $('researchForm')?.addEventListener('submit', handleResearchSubmit);
+  $('galleryForm')?.addEventListener('submit', handleGallerySubmit);
 
   $('challengeFilterBtn').addEventListener('click', () => { state.page = 1; renderChallengesTable(); });
   $('challengePrev').addEventListener('click', () => { if (state.page > 1) { state.page -= 1; renderChallengesTable(); } });

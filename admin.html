@@ -75,7 +75,23 @@
         </article>
         <article class="panel form-panel">
           <h2>Add / edit certificate</h2>
-          <!-- form placeholder -->
+          <form id="certificateForm" class="form-grid">
+            <label>Title<input name="title" required /></label>
+            <label>Issuer<input name="issuer" required /></label>
+            <label>Date<input name="date" type="date" required /></label>
+            <label>Type
+              <select name="type">
+                <option value="image">Image</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </label>
+            <label>Credential URL<input name="credential_url" /></label>
+            <label>File<input type="file" name="file" accept="image/*,.pdf" /></label>
+            <label class="drag-zone" data-target="certificateForm">Drop file here or click to upload</label>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary">Save certificate</button>
+            </div>
+          </form>
         </article>
       </div>
     </section>
@@ -87,7 +103,19 @@
         </article>
         <article class="panel form-panel">
           <h2>Add / edit project</h2>
-          <!-- form placeholder -->
+          <form id="projectForm" class="form-grid">
+            <label>Title<input name="title" required /></label>
+            <label>Description<textarea name="description" rows="3"></textarea></label>
+            <label>Tags<input name="tags" placeholder="comma separated" /></label>
+            <label>Repository URL<input name="repo_url" /></label>
+            <label>Live URL<input name="live_url" /></label>
+            <label>Date<input name="date" type="date" /></label>
+            <label>Image<input type="file" name="file" accept="image/*" /></label>
+            <label class="drag-zone" data-target="projectForm">Drop project image</label>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary">Save project</button>
+            </div>
+          </form>
         </article>
       </div>
     </section>
@@ -99,7 +127,27 @@
         </article>
         <article class="panel form-panel">
           <h2>Add / edit challenge</h2>
-          <!-- form placeholder -->
+          <form id="challengeForm" class="form-grid">
+            <label>Title<input name="title" required /></label>
+            <label>Platform
+              <select name="platform">
+                <option value="tryhackme">TryHackMe</option>
+                <option value="hackthebox">HackTheBox</option>
+                <option value="ctfzone">CTFZone</option>
+                <option value="ctfroom">CTFROOM</option>
+                <option value="picoctf">PicoCTF</option>
+                <option value="others">Others</option>
+              </select>
+            </label>
+            <label>Difficulty<input name="difficulty" /></label>
+            <label>Description<textarea name="description" rows="3"></textarea></label>
+            <label>Date<input name="date" type="date" /></label>
+            <label>Categories<input name="categories" placeholder="comma separated" /></label>
+            <label>Markdown<textarea name="markdown" rows="4"></textarea></label>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary">Save challenge</button>
+            </div>
+          </form>
         </article>
       </div>
     </section>
@@ -111,7 +159,16 @@
         </article>
         <article class="panel form-panel">
           <h2>Add / edit research</h2>
-          <!-- form placeholder -->
+          <form id="researchForm" class="form-grid">
+            <label>Title<input name="title" required /></label>
+            <label>Description<textarea name="description" rows="3"></textarea></label>
+            <label>Tags<input name="tags" placeholder="comma separated" /></label>
+            <label>Date<input name="date" type="date" /></label>
+            <label>Markdown<textarea name="markdown" rows="4"></textarea></label>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary">Save research</button>
+            </div>
+          </form>
         </article>
       </div>
     </section>
@@ -123,7 +180,16 @@
         </article>
         <article class="panel form-panel">
           <h2>Add / edit gallery image</h2>
-          <!-- form placeholder -->
+          <form id="galleryForm" class="form-grid">
+            <label>Title<input name="title" /></label>
+            <label>Caption<textarea name="caption" rows="2"></textarea></label>
+            <label>Date<input name="date" type="date" /></label>
+            <label>Image<input type="file" name="file" accept="image/*" /></label>
+            <label class="drag-zone" data-target="galleryForm">Drop gallery image</label>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary">Save gallery image</button>
+            </div>
+          </form>
         </article>
       </div>
     </section>
