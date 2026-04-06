@@ -1,11 +1,11 @@
 # Mathewrean Cybersecurity Portfolio (Static)
 
-This is the static portfolio that powers https://mathewrean.github.io/my_portfolio. The HTML/JS simply reads JSON + Markdown from `data/` and `content/` and renders the hero, about, resume, certificates, projects, challenges, research, gallery, and contact sections.
+This is the static portfolio that powers https://mathewrean.github.io/portfolio. The HTML/JS simply reads JSON + Markdown from `data/` and `content/` and renders the hero, about, resume, certificates, projects, challenges, research, gallery, and contact sections.
 
 ## Project layout
 
 ```
-/my_portfolio
+/portfolio
 ├── index.html           # SPA shell with hero, tabs, modal, and toast
 ├── admin.html           # lightweight admin shell (manual content editing only)
 ├── assets/              # shared CSS / JS / image assets
@@ -13,7 +13,7 @@ This is the static portfolio that powers https://mathewrean.github.io/my_portfol
 └── content/             # markdown writeups for challenges & research
 ```
 
-All URLs respect the `<meta name="repo-base-path" content="/my_portfolio">` tag so the same build works both locally and on GitHub Pages.
+All URLs respect the `<meta name="repo-base-path" content="/portfolio">` tag so the same build works both locally and on GitHub Pages.
 
 ## Running locally
 

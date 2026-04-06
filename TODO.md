@@ -6,7 +6,7 @@
 3. [x] Edit assets/js/main.js: Refactor loadData(), add logging/partials.
 4. [x] Test locally.
 5. [x] Commit/push (commit 8254b0e, pushed).
-6. [ ] Verify live: Root cause - path /my_portfolio/data/ 404 on Pages. Fixing detection.
+6. [ ] Verify live: Root cause - path /portfolio/data/ 404 on Pages. Fixing detection.
  7. [ ] Push & test.
  8. [ ] Complete.
 

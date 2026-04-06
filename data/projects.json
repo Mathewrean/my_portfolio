@@ -3,7 +3,7 @@
     "title": "Phishing Detection Dashboard",
     "description": "Python/Flask dashboard that scores URLs and emails, surfacing remediation guidance alongside SOC incident response playbooks.",
     "tags": ["Python", "Flask", "Security"],
-    "repo_url": "https://github.com/Mathewrean/my_portfolio",
+    "repo_url": "https://github.com/Mathewrean/portfolio",
     "live_url": "",
     "image_path": "https://placehold.co/400x300/102c45/e8eefb?text=Dashboard",
     "date": "2025-09-10"
