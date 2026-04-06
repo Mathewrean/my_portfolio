@@ -93,6 +93,23 @@ Cloud Security, Mobile Security, Active Directory, Malware Analysis, Threat Hunt
 - All other fields stay the same (title, difficulty, description, date, markdown upload/paste). A slug is generated from the title at save time.
 - Saving writes a markdown file to `content/challenges/{platform}/{slug}.md` and appends an entry to the matching platform array in `data/challenges.json`. The admin list shows per-platform entries with edit/delete controls.
 
+## Admin Page — Critical Fix
+
+**1. Admin Tab Navigation — Must Work Like Main Portfolio**
+The admin sidebar navigation mirrors the public sidebar, including the same tabs and challenge sub-tabs. Clicking any admin tab hides all other panels, highlights the active tab, and renders the matching admin panel. Challenge sub-tabs behave like the public view: the TryHackMe/HackTheBox/CTFZone/CTFROOM/PicoCTF/Others sub-tabs each reload the challenge preview panel for that platform without leaving the admin page.
+
+**2. Current Content Must Load Automatically**
+Every tab fetches its JSON on activation and renders the latest entries in the left preview panel; if a fetch fails the panel shows an inline error. The mapping is one-to-one with the public site (profile fields match home/about, certificates grid matches cards, projects map to cards, challenges per platform match their sub-tabs, research reveals title + tags + markdown path, gallery shows thumbnails, contact shows links).
+
+**3. Edit Flow — Exact Requirement**
+Left panel data always matches what the public portfolio displays. Clicking `Edit` clears the form and loads the selected entry (including its file preview or Markdown). The form switches button text to `Save Changes`, commits edited JSON (plus `.md` writes if required), presents inline toast feedback, and provides a `Cancel Edit` to reset to the add state.
+
+**4. Delete Behaviour**
+Each preview card has a `Delete` button that reveals an inline "Delete {title}? Yes / Cancel" flow—no `confirm()` dialogues. Confirming removes the entry from JSON and deletes the associated Markdown (when present) via the GitHub Contents API, then re-renders the panel.
+
+**5. State Consistency Rule**
+After every add/edit/delete, the admin panel re-fetches the affected JSON and re-renders so the preview column always reflects the repo’s true state; nothing stays cached indefinitely.
+
 ## Notes for future updates
 
 - Keep absolute paths out of CSS/JS; rely on the `repo-base-path` meta tag and `buildUrl` helper.
