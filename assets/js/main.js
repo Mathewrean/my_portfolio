@@ -291,16 +291,20 @@ function renderChallengeTabs() {
   });
 }
 
-function setActivePlatformTab(slug) {
-  const valid = PLATFORM_TABS.some((tab) => tab.slug === slug);
-  const target = valid ? slug : PLATFORM_TABS[0].slug;
-  state.activePlatformTab = target;
+function highlightPlatformTabs(target) {
   selectors.challengeTabs?.querySelectorAll('button').forEach((button) => {
     button.classList.toggle('active', button.dataset.platform === target);
   });
   document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((link) => {
     link.classList.toggle('active', link.dataset.challengeTab === target);
   });
+}
+
+function setActivePlatformTab(slug) {
+  const valid = PLATFORM_TABS.some((tab) => tab.slug === slug);
+  const target = valid ? slug : PLATFORM_TABS[0].slug;
+  state.activePlatformTab = target;
+  highlightPlatformTabs(target);
   state.challengeFilter.category = 'all';
   selectors.challengeCategory && (selectors.challengeCategory.value = 'all');
   renderChallengesView();
@@ -348,7 +352,7 @@ function renderChallengeList(entries) {
   }
   selectors.challengeList.innerHTML = entries.map((entry) => {
     const tags = (entry.categories || []).map((cat) => `<span class="tag">${cat}</span>`).join('');
-    const badge = entry.badge_image ? `<img class="challenge-badge" src="${entry.badge_image}" alt="${entry.title} badge" loading="lazy" />` : '';
+    const badge = entry.badge_image ? `<img class="challenge-badge" data-badge-preview="${entry.badge_image}" data-title="${entry.title}" src="${entry.badge_image}" alt="${entry.title} badge" loading="lazy" />` : '';
     const writeup = entry.writeup_url
       ? `<a class="btn btn-primary" href="${entry.writeup_url}" target="_blank" rel="noopener">Read on Medium</a>`
       : '<span class="muted">Write-up coming soon</span>';
@@ -372,6 +376,12 @@ function renderChallengeList(entries) {
       </article>
     `;
   }).join('');
+  selectors.challengeList.querySelectorAll('[data-md]').forEach((button) => {
+    button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Challenge write-up'));
+  });
+  selectors.challengeList.querySelectorAll('[data-badge-preview]').forEach((img) => {
+    img.addEventListener('click', () => openBadgePreview(img.dataset.badgePreview, img.dataset.title || 'Badge preview'));
+  });
 }
 
 function renderChallengesView() {
@@ -395,6 +405,15 @@ async function openMarkdown(path, title) {
   } catch (err) {
     showToast(err.message || 'Unable to load content.');
   }
+}
+
+function openBadgePreview(url, title) {
+  selectors.modalContent.innerHTML = `
+    <h3>${title}</h3>
+    <img src="${url}" alt="${title}" class="challenge-badge-preview" />
+    <p class="muted">Click outside to close.</p>
+  `;
+  selectors.modal?.showModal();
 }
 
 function setupModal() {
@@ -456,6 +475,10 @@ function applyData() {
 function setupChallengeControls() {
   selectors.challengePlatform?.addEventListener('change', (event) => {
     state.challengeFilter.source = event.target.value;
+    if (event.target.value !== 'all') {
+      state.activePlatformTab = event.target.value;
+      highlightPlatformTabs(event.target.value);
+    }
     renderChallengesView();
   });
   selectors.challengeCategory?.addEventListener('change', (event) => {

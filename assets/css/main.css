@@ -429,6 +429,7 @@ pre {
   border: 1px solid var(--line);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .challenge-card:hover .challenge-badge {
@@ -484,6 +485,17 @@ pre {
   #challengeList {
     grid-template-columns: 1fr;
   }
+}
+
+.challenge-badge-preview {
+  width: 100%;
+  max-width: 480px;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  display: block;
+  margin: 1rem auto 0;
 }
 
 .research-item {
