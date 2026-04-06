@@ -1,26 +1,62 @@
 [
   {
-    "title": "Cyber Chief Circle CTF",
-    "image_path": "https://placehold.co/500x400/0d1b2a/f4f4ff?text=Cyber+Chief+Circle",
-    "caption": "Organized and coached teams across web, forensics, RE, crypto, and OSINT categories.",
-    "date": "2026-03-09"
+    "title": "Huawei x Siaya Hub Hackathon",
+    "image_path": "assets/images/gallery/aime.jpeg",
+    "caption": "Third-place finish with AppCube rapid-prototyping paired with security scouting at the Huawei × Siaya Hub Hackathon.",
+    "date": "2025-11-12"
   },
   {
-    "title": "Enactus National Expo",
-    "image_path": "https://placehold.co/500x400/062238/eef5ff?text=Enactus",
-    "caption": "Presented Rechiro, the fisher-to-buyer platform, and networked with impact-driven innovators.",
-    "date": "2024-10-18"
+    "title": "Siaya Hub at AI & Software Summit",
+    "image_path": "assets/images/gallery/aius.jpeg",
+    "caption": "Representing Siaya Hub alongside Bondo TTI, Huawei leadership, and the PS during the 2025 AI & Software Summit.",
+    "date": "2025-11-12"
   },
   {
-    "title": "Huawei & AI Summit Hacks",
-    "image_path": "https://placehold.co/500x400/13263e/f3f5ff?text=Huawei+Summit",
-    "caption": "Third-place finishes at the Huawei Hackathon and AI Summit, where AppCube rapid-prototyping met security scouting.",
-    "date": "2024-11-07"
+    "title": "Chain Hackathon 2025",
+    "image_path": "assets/images/gallery/Chain Hackathon.jpeg",
+    "caption": "Mentor check-in at Chain Hackathon 2025 where we discussed agricultural issues and innovation roadmaps.",
+    "date": "2025-09-20"
   },
   {
-    "title": "Cybersecurity Awareness Week",
-    "image_path": "https://placehold.co/500x400/07122a/faf7ff?text=Cyber+Week",
-    "caption": "Led JOOUST ISACA sessions with Safaricom trainers covering secure-by-design, AI threats, and telecom infrastructure.",
-    "date": "2024-08-14"
+    "title": "Cyber Week Cheque Pose",
+    "image_path": "assets/images/gallery/cheque.jpeg",
+    "caption": "Post-event shot with the Sport-Techies crew after placing third and promoting Project Athec at AI & Software Summit 2025.",
+    "date": "2025-11-12"
+  },
+  {
+    "title": "Cybershujaa Graduation",
+    "image_path": "assets/images/gallery/cybershujaagraduation.jpeg",
+    "caption": "Celebrating the Cybershujaa graduation at USIU after completing the Cisco Ethical Hacking program and earning a certificate to accelerate my cybersecurity journey.",
+    "date": "2025-08-06"
+  },
+  {
+    "title": "Enactus National Expo 2025",
+    "image_path": "assets/images/gallery/enactus nationalexpo.jpeg",
+    "caption": "Presenting Project Aquatrace at the Enactus National Expo, the first major conference for our team.",
+    "date": "2025-06-20"
+  },
+  {
+    "title": "Kazihub Demo Day",
+    "image_path": "assets/images/gallery/Kazihub.jpeg",
+    "caption": "Team Solutech at Kazihub Demo Day after pitching our solutions and receiving feedback from mentors and investors.",
+    "date": "2025-11-12"
+  },
+  {
+    "title": "Nairobi DevOps Meetup",
+    "image_path": "assets/images/gallery/Nairobidevops.jpeg",
+    "caption": "Sharing DevOps best practices with the Nairobi community to foster collaboration and knowledge exchange.",
+    "date": "2025-10-12"
+  },
+  {
+    "title": "Security Awareness Month 2025",
+    "image_path": "assets/images/gallery/safaricomisg awareness month.jpeg",
+    "caption": "With the Safaricom team and Jooust ISG members after wrapping up Cybersecurity Awareness Month 2025, where we educated the campus on threat readiness.",
+    "date": "2025-10-29"
+  },
+  {
+    "title": "WRRIC 2.0 Showcase",
+    "image_path": "assets/images/gallery/wrricmaseno.jpeg",
+    "caption": "Team photo before presenting Rechiro at Maseno University’s hackathon, highlighting how digital innovation bridges supply-chain gaps.",
+    "date": "2025-03-12"
   }
 ]
