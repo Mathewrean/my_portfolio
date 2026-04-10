@@ -89,6 +89,23 @@
         "FTP Client"
       ],
       "date": "2026-02-26"
+    },
+    {
+      "title": "SpookyPass",
+      "categories": [
+        "Cryptography",
+        "Reversing"
+      ],
+      "difficulty": "Easy",
+      "description": "Exploited a zip security and reversing the app password security to retrieve the flag.",
+      "writeup_url": "https://medium.com/@mathewrean/spookypass-htb-challenge-cb635a856665",
+      "badge_image": "assets/images/challenges/spookypass.png",
+      "tools": [
+        "zip2John",
+        "John",
+        "Unzip"
+      ],
+      "date": "2026-04-10"
     }
   ],
   "tryhackme": [],
