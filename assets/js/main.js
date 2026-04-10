@@ -305,6 +305,7 @@ function setActivePlatformTab(slug) {
   const target = valid ? slug : PLATFORM_TABS[0].slug;
   state.activePlatformTab = target;
   highlightPlatformTabs(target);
+  if (selectors.challengePlatform) selectors.challengePlatform.value = target;
   state.challengeFilter.category = 'all';
   selectors.challengeCategory && (selectors.challengeCategory.value = 'all');
   renderChallengesView();
@@ -327,7 +328,7 @@ function renderChallengeFilters() {
 }
 
 function computeActivePlatform() {
-  return state.challengeFilter.source !== 'all' ? state.challengeFilter.source : state.activePlatformTab;
+  return state.challengeFilter.source !== 'all' ? state.challengeFilter.source : null;
 }
 
 function updateCategoryOptions(entries) {
@@ -386,7 +387,7 @@ function renderChallengeList(entries) {
 
 function renderChallengesView() {
   const platform = computeActivePlatform();
-  const platformEntries = state.challenges.filter((entry) => entry.platform === platform);
+  const platformEntries = platform ? state.challenges.filter((entry) => entry.platform === platform) : state.challenges;
   updateCategoryOptions(platformEntries);
   const filtered = state.challengeFilter.category === 'all'
     ? platformEntries
