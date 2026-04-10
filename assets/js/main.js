@@ -387,11 +387,10 @@ function renderChallengeList(entries) {
 function renderChallengesView() {
   const platform = computeActivePlatform();
   const platformEntries = state.challenges.filter((entry) => entry.platform === platform);
-  const entriesToUse = platformEntries.length ? platformEntries : [...state.challenges];
-  updateCategoryOptions(entriesToUse);
+  updateCategoryOptions(platformEntries);
   const filtered = state.challengeFilter.category === 'all'
-    ? entriesToUse
-    : entriesToUse.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
+    ? platformEntries
+    : platformEntries.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
   const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
   renderChallengeList(sorted);
 }
