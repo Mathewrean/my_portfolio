@@ -328,7 +328,8 @@ function renderChallengeFilters() {
 }
 
 function computeActivePlatform() {
-  return state.challengeFilter.source !== 'all' ? state.challengeFilter.source : null;
+  if (state.challengeFilter.source !== 'all') return state.challengeFilter.source;
+  return state.activePlatformTab || PLATFORM_TABS[0].slug;
 }
 
 function updateCategoryOptions(entries) {
