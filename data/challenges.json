@@ -108,7 +108,19 @@
       "date": "2026-04-10"
     }
   ],
-  "tryhackme": [],
+  "tryhackme": [
+     {
+      "title": "Have a Break",
+      "categories": [
+        "Osint"
+      ],
+      "difficulty": "Medium",
+      "description": "Digging through the given files and public information to know about how the kitkat heist happened and who was behind it.",
+      "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
+      "badge_image": "assets/images/challenges/haveabreak_badge.png",
+      "date": "2026-02-21"
+    }
+  ],
   "ctfroom": [],
   "picoctf": [
     {
