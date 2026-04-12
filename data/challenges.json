@@ -24,7 +24,8 @@
       "description": "Easy bcrypt hash cracking challenge",
       "writeup_url": "https://mathewrean.medium.com/l2-mac-flooding-arp-spoofing-putting-the-switch-to-work",
       "badge_image": "assets/images/challenges/blowmind-c3cbd81b1a29.png",
-      "date": "2026-03-05"
+      "date": "2026-03-05",
+      "tools": "Dcode"
     },
     {
       "title": "Common Modulus",
@@ -35,7 +36,8 @@
       "description": "Easy decode after getting same modulus and different exponents in RSA encryption",
       "writeup_url": "https://mathewrean.medium.com/intro-to-log-analysis-detecting-the-signal",
       "badge_image": "assets/images/challenges/common_Modulus-893a4093a1be.png",
-      "date": "2026-03-30"
+      "date": "2026-03-30",
+      "tools": "Python Crypto script"
     },
     {
       "title": "Fly-Over",
@@ -47,7 +49,8 @@
       "description": "Exploiting access config in a hardware program to dump the firmware and reverse engineer it to find the flag.",
       "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
       "badge_image": "assets/images/challenges/flyover_badge-f8b93c4c165a.png",
-      "date": "2026-02-21"
+      "date": "2026-02-21",
+      "tools": "Python rev script"
     },
     {
       "title": "X-Mas",
@@ -58,10 +61,21 @@
       "description": "Exploiting a vulnerable web to SSTI and RCE to get the flag.",
       "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
       "badge_image": "assets/images/challenges/xmas_badge-69852e21f6e0.png",
-      "date": "2026-02-21"
+      "date": "2026-02-21",
+      "tools": "Browser"
     }
   ],
   "hackthebox": [
+    {
+      "title": "Redeamer",
+      "categories": "Database Exploitation",
+      "difficulty": "Easy",
+      "description": "Exploiting a porly secured redis database server",
+      "writeup_url": "https://medium.com/@mathewrean/redeemer-hackthebox-challenge-26bde995e0e4",
+      "badge_image": "assets/images/challenges/Redeemer_badge.png",
+      "date": "2026-04-11",
+      "tools": "redis-cli"
+    },
     {
       "title": "Lame",
       "categories": [
@@ -72,7 +86,11 @@
       "description": "Enumerated legacy SMB shares, abused weak permissions, and followed a multistage privilege escalation path.",
       "writeup_url": "https://mathewrean.medium.com/lame-smb-and-unstable-virtual-machines",
       "badge_image": "assets/images/challenges/lame_badge-ee35f6c6ac70.png",
-      "date": "2025-03-04"
+      "date": "2025-03-04",
+      "tools": [
+        "smbclient",
+        "smb"
+      ]
     },
     {
       "title": "Fawn",
@@ -109,7 +127,7 @@
     }
   ],
   "tryhackme": [
-     {
+    {
       "title": "Have a Break",
       "categories": [
         "Osint"
