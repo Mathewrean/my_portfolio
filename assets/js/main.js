@@ -150,6 +150,9 @@ function setActiveView(view) {
   document.querySelectorAll('.nav-link[data-view]').forEach((button) => {
     button.classList.toggle('active', button.dataset.view === target);
   });
+  if (target === 'challenges' && state.challengeFilter.source === 'all') {
+    setActivePlatformTab(null, true);
+  }
 }
 
 function setupNavigation() {
@@ -293,21 +296,24 @@ function renderChallengeTabs() {
 
 function highlightPlatformTabs(target) {
   selectors.challengeTabs?.querySelectorAll('button').forEach((button) => {
-    button.classList.toggle('active', button.dataset.platform === target);
+    button.classList.toggle('active', target ? button.dataset.platform === target : false);
   });
   document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((link) => {
-    link.classList.toggle('active', link.dataset.challengeTab === target);
+    link.classList.toggle('active', target ? link.dataset.challengeTab === target : false);
   });
 }
 
-function setActivePlatformTab(slug) {
-  const valid = PLATFORM_TABS.some((tab) => tab.slug === slug);
-  const target = valid ? slug : PLATFORM_TABS[0].slug;
+function setActivePlatformTab(slug, skipSourceUpdate = false) {
+  const valid = slug && PLATFORM_TABS.some((tab) => tab.slug === slug);
+  const target = valid ? slug : null;
   state.activePlatformTab = target;
+  if (!skipSourceUpdate) {
+    state.challengeFilter.source = target || 'all';
+    if (selectors.challengePlatform) selectors.challengePlatform.value = target || 'all';
+  }
   highlightPlatformTabs(target);
-  if (selectors.challengePlatform) selectors.challengePlatform.value = target;
   state.challengeFilter.category = 'all';
-  selectors.challengeCategory && (selectors.challengeCategory.value = 'all');
+  if (selectors.challengeCategory) selectors.challengeCategory.value = 'all';
   renderChallengesView();
 }
 
@@ -329,7 +335,7 @@ function renderChallengeFilters() {
 
 function computeActivePlatform() {
   if (state.challengeFilter.source !== 'all') return state.challengeFilter.source;
-  return state.activePlatformTab || PLATFORM_TABS[0].slug;
+  return state.activePlatformTab;
 }
 
 function updateCategoryOptions(entries) {
