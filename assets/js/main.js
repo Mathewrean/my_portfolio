@@ -35,7 +35,7 @@ const CATEGORY_OPTIONS = [
 const state = {
   activeView: 'home',
   challenges: [],
-  activePlatformTab: 'tryhackme',
+  activePlatformTab: null,
   challengeFilter: { source: 'all', category: 'all' },
   data: null,
 };
@@ -151,7 +151,7 @@ function setActiveView(view) {
     button.classList.toggle('active', button.dataset.view === target);
   });
   if (target === 'challenges' && state.challengeFilter.source === 'all') {
-    setActivePlatformTab(null, true);
+    applyPlatformFilter(null);
   }
 }
 
@@ -292,6 +292,7 @@ function renderChallengeTabs() {
   selectors.challengeTabs.querySelectorAll('button').forEach((button) => {
     button.addEventListener('click', () => setActivePlatformTab(button.dataset.platform));
   });
+  highlightPlatformTabs(state.activePlatformTab);
 }
 
 function highlightPlatformTabs(target) {
@@ -303,18 +304,21 @@ function highlightPlatformTabs(target) {
   });
 }
 
-function setActivePlatformTab(slug, skipSourceUpdate = false) {
+function applyPlatformFilter(slug) {
   const valid = slug && PLATFORM_TABS.some((tab) => tab.slug === slug);
   const target = valid ? slug : null;
   state.activePlatformTab = target;
-  if (!skipSourceUpdate) {
-    state.challengeFilter.source = target || 'all';
-    if (selectors.challengePlatform) selectors.challengePlatform.value = target || 'all';
-  }
+  const filterValue = target || 'all';
+  state.challengeFilter.source = filterValue;
+  if (selectors.challengePlatform) selectors.challengePlatform.value = filterValue;
   highlightPlatformTabs(target);
   state.challengeFilter.category = 'all';
   if (selectors.challengeCategory) selectors.challengeCategory.value = 'all';
   renderChallengesView();
+}
+
+function setActivePlatformTab(slug) {
+  applyPlatformFilter(slug);
 }
 
 function hydrateFromUrl() {
@@ -338,11 +342,19 @@ function computeActivePlatform() {
   return state.activePlatformTab;
 }
 
+function normalizeCategories(entry) {
+  if (!entry) return [];
+  const cats = entry.categories;
+  if (Array.isArray(cats)) return cats;
+  if (typeof cats === 'string' && cats.trim()) return [cats.trim()];
+  return [];
+}
+
 function updateCategoryOptions(entries) {
   if (!selectors.challengeCategory) return;
   const categories = new Set();
   entries.forEach((entry) => {
-    (entry.categories || []).forEach((cat) => categories.add(cat));
+    normalizeCategories(entry).forEach((cat) => categories.add(cat));
   });
   const opts = Array.from(categories).sort((a, b) => a.localeCompare(b));
   selectors.challengeCategory.innerHTML = `<option value="all">All categories</option>${opts.map((cat) => `<option value="${cat}">${cat}</option>`).join('')}`;
@@ -359,7 +371,7 @@ function renderChallengeList(entries) {
     return;
   }
   selectors.challengeList.innerHTML = entries.map((entry) => {
-    const tags = (entry.categories || []).map((cat) => `<span class="tag">${cat}</span>`).join('');
+    const tags = normalizeCategories(entry).map((cat) => `<span class="tag">${cat}</span>`).join('');
     const badge = entry.badge_image ? `<img class="challenge-badge" data-badge-preview="${entry.badge_image}" data-title="${entry.title}" src="${entry.badge_image}" alt="${entry.title} badge" loading="lazy" />` : '';
     const writeup = entry.writeup_url
       ? `<a class="btn btn-primary" href="${entry.writeup_url}" target="_blank" rel="noopener">Read on Medium</a>`
@@ -398,7 +410,7 @@ function renderChallengesView() {
   updateCategoryOptions(platformEntries);
   const filtered = state.challengeFilter.category === 'all'
     ? platformEntries
-    : platformEntries.filter((entry) => (entry.categories || []).includes(state.challengeFilter.category));
+    : platformEntries.filter((entry) => normalizeCategories(entry).includes(state.challengeFilter.category));
   const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
   renderChallengeList(sorted);
 }
@@ -483,10 +495,12 @@ function applyData() {
 
 function setupChallengeControls() {
   selectors.challengePlatform?.addEventListener('change', (event) => {
-    state.challengeFilter.source = event.target.value;
-    if (event.target.value !== 'all') {
-      state.activePlatformTab = event.target.value;
-      highlightPlatformTabs(event.target.value);
+    const value = event.target.value;
+    state.challengeFilter.source = value;
+    if (value === 'all') {
+      setActivePlatformTab(null, true);
+    } else {
+      setActivePlatformTab(value, true);
     }
     renderChallengesView();
   });
