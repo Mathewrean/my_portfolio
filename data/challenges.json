@@ -73,7 +73,7 @@
       ],
       "difficulty": "Easy",
       "description": "Exploiting a vulnerable web to SSTI and RCE to get the flag.",
-      "writeup_url": "https://mathewrean.medium.com/threat-intelligence-tools-collections-that-count",
+      "writeup_url": "https://medium.com/@mathewrean/xmas-ctfzone-challenge-9ba08dcb270d",
       "badge_image": "assets/images/challenges/xmas_badge-69852e21f6e0.png",
       "date": "2026-02-21",
       "tools": "Browser"

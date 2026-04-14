@@ -7,6 +7,12 @@ const isGithubPages = window.location.hostname.endsWith('.github.io');
 const normalizedBase = isLocalhost || isGithubPages ? '' : (repoBase ? repoBase.replace(/\/+$/g, '') : '');
 const DATA_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}data`;
 const CONTENT_ROOT = `${normalizedBase ? `${normalizedBase}/` : ''}content`;
+
+console.log(`[PORTFOLIO] Script loaded. isLocalhost=${isLocalhost}, isGithubPages=${isGithubPages}, normalizedBase="${normalizedBase}", DATA_ROOT="${DATA_ROOT}"`);
+
+// Immediately flag that the script is running
+document.documentElement.setAttribute('data-js-loaded', 'true');
+
 const PLATFORM_TABS = [
   { slug: 'tryhackme', label: 'TryHackMe' },
   { slug: 'hackthebox', label: 'HackTheBox' },
@@ -35,8 +41,8 @@ const CATEGORY_OPTIONS = [
 const state = {
   activeView: 'home',
   challenges: [],
-  activePlatformTab: null,
-  challengeFilter: { platform: 'all', category: 'all' },
+  activePlatformTab: 'tryhackme', // Default to TryHackMe
+  challengeFilter: { platform: 'tryhackme', category: 'all' }, // Default platform
   data: null,
 };
 
@@ -62,6 +68,13 @@ const selectors = {
   dialogImage: document.getElementById('dialogImage'),
   dialogMeta: document.getElementById('dialogMeta'),
 };
+
+// Log which selectors exist
+const selectorStatus = Object.entries(selectors).reduce((acc, [key, val]) => {
+  acc[key] = val ? '✓' : '✗';
+  return acc;
+}, {});
+console.log('[SELECTORS] Status:', selectorStatus);
 
 const CONTACT_ICON_SVGS = {
   email: `
@@ -171,36 +184,52 @@ function setupNavigation() {
 }
 
 function renderHero(profile) {
-  selectors.heroTitle.textContent = profile.name || 'Mathewrean';
-  selectors.heroSummary.textContent = profile.tagline || 'Cybersecurity Portfolio';
-  document.querySelector('.eyebrow').textContent = profile.eyebrow || 'Cybersecurity • Digital Forensics • Research';
+  try {
+    selectors.heroTitle.textContent = profile.name || 'Mathewrean';
+    selectors.heroSummary.textContent = profile.tagline || 'Cybersecurity Portfolio';
+    document.querySelector('.eyebrow').textContent = profile.eyebrow || 'Cybersecurity • Digital Forensics • Research';
+    console.log('[RENDER] Hero rendered successfully');
+  } catch(e) {
+    console.error('[RENDER] Hero render error:', e);
+  }
 }
 
 function renderAbout(profile) {
-  selectors.aboutText.textContent = profile.about || profile.summary || '';
+  try {
+    selectors.aboutText.textContent = profile.about || profile.summary || '';
+    console.log('[RENDER] About rendered');
+  } catch(e) {
+    console.error('[RENDER] About render error:', e);
+  }
 }
 
 function renderResume(data) {
-  if (!selectors.resumeContent) return;
-  selectors.resumeContent.innerHTML = '';
-  data.highlights?.forEach((section) => {
-    const sectionEl = document.createElement('article');
-    sectionEl.className = 'section-highlight';
-    const header = document.createElement('h3');
-    header.textContent = section.section;
-    sectionEl.appendChild(header);
-    section.items.forEach((item) => {
-      const card = document.createElement('div');
-      card.className = 'resume-card';
-      card.innerHTML = `<h4>${item.title}</h4><p class="meta">${item.subtitle} • ${item.period}</p><p>${item.description}</p>`;
-      sectionEl.appendChild(card);
+  try {
+    if (!selectors.resumeContent) return;
+    selectors.resumeContent.innerHTML = '';
+    data.highlights?.forEach((section) => {
+      const sectionEl = document.createElement('article');
+      sectionEl.className = 'section-highlight';
+      const header = document.createElement('h3');
+      header.textContent = section.section;
+      sectionEl.appendChild(header);
+      section.items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'resume-card';
+        card.innerHTML = `<h4>${item.title}</h4><p class="meta">${item.subtitle} • ${item.period}</p><p>${item.description}</p>`;
+        sectionEl.appendChild(card);
+      });
+      selectors.resumeContent.appendChild(sectionEl);
     });
-    selectors.resumeContent.appendChild(sectionEl);
-  });
+    console.log('[RENDER] Resume rendered');
+  } catch(e) {
+    console.error('[RENDER] Resume render error:', e);
+  }
 }
 
 function renderCertificates(list) {
-  selectors.certificatesGrid.innerHTML = list.map((cert) => `
+  try {
+    selectors.certificatesGrid.innerHTML = list.map((cert) => `
     <article class="card" data-title="${cert.title}">
       <img src="${cert.image_path}" alt="${cert.title}" loading="lazy" />
       <h3>${cert.title}</h3>
@@ -208,18 +237,23 @@ function renderCertificates(list) {
       <p><a class="btn" href="${cert.credential_url || '#'}" target="_blank" rel="noopener">View credential</a></p>
     </article>
   `).join('');
-  selectors.certificatesGrid.querySelectorAll('article').forEach((card) => {
-    card.addEventListener('click', (event) => {
-      event.stopPropagation();
-      selectors.dialogImage?.setAttribute('src', card.querySelector('img')?.src || '');
-      selectors.dialogMeta.textContent = card.querySelector('p.meta')?.textContent || '';
-      selectors.certificateDialog?.showModal();
+    selectors.certificatesGrid.querySelectorAll('article').forEach((card) => {
+      card.addEventListener('click', (event) => {
+        event.stopPropagation();
+        selectors.dialogImage?.setAttribute('src', card.querySelector('img')?.src || '');
+        selectors.dialogMeta.textContent = card.querySelector('p.meta')?.textContent || '';
+        selectors.certificateDialog?.showModal();
+      });
     });
-  });
+    console.log('[RENDER] Certificates rendered');
+  } catch(e) {
+    console.error('[RENDER] Certificates render error:', e);
+  }
 }
 
 function renderProjects(list) {
-  selectors.projectsGrid.innerHTML = list.map((project) => `
+  try {
+    selectors.projectsGrid.innerHTML = list.map((project) => `
     <article class="card">
       <img src="${project.image_path}" alt="${project.title}" loading="lazy" />
       <h3>${project.title}</h3>
@@ -231,26 +265,36 @@ function renderProjects(list) {
       </p>
     </article>
   `).join('');
+    console.log('[RENDER] Projects rendered');
+  } catch(e) {
+    console.error('[RENDER] Projects render error:', e);
+  }
 }
 
 function createContactLinks(list) {
-  selectors.contactLinks.innerHTML = list.map((item) => {
-    const label = item.label || '';
-    const url = item.url || '#';
-    const isMail = url.toLowerCase().startsWith('mailto:');
-    const targetRel = isMail ? '' : ' target="_blank" rel="noopener"';
-    const icon = getContactIcon(item.icon);
-    return `
-      <a class="contact-link" href="${url}"${targetRel} aria-label="${label}">
-        <span class="contact-icon">${icon}</span>
-        <span class="contact-label">${label}</span>
-      </a>
-    `;
-  }).join('');
+  try {
+    selectors.contactLinks.innerHTML = list.map((item) => {
+      const label = item.label || '';
+      const url = item.url || '#';
+      const isMail = url.toLowerCase().startsWith('mailto:');
+      const targetRel = isMail ? '' : ' target="_blank" rel="noopener"';
+      const icon = getContactIcon(item.icon);
+      return `
+        <a class="contact-link" href="${url}"${targetRel} aria-label="${label}">
+          <span class="contact-icon">${icon}</span>
+          <span class="contact-label">${label}</span>
+        </a>
+      `;
+    }).join('');
+    console.log('[RENDER] Contact links rendered');
+  } catch(e) {
+    console.error('[RENDER] Contact links error:', e);
+  }
 }
 
 function renderGallery(items) {
-  selectors.galleryGrid.innerHTML = items.map((item) => `
+  try {
+    selectors.galleryGrid.innerHTML = items.map((item) => `
     <article class="card">
       <img src="${item.image_path}" alt="${item.title}" loading="lazy" />
       <h3>${item.title}</h3>
@@ -258,10 +302,15 @@ function renderGallery(items) {
       <p class="meta">${item.date}</p>
     </article>
   `).join('');
+    console.log('[RENDER] Gallery rendered');
+  } catch(e) {
+    console.error('[RENDER] Gallery render error:', e);
+  }
 }
 
 function renderResearch(entries) {
-  selectors.researchList.innerHTML = entries.map((entry) => `
+  try {
+    selectors.researchList.innerHTML = entries.map((entry) => `
     <article class="card research-card" data-md="${entry.md_path}">
       <h3>${entry.title}</h3>
       <p>${entry.description}</p>
@@ -269,9 +318,13 @@ function renderResearch(entries) {
       <button class="btn" data-md="${entry.md_path}">Read more</button>
     </article>
   `).join('');
-  selectors.researchList.querySelectorAll('[data-md]').forEach((button) => {
-    button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Research details'));
-  });
+    selectors.researchList.querySelectorAll('[data-md]').forEach((button) => {
+      button.addEventListener('click', () => openMarkdown(button.dataset.md, 'Research details'));
+    });
+    console.log('[RENDER] Research rendered');
+  } catch(e) {
+    console.error('[RENDER] Research render error:', e);
+  }
 }
 
 function normalizeChallenges(challengeData) {
@@ -286,30 +339,40 @@ function normalizeChallenges(challengeData) {
 
 function renderChallengeTabs() {
   if (!selectors.challengeTabs) return;
-  selectors.challengeTabs.innerHTML = PLATFORM_TABS.map((tab) => `
+  console.log('[CHALLENGES] Rendering tabs, activePlatformTab:', state.activePlatformTab);
+  selectors.challengeTabs.innerHTML = `
+    <button type="button" class="tab" data-platform="tryhackme">TryHackMe</button>
+    ${PLATFORM_TABS.slice(1).map((tab) => `
     <button type="button" class="tab" data-platform="${tab.slug}">${tab.label}</button>
-  `).join('');
+  `).join('')}
+  `;
   selectors.challengeTabs.querySelectorAll('button').forEach((button) => {
-    button.addEventListener('click', () => setPlatformFilter(button.dataset.platform));
+    button.addEventListener('click', (e) => {
+      console.log('[CHALLENGES] Tab clicked:', button.dataset.platform);
+      setPlatformFilter(button.dataset.platform);
+    });
   });
   highlightPlatformTabs(state.activePlatformTab);
 }
 
 function highlightPlatformTabs(target) {
+  console.log('[CHALLENGES] Highlighting tabs for target:', target);
   selectors.challengeTabs?.querySelectorAll('button').forEach((button) => {
-    button.classList.toggle('active', target ? button.dataset.platform === target : false);
+    const isActive = button.dataset.platform === target;
+    button.classList.toggle('active', isActive);
   });
   document.querySelectorAll('.nav-sublink[data-challenge-tab]').forEach((link) => {
-    link.classList.toggle('active', target ? link.dataset.challengeTab === target : false);
+    link.classList.toggle('active', link.dataset.challengeTab === target);
   });
 }
 
 function setPlatformFilter(slug, options = {}) {
   const { resetCategory = true, syncDropdown = true } = options;
+  console.log('[CHALLENGES] setPlatformFilter called with slug:', slug);
   const valid = PLATFORM_TABS.some((tab) => tab.slug === slug);
-  const normalized = valid ? slug : 'all';
+  const normalized = valid ? slug : 'tryhackme'; // Default to tryhackme instead of 'all'
   state.challengeFilter.platform = normalized;
-  state.activePlatformTab = normalized === 'all' ? null : normalized;
+  state.activePlatformTab = normalized;
   if (selectors.challengePlatform && syncDropdown) {
     selectors.challengePlatform.value = normalized;
   }
@@ -317,6 +380,7 @@ function setPlatformFilter(slug, options = {}) {
     state.challengeFilter.category = 'all';
     if (selectors.challengeCategory) selectors.challengeCategory.value = 'all';
   }
+  console.log('[CHALLENGES] After setPlatformFilter - platform:', state.challengeFilter.platform, 'activePlatformTab:', state.activePlatformTab);
   highlightPlatformTabs(state.activePlatformTab);
   renderChallengesView();
 }
@@ -342,7 +406,8 @@ function hydrateFromUrl() {
 
 function renderChallengeFilters() {
   if (!selectors.challengePlatform) return;
-  selectors.challengePlatform.innerHTML = `<option value="all">All platforms</option>${PLATFORM_TABS.map((tab) => `<option value="${tab.slug}">${tab.label}</option>`).join('')}`;
+  console.log('[CHALLENGES] Rendering challenge filters with platform:', state.challengeFilter.platform);
+  selectors.challengePlatform.innerHTML = `${PLATFORM_TABS.map((tab) => `<option value="${tab.slug}">${tab.label}</option>`).join('')}`;
   selectors.challengePlatform.value = state.challengeFilter.platform;
 }
 
@@ -371,6 +436,7 @@ function updateCategoryOptions(entries) {
 function renderChallengeList(entries) {
   const normalizedEntries = Array.isArray(entries) ? entries : [];
   if (!selectors.challengeList) return;
+  console.log('[CHALLENGES] Rendering challenge list with', normalizedEntries.length, 'entries');
   if (!normalizedEntries.length) {
     selectors.challengeList.innerHTML = '<p class="muted">No challenges match the current filters.</p>';
     return;
@@ -381,7 +447,16 @@ function renderChallengeList(entries) {
     const writeup = entry.writeup_url
       ? `<a class="btn btn-primary" href="${entry.writeup_url}" target="_blank" rel="noopener">Read on Medium</a>`
       : '<span class="muted">Write-up coming soon</span>';
-    const tools = (entry.tools || []).map((tool) => `<span class="challenge-tool">${tool}</span>`).join('');
+    // Normalize tools to always be an array
+    let toolsArray = [];
+    if (entry.tools) {
+      if (Array.isArray(entry.tools)) {
+        toolsArray = entry.tools;
+      } else if (typeof entry.tools === 'string') {
+        toolsArray = [entry.tools];
+      }
+    }
+    const tools = toolsArray.map((tool) => `<span class="challenge-tool">${tool}</span>`).join('');
     return `
       <article class="card challenge-card" data-platform="${entry.platform}" data-categories="${normalizeCategories(entry).join(',')}">
         <div class="challenge-card-header">
@@ -411,8 +486,11 @@ function renderChallengeList(entries) {
 
 function getPlatformFilteredEntries() {
   const baseList = Array.isArray(state.challenges) ? state.challenges : [];
-  if (state.challengeFilter.platform === 'all') return baseList;
-  return baseList.filter((entry) => entry.platform === state.challengeFilter.platform);
+  const platform = state.challengeFilter.platform;
+  console.log('[CHALLENGES] getPlatformFilteredEntries - filtering by platform:', platform, 'total challenges:', baseList.length);
+  const filtered = baseList.filter((entry) => entry.platform === platform);
+  console.log('[CHALLENGES] Filtered entries count:', filtered.length);
+  return filtered;
 }
 
 function filterEntriesByCategory(entries) {
@@ -421,26 +499,13 @@ function filterEntriesByCategory(entries) {
 }
 
 function renderChallengesView() {
+  console.log('[CHALLENGES] renderChallengesView called - platform:', state.challengeFilter.platform, 'category:', state.challengeFilter.category);
   const platformEntries = getPlatformFilteredEntries();
   updateCategoryOptions(platformEntries);
   const filtered = filterEntriesByCategory(platformEntries);
   const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
+  console.log('[CHALLENGES] Rendering', sorted.length, 'challenges');
   renderChallengeList(sorted);
-  filterChallenges();
-}
-
-function filterChallenges() {
-  if (!selectors.challengeList) return;
-  const cards = selectors.challengeList.querySelectorAll('.challenge-card');
-  const platformFilter = state.challengeFilter.platform;
-  const categoryFilter = state.challengeFilter.category;
-  cards.forEach((card) => {
-    const platform = card.dataset.platform;
-    const categories = (card.dataset.categories || '').split(',').map((item) => item.trim()).filter(Boolean);
-    const matchesPlatform = platformFilter === 'all' || platform === platformFilter;
-    const matchesCategory = categoryFilter === 'all' || categories.includes(categoryFilter);
-    card.style.display = matchesPlatform && matchesCategory ? '' : 'none';
-  });
 }
 
 async function openMarkdown(path, title) {
@@ -490,10 +555,12 @@ async function loadData() {
   state.data = {};
   for (const { key, file } of dataKeys) {
     try {
-      console.log(`Fetching: ${buildUrl(DATA_ROOT, file)}`);
+      const url = buildUrl(DATA_ROOT, file);
+      console.log(`[LOAD] Fetching: ${url}`);
       state.data[key] = await fetchJson(file);
+      console.log(`[LOAD] ✅ ${key} loaded:`, state.data[key]);
     } catch (err) {
-      console.error(`Failed ${file}:`, err);
+      console.error(`[LOAD] ❌ Failed ${file}:`, err);
       failed.push(file);
       state.data[key] = key === 'profile' ? { name: 'Portfolio', tagline: 'Loading content...' } : [];
     }
@@ -501,48 +568,85 @@ async function loadData() {
   if (failed.length) {
     showToast(`Loaded partial data. Failed: ${failed.join(', ')}`);
   }
+  console.log('[LOAD] All data loaded, calling applyData()...');
   applyData();
 }
 
 function applyData() {
+  console.log('[APPLY] Starting applyData with state.data:', state.data);
   const { profile = {}, certificates = [], projects = [], challenges = {}, research = [], resume = {}, gallery = [] } = state.data || {};
+  console.log('[APPLY] Destructured:', { profile: profile.name, certificatesCount: certificates.length, projectsCount: projects.length });
+  
   renderHero(profile);
+  console.log('[APPLY] Hero rendered');
   renderAbout(profile);
+  console.log('[APPLY] About rendered');
   renderResume(resume);
+  console.log('[APPLY] Resume rendered');
   renderCertificates(certificates);
+  console.log('[APPLY] Certificates rendered');
   renderProjects(projects);
+  console.log('[APPLY] Projects rendered');
   createContactLinks(profile.contact || []);
+  console.log('[APPLY] Contact links rendered');
   renderGallery(gallery);
+  console.log('[APPLY] Gallery rendered');
   renderResearch(research);
+  console.log('[APPLY] Research rendered');
   const challengeEntries = normalizeChallenges(challenges);
   state.challenges = challengeEntries;
   renderChallengeTabs();
+  console.log('[APPLY] Challenge tabs rendered');
   renderChallengeFilters();
+  console.log('[APPLY] Challenge filters rendered');
   renderChallengesView();
+  console.log('[APPLY] ✅ All data applied successfully');
 }
 
 function setupChallengeControls() {
+  // Set up platform filter listener (called once during init)
   selectors.challengePlatform?.addEventListener('change', (event) => {
     const value = event.target.value;
+    console.log('[CHALLENGES] Platform dropdown changed to:', value);
     setPlatformFilter(value, { resetCategory: true, syncDropdown: false });
   });
+  
+  // Set up category filter listener
   selectors.challengeCategory?.addEventListener('change', (event) => {
+    console.log('[CHALLENGES] Category changed to:', event.target.value);
     setCategoryFilter(event.target.value, { syncDropdown: false });
   });
+  
+  // Set up clear filters button
   document.getElementById('clearChallengeFilters')?.addEventListener('click', () => {
-    setPlatformFilter('all');
+    console.log('[CHALLENGES] Clear filters clicked');
+    setPlatformFilter('tryhackme');
   });
 }
 
 (async function init() {
+  console.log('🚀 Portfolio init starting...');
+  console.log('DATA_ROOT:', DATA_ROOT);
+  console.log('CONTENT_ROOT:', CONTENT_ROOT);
+  console.log('Selectors check:', {
+    heroTitle: !!selectors.heroTitle,
+    certificatesGrid: !!selectors.certificatesGrid,
+    projectsGrid: !!selectors.projectsGrid,
+    challengeList: !!selectors.challengeList,
+  });
+  
   initThemeToggle();
   setupNavigation();
   setupModal();
   setupChallengeControls();
   try {
+    console.log('Loading data...');
     await loadData();
+    console.log('✅ Data loaded successfully');
+    console.log('State data:', state.data);
     hydrateFromUrl();
+    console.log('✅ Init complete');
   } catch (err) {
-    console.error(err);
+    console.error('❌ Init error:', err);
   }
 })();
