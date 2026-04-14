@@ -16,6 +16,20 @@
       "date": "2026-02-20"
     },
     {
+      "title": "Skypie",
+      "categories": [
+        "Blockchain Security"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy blockchain challenge exploiting exposed contracts credentials",
+      "writeup_url": "https://medium.com/@mathewrean/skypie-ctfzone-challenge-b1f9ddc2106c",
+      "badge_image": "assets/images/challenges/skypie_badge.png",
+      "tools": [
+        "web3 python module"
+      ],
+      "date": "2026-04-14"
+    },
+    {
       "title": "Blow Mind",
       "categories": [
         "Cryptography"

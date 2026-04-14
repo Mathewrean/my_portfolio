@@ -369,12 +369,13 @@ function updateCategoryOptions(entries) {
 }
 
 function renderChallengeList(entries) {
+  const normalizedEntries = Array.isArray(entries) ? entries : [];
   if (!selectors.challengeList) return;
-  if (!entries.length) {
+  if (!normalizedEntries.length) {
     selectors.challengeList.innerHTML = '<p class="muted">No challenges match the current filters.</p>';
     return;
   }
-  selectors.challengeList.innerHTML = entries.map((entry) => {
+  selectors.challengeList.innerHTML = normalizedEntries.map((entry) => {
     const tags = normalizeCategories(entry).map((cat) => `<span class="tag">${cat}</span>`).join('');
     const badge = entry.badge_image ? `<img class="challenge-badge" data-badge-preview="${entry.badge_image}" data-title="${entry.title}" src="${entry.badge_image}" alt="${entry.title} badge" loading="lazy" />` : '';
     const writeup = entry.writeup_url
@@ -409,8 +410,9 @@ function renderChallengeList(entries) {
 }
 
 function getPlatformFilteredEntries() {
-  if (state.challengeFilter.platform === 'all') return state.challenges;
-  return state.challenges.filter((entry) => entry.platform === state.challengeFilter.platform);
+  const baseList = Array.isArray(state.challenges) ? state.challenges : [];
+  if (state.challengeFilter.platform === 'all') return baseList;
+  return baseList.filter((entry) => entry.platform === state.challengeFilter.platform);
 }
 
 function filterEntriesByCategory(entries) {
