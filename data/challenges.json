@@ -1,5 +1,21 @@
 {
   "ctfzone": [
+       {
+      "title": "Operation Smile",
+      "categories": [
+        "Forensics"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy forensics challenge on embedded files in a picture",
+      "writeup_url": "https://medium.com/@mathewrean/smile-ctfzone-challenge-744f8c63da99",
+      "badge_image": "assets/images/challenges/opensmile_badge.png",
+      "tools": [
+        "Foremost",
+        "Foremost",
+        "Binwal"
+      ],
+      "date": "2026-04-22"
+    },
     {
       "title": "Base",
       "categories": [
