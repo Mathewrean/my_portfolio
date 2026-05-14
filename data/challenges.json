@@ -158,6 +158,17 @@
   ],
   "tryhackme": [
     {
+      "title": "ColddBox",
+      "categories": [
+        "Boot2Root"
+      ],
+      "difficulty": "Easy",
+      "description": "This challenge involved a multi-stage process of enumeration, privilege escalation, and lateral movement to ultimately retrieve the flag.",
+      "writeup_url": "https://medium.com/@mathewrean/colddbox-tryhackme-challenge-837c94c7e75f",
+      "badge_image": "assets/images/challenges/colddbox.png",
+      "date": "2026-05-14"
+    },
+    {
       "title": "Have a Break",
       "categories": [
         "Osint"
