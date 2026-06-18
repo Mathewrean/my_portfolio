@@ -25,14 +25,5 @@
     "live_url": "",
     "image_path": "assets/images/gallery/rechiro_logo.png",
     "date": "2025-11-18"
-  },
-  {
-    "title": "SOC Alert Triage Playbooks",
-    "description": "Documented SOC L1/L2 triage flows from TryHackMe labs plus Cyber Chief Circle practice, consolidating indicators, automation rules, and escalation steps.",
-    "tags": ["SOC", "Playbooks", "Automation"],
-    "repo_url": "",
-    "live_url": "",
-    "image_path": "https://placehold.co/400x300/0b1f2f/faf8ff?text=Playbooks",
-    "date": "2025-12-06"
   }
 ]
