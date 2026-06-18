@@ -1,6 +1,20 @@
 {
   "ctfzone": [
-       {
+      {
+      "title": "ExclusiveOR",
+      "categories": [
+        "Cryptography"
+      ],
+      "difficulty": "Easy",
+      "description": "Easy XOR cipher challenge",
+      "writeup_url": "https://medium.com/@mathewrean/exclusiveor-ctfzone-challenge-e1915cf20e01",
+      "badge_image": "assets/images/challenges/exclusiveOR.png",
+      "tools": [
+        "Python Script"
+      ],
+      "date": "2026-06-18"
+      },
+      {
       "title": "Operation Smile",
       "categories": [
         "Forensics"
